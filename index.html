@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Track the daily evolution of a configurable €500 crypto portfolio.">
+    <meta name="theme-color" content="#07130f">
+    <title>Crypto Allocation Desk</title>
+    <link rel="preconnect" href="https://api.coingecko.com">
+    <link rel="stylesheet" href="./src/styles.css">
+    <script type="module" src="./src/app.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to portfolio</a>
+    <header class="site-header">
+      <a class="brand" href="./" aria-label="Crypto Allocation Desk home">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>CRYPTO / ALLOCATION DESK</span>
+      </a>
+      <div class="header-actions">
+        <p class="market-status"><span aria-hidden="true"></span> DATA: <strong id="data-status">LOADING</strong></p>
+        <button class="button button-quiet" id="configure-button" type="button">
+          Configure portfolio
+        </button>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">MODEL PORTFOLIO · AGGRESSIVE</p>
+          <h1 id="page-title">Ten assets.<br><em>One clear view.</em></h1>
+        </div>
+        <div class="hero-note">
+          <span>Investment brief / 001</span>
+          <p>A hypothetical €500 allocation tracked at the daily UTC close. Built for perspective—not predictions.</p>
+        </div>
+      </section>
+
+      <section class="metrics" aria-label="Portfolio overview">
+        <article>
+          <p>Current value</p>
+          <strong id="current-value">—</strong>
+          <span id="total-return">Waiting for data</span>
+        </article>
+        <article>
+          <p>Invested</p>
+          <strong id="invested-value">€500.00</strong>
+          <span id="tracking-period">Model start —</span>
+        </article>
+        <article>
+          <p>24-hour move</p>
+          <strong id="daily-move">—</strong>
+          <span>Allocation weighted</span>
+        </article>
+        <article>
+          <p>Risk posture</p>
+          <strong class="risk-label">Aggressive</strong>
+          <span>8 high-beta assets</span>
+        </article>
+      </section>
+
+      <section class="dashboard-grid">
+        <article class="panel performance-panel" aria-labelledby="performance-title">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">DAILY CLOSE · EUR</p>
+              <h2 id="performance-title">Portfolio evolution</h2>
+            </div>
+            <div class="chart-legend"><span></span> Model value</div>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="portfolio-chart" role="img" aria-label="Portfolio value over time"></canvas>
+            <p id="chart-empty" class="empty-state" hidden>Market history will appear after the data workflow runs.</p>
+          </div>
+          <div class="chart-axis" aria-hidden="true">
+            <span id="chart-start">—</span><span id="chart-end">—</span>
+          </div>
+        </article>
+
+        <article class="panel report-panel" aria-labelledby="report-title">
+          <div class="report-topline">
+            <p class="eyebrow">WEEKLY SIGNAL / <span id="report-period">PENDING</span></p>
+            <span class="signal" id="report-signal">—</span>
+          </div>
+          <h2 id="report-title">Status & analysis</h2>
+          <p class="report-summary" id="report-summary">Waiting for the first automated market update.</p>
+          <dl class="report-leaders">
+            <div>
+              <dt>Leading</dt>
+              <dd id="report-best">—</dd>
+            </div>
+            <div>
+              <dt>Lagging</dt>
+              <dd id="report-worst">—</dd>
+            </div>
+          </dl>
+          <ul id="report-observations" class="observations"></ul>
+        </article>
+      </section>
+
+      <section class="holdings-section" aria-labelledby="holdings-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">ALLOCATION / LIVE MARK</p>
+            <h2 id="holdings-title">The ten</h2>
+          </div>
+          <p>Sorted by allocation · prices in EUR</p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Asset</th>
+                <th scope="col">Allocation</th>
+                <th scope="col">Price</th>
+                <th scope="col">24h</th>
+                <th scope="col">Since start</th>
+                <th scope="col">Value</th>
+              </tr>
+            </thead>
+            <tbody id="holdings-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="thesis-section" aria-labelledby="thesis-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">RESEARCH NOTES</p>
+            <h2 id="thesis-title">Why these assets</h2>
+          </div>
+          <p>BTC and ETH anchor a deliberately higher-risk satellite allocation.</p>
+        </div>
+        <div class="thesis-grid" id="thesis-grid"></div>
+      </section>
+    </main>
+
+    <footer>
+      <p>MARKET DATA BY <a href="https://www.coingecko.com/" rel="noopener noreferrer">COINGECKO</a> · DAILY SNAPSHOT AT 23:55 UTC</p>
+      <p>Educational model only. Crypto assets can lose their entire value. This is not financial advice.</p>
+    </footer>
+
+    <dialog id="portfolio-dialog" aria-labelledby="dialog-title">
+      <form id="portfolio-form" method="dialog">
+        <div class="dialog-heading">
+          <div>
+            <p class="eyebrow">LOCAL CONFIGURATION</p>
+            <h2 id="dialog-title">Build your ten</h2>
+          </div>
+          <button class="icon-button" value="cancel" aria-label="Close configuration">×</button>
+        </div>
+        <p class="dialog-copy">Choose ten unique tracked assets and divide exactly €500. Your configuration stays in this browser.</p>
+        <div id="portfolio-fields" class="portfolio-fields"></div>
+        <p class="allocation-total">Allocated <strong id="allocation-total">€500</strong> / €500</p>
+        <p class="form-error" id="form-error" role="alert"></p>
+        <div class="dialog-actions">
+          <button class="button button-quiet" id="reset-button" type="button">Reset research list</button>
+          <button class="button button-primary" value="save" type="submit">Save portfolio</button>
+        </div>
+      </form>
+    </dialog>
+
+    <noscript>This dashboard needs JavaScript to calculate portfolio performance.</noscript>
+  </body>
+</html>
