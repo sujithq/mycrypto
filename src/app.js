@@ -312,8 +312,13 @@ function bindEvents() {
   });
   $('#portfolio-fields').addEventListener('input', updateAllocationTotal);
   $('#reset-button').addEventListener('click', () => {
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      $('#form-error').textContent = 'Could not clear the saved portfolio.';
+      return;
+    }
     portfolio = structuredClone(config.defaultPortfolio);
-    localStorage.removeItem(STORAGE_KEY);
     renderForm();
     render();
   });
