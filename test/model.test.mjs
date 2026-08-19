@@ -4,6 +4,7 @@ import {
   calculateHoldings,
   calculateSeries,
   createAnalysisReport,
+  filterHistoryByTimeframe,
   isValidPortfolio,
 } from '../src/model.js';
 
@@ -30,6 +31,20 @@ test('calculates portfolio evolution from each asset baseline', () => {
   assert.deepEqual(calculateSeries(portfolio, history), [
     { date: '2026-08-11', value: 500 },
     { date: '2026-08-18', value: 550 },
+  ]);
+});
+
+test('uses optional buy dates as each asset baseline', () => {
+  const datedPortfolio = portfolio.map((item, index) => index === 0 ? { ...item, buyDate: '2026-08-18' } : item);
+  const series = calculateSeries(datedPortfolio, history);
+  assert.deepEqual(series, [
+    { date: '2026-08-18', value: 545 },
+  ]);
+});
+
+test('filters history by trailing timeframe', () => {
+  assert.deepEqual(filterHistoryByTimeframe(history, 3), [
+    { date: '2026-08-18', prices: prices(11) },
   ]);
 });
 

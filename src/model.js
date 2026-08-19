@@ -32,10 +32,10 @@ export function filterHistoryByTimeframe(history, timeframeDays) {
 export function calculateSeries(portfolio, history, timeframeDays) {
   const baseline = getBaselinePrices(portfolio, history);
   return filterHistoryByTimeframe(history, timeframeDays).flatMap((entry) => {
-    const values = portfolio.map(({ id, amount }) => {
+    const values = portfolio.map(({ id, amount, buyDate }) => {
       const startPrice = baseline[id];
       const price = entry.prices?.[id];
-      return Number.isFinite(startPrice) && Number.isFinite(price) && startPrice > 0
+      return (!buyDate || entry.date >= buyDate) && Number.isFinite(startPrice) && Number.isFinite(price) && startPrice > 0
         ? amount * (price / startPrice)
         : null;
     });
@@ -79,7 +79,10 @@ export function createAnalysisReport(history, portfolio, generatedAt = new Date(
   const start = recent[0];
   const end = recent.at(-1);
   const changes = portfolio.flatMap((asset) => {
-    const startPrice = start.prices[asset.id];
+    const assetStart = asset.buyDate
+      ? recent.find((entry) => entry.date >= asset.buyDate && Number.isFinite(entry.prices[asset.id]))
+      : start;
+    const startPrice = assetStart?.prices[asset.id];
     const endPrice = end.prices[asset.id];
     if (!Number.isFinite(startPrice) || !Number.isFinite(endPrice) || startPrice <= 0) return [];
     return [{

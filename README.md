@@ -36,10 +36,12 @@ Research and identifier references:
 
 ## How it works
 
-- `data/portfolio.json` defines the research portfolio and the configurable asset universe.
+- `data/portfolio.json` defines the research portfolio, configurable asset universe, optional buy dates, and trailing chart/report timeframe.
 - `.github/workflows/update-market-data.yml` runs at 23:55 UTC, fetches EUR quotes from CoinGecko, retains up to 366 closes, generates the trailing report, commits the data, and deploys the refreshed site.
 - The first update bootstraps 30 days of daily history. Later runs add or replace that day’s UTC snapshot.
-- Browser configuration is validated, stored only in `localStorage`, and resettable to the researched model.
+- Browser configuration is validated, can include actual buy dates, is stored only in `localStorage`, and is resettable to the researched model.
+- `manage.html` prepares JSON for the **Manage portfolio defaults** workflow so the default ten assets, actual buy values, optional buy dates, and timeframe can be updated without editing JSON by hand. TARS AI (TAI) is included in the supported asset universe.
+- `.github/workflows/manage-portfolio.yml` validates and commits managed defaults. It gates execution through GitHub permissions/environment protection and checks that `PORTFOLIO_MANAGEMENT_SECRET` is configured without requesting, printing, or passing the secret value as workflow input.
 - `.github/workflows/deploy-pages.yml` validates and deploys every push to `main`.
 
 Crypto markets never close. “Daily close” in this project means the automated 23:55 UTC snapshot.
@@ -64,3 +66,7 @@ Open <http://localhost:8000>. To fetch live data, run `npm run update-data`; the
 3. Run **Validate and deploy Pages** if the default branch is not named `main`.
 
 Workflow dependencies are pinned to immutable commit SHAs. The application has no runtime package dependencies and sends no visitor data to third parties.
+
+## Management setup
+
+Create a GitHub environment named `portfolio-management`, restrict who can run or approve it, and add the existing `PORTFOLIO_MANAGEMENT_SECRET` secret there or at repository scope. The management workflow only verifies that the secret exists; it never exposes the value to the page, workflow inputs, logs, or committed files.

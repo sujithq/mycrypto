@@ -1,6 +1,7 @@
 {
   "currency": "eur",
   "totalInvestment": 500,
+  "timeframeDays": 30,
   "defaultPortfolio": [
     { "id": "bitcoin", "symbol": "BTC", "name": "Bitcoin", "amount": 60, "thesis": "Liquid macro anchor intended to moderate the higher-beta satellite positions." },
     { "id": "ethereum", "symbol": "ETH", "name": "Ethereum", "amount": 115, "thesis": "Largest allocation: settlement-layer exposure to DeFi, stablecoins and layer twos." },
@@ -11,7 +12,7 @@
     { "id": "chainlink", "symbol": "LINK", "name": "Chainlink", "amount": 35, "thesis": "Oracle and cross-chain infrastructure used across multiple networks." },
     { "id": "arbitrum", "symbol": "ARB", "name": "Arbitrum", "amount": 25, "thesis": "Ethereum scaling exposure through a widely used optimistic rollup ecosystem." },
     { "id": "render-token", "symbol": "RENDER", "name": "Render", "amount": 20, "thesis": "Distributed GPU compute exposure for rendering and AI workloads." },
-    { "id": "injective-protocol", "symbol": "INJ", "name": "Injective", "amount": 15, "thesis": "Higher-beta exposure to purpose-built on-chain financial markets." }
+    { "id": "injective-protocol", "symbol": "INJ", "name": "Injective", "amount": 15, "buyDate": null, "thesis": "Higher-beta exposure to purpose-built on-chain financial markets." }
   ],
   "supportedAssets": [
     { "id": "bitcoin", "symbol": "BTC", "name": "Bitcoin" },
@@ -29,6 +30,7 @@
     { "id": "near", "symbol": "NEAR", "name": "NEAR Protocol" },
     { "id": "the-graph", "symbol": "GRT", "name": "The Graph" },
     { "id": "uniswap", "symbol": "UNI", "name": "Uniswap" },
-    { "id": "arbitrum", "symbol": "ARB", "name": "Arbitrum" }
+    { "id": "arbitrum", "symbol": "ARB", "name": "Arbitrum" },
+    { "id": "tars-protocol", "symbol": "TAI", "name": "TARS AI" }
   ]
 }

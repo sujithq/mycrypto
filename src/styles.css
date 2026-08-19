@@ -207,7 +207,7 @@ dialog {
 dialog::backdrop { background: rgb(3 9 7 / .8); backdrop-filter: blur(4px); }
 .dialog-copy { margin: 22px 0; color: var(--muted); font-size: .8rem; line-height: 1.6; }
 .portfolio-fields { display: grid; gap: 8px; }
-.portfolio-field { display: grid; grid-template-columns: 28px 1fr 110px; align-items: center; gap: 10px; }
+.portfolio-field { display: grid; grid-template-columns: 28px 1fr 110px 150px; align-items: center; gap: 10px; }
 .portfolio-field label { color: var(--dim); font: .65rem ui-monospace, monospace; }
 select, input {
   width: 100%;
@@ -225,6 +225,11 @@ select:focus-visible, input:focus-visible, button:focus-visible, a:focus-visible
 .allocation-total { margin: 20px 0 5px; color: var(--muted); text-align: right; }
 .form-error { min-height: 1.2em; color: var(--danger); font-size: .75rem; text-align: right; }
 .dialog-actions { margin-top: 22px; align-items: center; }
+.manage-hero { min-height: 320px; }
+.timeframe-field { display: grid; max-width: 240px; gap: 10px; margin-bottom: 22px; color: var(--muted); font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; }
+.workflow-output { margin-top: 42px; }
+.workflow-output textarea { width: 100%; min-height: 360px; padding: 16px; color: var(--ink); border: 1px solid var(--line); background: var(--canvas); font: .75rem/1.5 ui-monospace, monospace; }
+.workflow-output p:last-child { color: var(--muted); font-size: .8rem; line-height: 1.6; }
 
 noscript { position: fixed; inset: auto 0 0; padding: 1rem; color: var(--canvas); background: var(--acid); text-align: center; }
 
@@ -259,8 +264,10 @@ noscript { position: fixed; inset: auto 0 0; padding: 1rem; color: var(--canvas)
   .thesis-grid { grid-template-columns: 1fr; }
   footer { display: block; }
   footer p:last-child { text-align: left; }
+  .header-actions { gap: 10px; }
+  .portfolio-field { grid-template-columns: 28px 1fr; }
+  .portfolio-field .amount-field, .portfolio-field input[type="date"] { grid-column: 2; }
   dialog { padding: 22px 16px; }
-  .portfolio-field { grid-template-columns: 22px 1fr 88px; }
   .dialog-actions { align-items: stretch; flex-direction: column-reverse; }
   .dialog-actions .button { width: 100%; }
 }

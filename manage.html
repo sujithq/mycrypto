@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Prepare secured portfolio-management updates for Crypto Allocation Desk.">
+    <meta name="theme-color" content="#07130f">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+    <title>Manage portfolio · Crypto Allocation Desk</title>
+    <link rel="stylesheet" href="./src/styles.css">
+    <script type="module" src="./src/manage.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="./" aria-label="Crypto Allocation Desk home">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>CRYPTO / MANAGEMENT</span>
+      </a>
+      <a class="button button-quiet" href="./">Back to dashboard</a>
+    </header>
+
+    <main>
+      <section class="hero manage-hero" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">SECURED DEFAULTS</p>
+          <h1 id="page-title">Set the tracked ten.</h1>
+        </div>
+        <div class="hero-note">
+          <span>Management flow</span>
+          <p>Prepare a portfolio update here, then submit it through the GitHub Actions workflow protected by the repository secret.</p>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="management-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">DEFAULT PORTFOLIO</p>
+            <h2 id="management-title">Assets, actual buys, timeframe</h2>
+          </div>
+          <p>Select ten unique assets, enter actual invested values, optional buy dates, and the chart/report timeframe.</p>
+        </div>
+
+        <form id="management-form">
+          <label class="timeframe-field">
+            <span>Timeframe in days</span>
+            <input id="timeframe-days" name="timeframeDays" type="number" min="1" max="366" step="1" required>
+          </label>
+          <div id="management-fields" class="portfolio-fields management-fields"></div>
+          <p class="allocation-total">Allocated <strong id="management-total">€500</strong></p>
+          <p class="form-error" id="management-error" role="alert"></p>
+          <div class="dialog-actions">
+            <button class="button button-primary" type="submit">Generate workflow JSON</button>
+          </div>
+        </form>
+
+        <div class="workflow-output">
+          <p class="eyebrow">GITHUB ACTIONS INPUT</p>
+          <textarea id="workflow-json" readonly aria-label="Generated portfolio JSON"></textarea>
+          <p>Run <strong>Manage portfolio defaults</strong> in GitHub Actions and paste this JSON. The workflow is gated by GitHub permissions and checks that the repository secret is configured without exposing or requesting its value.</p>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

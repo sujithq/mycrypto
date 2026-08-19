@@ -103,7 +103,7 @@ async function main() {
     history,
   }, null, 2)}\n`);
 
-  const report = createAnalysisReport(history, portfolioConfig.defaultPortfolio, now);
+  const report = createAnalysisReport(history, portfolioConfig.defaultPortfolio, now, portfolioConfig.timeframeDays);
   await writeFile(reportPath, `${JSON.stringify(report, null, 2)}\n`);
   console.log(`Stored ${quotes.length} quotes and ${history.length} daily snapshots.`);
 }
