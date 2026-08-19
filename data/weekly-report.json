@@ -1,0 +1,13 @@
+{
+  "generatedAt": null,
+  "periodStart": null,
+  "periodEnd": null,
+  "status": "Awaiting the first market data update",
+  "summary": "Run the Update market data workflow to generate the first weekly analysis.",
+  "portfolioChangePct": null,
+  "bestPerformer": null,
+  "worstPerformer": null,
+  "observations": [
+    "Crypto assets are volatile and this dashboard is for information, not financial advice."
+  ]
+}

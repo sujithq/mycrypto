@@ -1,0 +1,33 @@
+{
+  "currency": "eur",
+  "totalInvestment": 500,
+  "defaultPortfolio": [
+    { "id": "bitcoin", "symbol": "BTC", "name": "Bitcoin", "amount": 100, "thesis": "Portfolio anchor and the market's deepest source of liquidity." },
+    { "id": "ethereum", "symbol": "ETH", "name": "Ethereum", "amount": 80, "thesis": "Base-layer exposure to smart contracts, stablecoins and tokenized assets." },
+    { "id": "solana", "symbol": "SOL", "name": "Solana", "amount": 55, "thesis": "High-throughput application ecosystem with strong consumer traction." },
+    { "id": "chainlink", "symbol": "LINK", "name": "Chainlink", "amount": 45, "thesis": "Oracle and interoperability infrastructure used across multiple chains." },
+    { "id": "aave", "symbol": "AAVE", "name": "Aave", "amount": 40, "thesis": "Established decentralized lending exposure with protocol fee upside." },
+    { "id": "sui", "symbol": "SUI", "name": "Sui", "amount": 40, "thesis": "Aggressive allocation to a fast-growing Move-based layer one." },
+    { "id": "bittensor", "symbol": "TAO", "name": "Bittensor", "amount": 40, "thesis": "High-risk decentralized AI network exposure." },
+    { "id": "render-token", "symbol": "RENDER", "name": "Render", "amount": 35, "thesis": "Distributed GPU compute exposure for rendering and AI workloads." },
+    { "id": "ondo-finance", "symbol": "ONDO", "name": "Ondo", "amount": 35, "thesis": "Tokenized real-world asset infrastructure exposure." },
+    { "id": "injective-protocol", "symbol": "INJ", "name": "Injective", "amount": 30, "thesis": "Higher-beta exposure to on-chain financial markets." }
+  ],
+  "supportedAssets": [
+    { "id": "bitcoin", "symbol": "BTC", "name": "Bitcoin" },
+    { "id": "ethereum", "symbol": "ETH", "name": "Ethereum" },
+    { "id": "solana", "symbol": "SOL", "name": "Solana" },
+    { "id": "chainlink", "symbol": "LINK", "name": "Chainlink" },
+    { "id": "aave", "symbol": "AAVE", "name": "Aave" },
+    { "id": "sui", "symbol": "SUI", "name": "Sui" },
+    { "id": "bittensor", "symbol": "TAO", "name": "Bittensor" },
+    { "id": "render-token", "symbol": "RENDER", "name": "Render" },
+    { "id": "ondo-finance", "symbol": "ONDO", "name": "Ondo" },
+    { "id": "injective-protocol", "symbol": "INJ", "name": "Injective" },
+    { "id": "avalanche-2", "symbol": "AVAX", "name": "Avalanche" },
+    { "id": "near", "symbol": "NEAR", "name": "NEAR Protocol" },
+    { "id": "the-graph", "symbol": "GRT", "name": "The Graph" },
+    { "id": "uniswap", "symbol": "UNI", "name": "Uniswap" },
+    { "id": "arbitrum", "symbol": "ARB", "name": "Arbitrum" }
+  ]
+}
