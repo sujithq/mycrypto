@@ -211,7 +211,9 @@ function render() {
   chartSeries = calculateSeries(portfolio, market.history, config.timeframeDays);
   const holdings = calculateHoldings(portfolio, market.history, market.assets);
   const isDefaultPortfolio = portfolio.every((item, index) =>
-    item.id === config.defaultPortfolio[index]?.id && item.amount === config.defaultPortfolio[index]?.amount);
+    item.id === config.defaultPortfolio[index]?.id
+    && item.amount === config.defaultPortfolio[index]?.amount
+    && (item.buyDate ?? null) === (config.defaultPortfolio[index]?.buyDate ?? null));
   report = isDefaultPortfolio ? automatedReport : createAnalysisReport(market.history, portfolio, new Date().toISOString(), config.timeframeDays);
   renderMetrics(holdings, chartSeries);
   renderHoldings(holdings);
