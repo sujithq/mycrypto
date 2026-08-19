@@ -41,14 +41,14 @@ function renderFields() {
     amount.max = String(config.totalInvestment);
     amount.step = '0.01';
     amount.value = String(item.amount);
-    amount.setAttribute('aria-label', `${item.symbol} actual invested value`);
+    amount.setAttribute('aria-label', `Actual invested value ${index + 1}`);
     amountWrap.append(amount);
 
     const buyDate = document.createElement('input');
     buyDate.name = 'buyDate';
     buyDate.type = 'date';
     buyDate.value = item.buyDate ?? '';
-    buyDate.setAttribute('aria-label', `${item.symbol} buy date`);
+    buyDate.setAttribute('aria-label', `Buy date ${index + 1}`);
 
     row.append(label, select, amountWrap, buyDate);
     fields.append(row);

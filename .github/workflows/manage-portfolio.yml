@@ -12,7 +12,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: portfolio-management
+  group: repository-data-writer
   cancel-in-progress: false
 
 jobs:
@@ -44,12 +44,12 @@ jobs:
         run: npm run check
       - name: Commit managed defaults
         run: |
-          if git diff --quiet -- data/portfolio.json; then
+          if git diff --quiet -- data/portfolio.json data/weekly-report.json; then
             echo "No portfolio changes to commit."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/portfolio.json
+          git add data/portfolio.json data/weekly-report.json
           git commit -m "data: update managed portfolio defaults"
           git push

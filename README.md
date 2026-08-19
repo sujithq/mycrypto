@@ -1,12 +1,12 @@
 # Crypto Allocation Desk
 
-A no-backend GitHub Pages dashboard for a hypothetical, aggressive €500 crypto portfolio. It tracks daily EUR closes, calculates each holding’s evolution, publishes a trailing weekly status report, and lets visitors configure or reset their own ten-asset allocation locally.
+A no-backend GitHub Pages dashboard for a hypothetical, aggressive €500 crypto portfolio. It tracks daily EUR closes, calculates each holding’s evolution, publishes a configurable trailing status report, and lets visitors configure or reset their own ten-asset allocation locally.
 
 > **Educational use only.** Crypto assets are highly volatile and can lose their entire value. This project does not provide financial advice.
 
 ## Researched model allocation
 
-The model uses BTC and ETH as liquid anchors (35%) and deliberately places the rest across higher-beta layer-one, DeFi, scaling, oracle, and decentralized-compute themes.
+The model uses liquid anchors (35%) and deliberately places the rest across higher-beta layer-one, DeFi, scaling, oracle, and decentralized-compute themes.
 
 | Asset | Theme | Allocation |
 | --- | --- | ---: |

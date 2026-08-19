@@ -22,7 +22,8 @@ async function fetchJson(url, attempts = 3) {
       if (response.ok) return response.json();
       const detail = (await response.text()).slice(0, 300);
       lastError = new Error(`CoinGecko request failed (${response.status}): ${detail}`);
-      const retryAfter = Number(response.headers.get('retry-after'));
+      const retryAfterHeader = response.headers.get('retry-after');
+      const retryAfter = retryAfterHeader === null ? Number.NaN : Number(retryAfterHeader);
       if (attempt < attempts) {
         await sleep(Number.isFinite(retryAfter) ? retryAfter * 1_000 : attempt * 5_000);
       }
@@ -63,8 +64,9 @@ async function main() {
   const url = `${API}/coins/markets?vs_currency=${currency}&ids=${ids.map(encodeURIComponent).join(',')}&price_change_percentage=24h`;
   const quotes = await fetchJson(url);
 
-  if (!Array.isArray(quotes) || quotes.length === 0) {
-    throw new Error('CoinGecko returned no market quotes.');
+  const quoteIds = new Set(Array.isArray(quotes) ? quotes.map(({ id }) => id) : []);
+  if (quoteIds.size !== ids.length || ids.some((id) => !quoteIds.has(id))) {
+    throw new Error('CoinGecko returned incomplete market quotes.');
   }
 
   const now = new Date().toISOString();

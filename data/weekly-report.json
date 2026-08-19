@@ -3,7 +3,7 @@
   "periodStart": null,
   "periodEnd": null,
   "status": "Awaiting the first market data update",
-  "summary": "Run the Update market data workflow to generate the first weekly analysis.",
+  "summary": "Run the Update market data workflow to generate the first trailing analysis.",
   "portfolioChangePct": null,
   "bestPerformer": null,
   "worstPerformer": null,

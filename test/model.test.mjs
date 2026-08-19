@@ -25,6 +25,7 @@ test('accepts exactly ten unique positive allocations totalling €500', () => {
   assert.equal(isValidPortfolio(portfolio.slice(0, 9), supportedIds), false);
   assert.equal(isValidPortfolio([...portfolio.slice(0, 9), portfolio[0]], supportedIds), false);
   assert.equal(isValidPortfolio(portfolio.map((item, index) => ({ ...item, amount: index ? 50 : 40 })), supportedIds), false);
+  assert.equal(isValidPortfolio(portfolio.map((item, index) => index ? item : { ...item, buyDate: '2026-02-31' }), supportedIds), false);
 });
 
 test('calculates portfolio evolution from each asset baseline', () => {
@@ -64,4 +65,15 @@ test('creates an allocation-weighted trailing report', () => {
   assert.equal(result.portfolioChangePct, 10);
   assert.equal(result.periodStart, '2026-08-11');
   assert.equal(result.periodEnd, '2026-08-18');
+});
+
+test('does not publish a partial report when an asset lacks prices', () => {
+  const incomplete = history.map((entry) => {
+    const next = { ...entry, prices: { ...entry.prices } };
+    delete next.prices['asset-9'];
+    return next;
+  });
+  const result = createAnalysisReport(incomplete, portfolio, '2026-08-19T00:00:00.000Z');
+  assert.equal(result.status, 'Insufficient data');
+  assert.equal(result.portfolioChangePct, null);
 });

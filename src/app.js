@@ -46,7 +46,11 @@ function loadSavedPortfolio() {
       });
     }
   } catch {
-    localStorage.removeItem(STORAGE_KEY);
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      // Storage access may be denied; managed defaults remain usable.
+    }
   }
   return structuredClone(config.defaultPortfolio);
 }
@@ -170,7 +174,7 @@ function drawChart() {
     context.moveTo(padding.left, chartY);
     context.lineTo(width - padding.right, chartY);
     context.stroke();
-    context.fillStyle = '#607269';
+    context.fillStyle = '#8aa096';
     context.fillText(`€${label.toFixed(0)}`, padding.left - 10, chartY);
   }
 
@@ -247,13 +251,13 @@ function renderForm() {
     input.max = String(config.totalInvestment);
     input.step = '1';
     input.value = String(item.amount);
-    input.setAttribute('aria-label', `${item.symbol} allocation in euro`);
+    input.setAttribute('aria-label', `Allocation ${index + 1} in euro`);
     amountWrap.append(input);
     const dateInput = document.createElement('input');
     dateInput.name = 'buyDate';
     dateInput.type = 'date';
     dateInput.value = item.buyDate ?? '';
-    dateInput.setAttribute('aria-label', `${item.symbol} buy date`);
+    dateInput.setAttribute('aria-label', `Buy date ${index + 1}`);
     row.append(label, select, amountWrap, dateInput);
     fields.append(row);
   });
@@ -288,8 +292,13 @@ function saveForm() {
       : `Use positive amounts that add up to exactly ${euro.format(config.totalInvestment)}.`;
     return false;
   }
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+  } catch {
+    $('#form-error').textContent = 'Could not save this portfolio in browser storage.';
+    return false;
+  }
   portfolio = next;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(portfolio));
   $('#form-error').textContent = '';
   render();
   return true;

@@ -1,10 +1,12 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import { isValidPortfolio } from '../src/model.js';
+import { createAnalysisReport, isValidPortfolio } from '../src/model.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const portfolioPath = path.join(root, 'data', 'portfolio.json');
+const marketPath = path.join(root, 'data', 'market.json');
+const reportPath = path.join(root, 'data', 'weekly-report.json');
 
 function parseUpdate() {
   const raw = process.env.PORTFOLIO_UPDATE_JSON;
@@ -48,5 +50,8 @@ const next = {
   defaultPortfolio,
 };
 
+const market = JSON.parse(await readFile(marketPath, 'utf8'));
+const report = createAnalysisReport(market.history ?? [], defaultPortfolio, new Date().toISOString(), timeframeDays);
 await writeFile(portfolioPath, `${JSON.stringify(next, null, 2)}\n`);
+await writeFile(reportPath, `${JSON.stringify(report, null, 2)}\n`);
 console.log('Updated managed portfolio defaults.');

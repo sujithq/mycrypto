@@ -4,8 +4,13 @@ export function isValidPortfolio(portfolio, supportedIds, target = 500) {
   if (new Set(ids).size !== ids.length || ids.some((id) => !supportedIds.has(id))) return false;
   const amounts = portfolio.map(({ amount }) => Number(amount));
   const dates = portfolio.map(({ buyDate }) => buyDate).filter(Boolean);
+  const validDate = (date) => {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return false;
+    const parsed = new Date(`${date}T00:00:00Z`);
+    return Number.isFinite(parsed.getTime()) && parsed.toISOString().slice(0, 10) === date;
+  };
   return amounts.every((amount) => Number.isFinite(amount) && amount > 0)
-    && dates.every((date) => /^\d{4}-\d{2}-\d{2}$/.test(date) && !Number.isNaN(Date.parse(`${date}T00:00:00Z`)))
+    && dates.every(validDate)
     && Math.abs(amounts.reduce((sum, amount) => sum + amount, 0) - target) < 0.01;
 }
 
@@ -72,7 +77,7 @@ export function createAnalysisReport(history, portfolio, generatedAt = new Date(
       portfolioChangePct: null,
       bestPerformer: null,
       worstPerformer: null,
-      observations: ['The report will become more reliable after seven daily closes.'],
+      observations: [`The report will become more reliable after ${timeframeDays + 1} daily closes.`],
     };
   }
 
@@ -91,6 +96,19 @@ export function createAnalysisReport(history, portfolio, generatedAt = new Date(
       changePct: ((endPrice - startPrice) / startPrice) * 100,
     }];
   });
+  if (changes.length !== portfolio.length) {
+    return {
+      generatedAt,
+      periodStart: start.date,
+      periodEnd: end.date,
+      status: 'Insufficient data',
+      summary: 'Comparable prices were not available for every portfolio asset.',
+      portfolioChangePct: null,
+      bestPerformer: null,
+      worstPerformer: null,
+      observations: ['The report will be published when every portfolio asset has comparable prices.'],
+    };
+  }
   const totalAmount = changes.reduce((sum, asset) => sum + asset.amount, 0);
   const portfolioChangePct = totalAmount
     ? changes.reduce((sum, asset) => sum + asset.changePct * asset.amount, 0) / totalAmount
@@ -113,16 +131,16 @@ export function createAnalysisReport(history, portfolio, generatedAt = new Date(
     status,
     summary: portfolioChangePct === null
       ? 'No comparable prices were available.'
-      : `The model portfolio moved ${portfolioChangePct >= 0 ? '+' : ''}${portfolioChangePct.toFixed(2)}% over ${recent.length - 1} daily closes.`,
+      : `The model portfolio moved ${portfolioChangePct >= 0 ? '+' : ''}${portfolioChangePct.toFixed(2)}% over a ${timeframeDays}-day trailing window (${recent.length} closes).`,
     portfolioChangePct: portfolioChangePct === null ? null : Number(portfolioChangePct.toFixed(4)),
     bestPerformer: best ? { symbol: best.symbol, changePct: Number(best.changePct.toFixed(4)) } : null,
     worstPerformer: worst ? { symbol: worst.symbol, changePct: Number(worst.changePct.toFixed(4)) } : null,
     observations: [
       best ? `${best.symbol} led the portfolio at ${best.changePct >= 0 ? '+' : ''}${best.changePct.toFixed(2)}%.` : 'No leader could be calculated.',
       worst ? `${worst.symbol} was weakest at ${worst.changePct >= 0 ? '+' : ''}${worst.changePct.toFixed(2)}%.` : 'No laggard could be calculated.',
-      recent.length < 8
-        ? `This early report uses ${recent.length} closes; the target weekly window is eight.`
-        : 'Performance is allocation-weighted and compares eight daily closes.',
+      recent.length < timeframeDays + 1
+        ? `This early report uses ${recent.length} closes; the target ${timeframeDays}-day window has ${timeframeDays + 1}.`
+        : `Performance is allocation-weighted across the ${timeframeDays}-day trailing window (${recent.length} closes).`,
       'Momentum is descriptive, not predictive; review concentration and downside before acting.',
     ],
   };

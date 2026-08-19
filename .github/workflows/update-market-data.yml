@@ -11,7 +11,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: market-data
+  group: repository-data-writer
   cancel-in-progress: false
 
 jobs:
