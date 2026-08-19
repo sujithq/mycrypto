@@ -3,20 +3,35 @@ export function isValidPortfolio(portfolio, supportedIds, target = 500) {
   const ids = portfolio.map(({ id }) => id);
   if (new Set(ids).size !== ids.length || ids.some((id) => !supportedIds.has(id))) return false;
   const amounts = portfolio.map(({ amount }) => Number(amount));
+  const dates = portfolio.map(({ buyDate }) => buyDate).filter(Boolean);
   return amounts.every((amount) => Number.isFinite(amount) && amount > 0)
+    && dates.every((date) => /^\d{4}-\d{2}-\d{2}$/.test(date) && !Number.isNaN(Date.parse(`${date}T00:00:00Z`)))
     && Math.abs(amounts.reduce((sum, amount) => sum + amount, 0) - target) < 0.01;
 }
 
 export function getBaselinePrices(portfolio, history) {
   return Object.fromEntries(portfolio.map(({ id }) => {
-    const first = history.find((entry) => Number.isFinite(entry.prices?.[id]));
+    const buyDate = portfolio.find((asset) => asset.id === id)?.buyDate;
+    const first = history.find((entry) =>
+      (!buyDate || entry.date >= buyDate) && Number.isFinite(entry.prices?.[id]));
     return [id, first?.prices[id] ?? null];
   }));
 }
 
-export function calculateSeries(portfolio, history) {
+export function filterHistoryByTimeframe(history, timeframeDays) {
+  const days = Number(timeframeDays);
+  if (!Number.isFinite(days) || days <= 0 || history.length === 0) return history;
+  const end = history.at(-1)?.date;
+  if (!end) return history;
+  const start = new Date(`${end}T00:00:00Z`);
+  start.setUTCDate(start.getUTCDate() - Math.floor(days));
+  const startDate = start.toISOString().slice(0, 10);
+  return history.filter((entry) => entry.date >= startDate);
+}
+
+export function calculateSeries(portfolio, history, timeframeDays) {
   const baseline = getBaselinePrices(portfolio, history);
-  return history.flatMap((entry) => {
+  return filterHistoryByTimeframe(history, timeframeDays).flatMap((entry) => {
     const values = portfolio.map(({ id, amount }) => {
       const startPrice = baseline[id];
       const price = entry.prices?.[id];
@@ -45,8 +60,8 @@ export function calculateHoldings(portfolio, history, assets) {
   });
 }
 
-export function createAnalysisReport(history, portfolio, generatedAt = new Date().toISOString()) {
-  const recent = history.slice(-8);
+export function createAnalysisReport(history, portfolio, generatedAt = new Date().toISOString(), timeframeDays = 7) {
+  const recent = filterHistoryByTimeframe(history, timeframeDays);
   if (recent.length < 2) {
     return {
       generatedAt,

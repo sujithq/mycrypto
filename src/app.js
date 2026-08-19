@@ -37,7 +37,12 @@ function loadSavedPortfolio() {
     if (isValidPortfolio(saved, supportedIds, config.totalInvestment)) {
       return saved.map((item) => {
         const asset = config.supportedAssets.find(({ id }) => id === item.id);
-        return { ...asset, amount: Number(item.amount), thesis: item.thesis ?? 'Custom selection from the tracked asset universe.' };
+        return {
+          ...asset,
+          amount: Number(item.amount),
+          buyDate: item.buyDate,
+          thesis: item.thesis ?? 'Custom selection from the tracked asset universe.',
+        };
       });
     }
   } catch {
@@ -203,11 +208,11 @@ function drawChart() {
 }
 
 function render() {
-  chartSeries = calculateSeries(portfolio, market.history);
+  chartSeries = calculateSeries(portfolio, market.history, config.timeframeDays);
   const holdings = calculateHoldings(portfolio, market.history, market.assets);
   const isDefaultPortfolio = portfolio.every((item, index) =>
     item.id === config.defaultPortfolio[index]?.id && item.amount === config.defaultPortfolio[index]?.amount);
-  report = isDefaultPortfolio ? automatedReport : createAnalysisReport(market.history, portfolio);
+  report = isDefaultPortfolio ? automatedReport : createAnalysisReport(market.history, portfolio, new Date().toISOString(), config.timeframeDays);
   renderMetrics(holdings, chartSeries);
   renderHoldings(holdings);
   renderTheses();
@@ -242,7 +247,12 @@ function renderForm() {
     input.value = String(item.amount);
     input.setAttribute('aria-label', `${item.symbol} allocation in euro`);
     amountWrap.append(input);
-    row.append(label, select, amountWrap);
+    const dateInput = document.createElement('input');
+    dateInput.name = 'buyDate';
+    dateInput.type = 'date';
+    dateInput.value = item.buyDate ?? '';
+    dateInput.setAttribute('aria-label', `${item.symbol} buy date`);
+    row.append(label, select, amountWrap, dateInput);
     fields.append(row);
   });
   updateAllocationTotal();
@@ -259,10 +269,16 @@ function updateAllocationTotal() {
 function saveForm() {
   const ids = [...document.querySelectorAll('select[name="asset"]')].map(({ value }) => value);
   const amounts = [...document.querySelectorAll('input[name="amount"]')].map(({ value }) => Number(value));
+  const buyDates = [...document.querySelectorAll('input[name="buyDate"]')].map(({ value }) => value);
   const next = ids.map((id, index) => {
     const selected = config.supportedAssets.find((asset) => asset.id === id);
     const existing = portfolio.find((asset) => asset.id === id);
-    return { ...selected, amount: amounts[index], thesis: existing?.thesis ?? 'Custom selection from the tracked asset universe.' };
+    return {
+      ...selected,
+      amount: amounts[index],
+      buyDate: buyDates[index] || undefined,
+      thesis: existing?.thesis ?? 'Custom selection from the tracked asset universe.',
+    };
   });
   if (!isValidPortfolio(next, new Set(config.supportedAssets.map(({ id }) => id)), config.totalInvestment)) {
     $('#form-error').textContent = new Set(ids).size !== ids.length
