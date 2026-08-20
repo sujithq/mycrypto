@@ -20,6 +20,12 @@ import {
   mergeHistoricalPrices,
   updateHistory,
 } from '../scripts/update-market-data.mjs';
+import { loadProfiles } from '../scripts/load-profiles.mjs';
+import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
+
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 const portfolio = Array.from({ length: 10 }, (_, index) => ({
   id: `asset-${index}`,
@@ -38,6 +44,13 @@ test('selects every supported asset once for market updates', () => {
     supportedAssets: [...portfolio, portfolio[0], { id: 'supported-only' }],
     defaultPortfolio: portfolio,
   }), [...supportedIds, 'supported-only']);
+});
+
+test('loads and validates file-based profiles', async () => {
+  const config = JSON.parse(await readFile(path.join(root, 'data', 'portfolio.json'), 'utf8'));
+  const profiles = await loadProfiles(root, config);
+  assert.equal(profiles.some(({ id }) => id === config.defaultProfileId), true);
+  assert.equal(profiles.every(({ id }) => /^[a-z0-9-]+$/.test(id)), true);
 });
 
 test('adds the first market snapshot to empty history', () => {

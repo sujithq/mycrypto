@@ -61,7 +61,7 @@ export function parseRealPortfolioJson(raw, supportedAssets) {
   const parsed = JSON.parse(raw);
   const items = Array.isArray(parsed) ? parsed : parsed?.profile?.portfolio;
   if (!Array.isArray(items) || items.length === 0) {
-    throw new Error('Paste a JSON array of holdings or generated workflow JSON.');
+    throw new Error('Paste a JSON array of holdings or generated profile JSON.');
   }
   return items.map((item) => {
     const key = String(item.id ?? item.symbol ?? '').toLowerCase();

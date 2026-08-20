@@ -36,14 +36,14 @@ Research and identifier references:
 
 ## How it works
 
-- `data/portfolio.json` defines the research portfolio, configurable asset universe, optional buy dates, and trailing chart/report timeframe.
+- `data/portfolio.json` defines the research portfolio, configurable asset universe, and trailing chart/report timeframe.
+- Each JSON file in `profiles/` defines one read-only selectable profile. The build validates the files and publishes their index.
 - Managed profiles can be simulations or real portfolios. Simulations use monthly or per-purchase baselines; real portfolios use manually entered quantities and actual cost values.
 - `.github/workflows/update-market-data.yml` runs at 23:55 UTC, fetches the configured portfolio's EUR quotes from CoinGecko in one request, retains up to 366 closes, generates the trailing report, commits the data, and deploys the refreshed site.
 - Each update adds or replaces that day’s UTC snapshot, so history accumulates from scheduled or local runs without separate per-asset requests.
 - Browser profiles are validated, can include actual buy dates, and are stored only in `localStorage`.
-- The management page can create, rename, edit, and delete browser-local simulations. It also creates or updates managed simulations and real portfolios while preserving the other profiles.
-- `manage.html` is the shared management page for local portfolio selection and preparing JSON for the **Manage portfolio defaults** workflow. Real holdings can be entered row by row or pasted as JSON using an asset ID or symbol, quantity, cost, and optional buy date. Assets may appear more than once when their buy dates differ. TARS AI (TAI) is included in the supported asset universe.
-- `.github/workflows/manage-portfolio.yml` validates and commits managed defaults. It gates execution through GitHub permissions/environment protection and checks that `PORTFOLIO_MANAGEMENT_SECRET` is configured without requesting, printing, or passing the secret value as workflow input.
+- The management page can create, rename, edit, and delete browser-local simulations. It can also compose JSON for a file-based simulation or real portfolio without changing published profiles.
+- `manage.html` generates complete profile-file JSON. Real holdings can be entered row by row or pasted as JSON using an asset ID or symbol, quantity, cost, and optional buy date. Assets may appear more than once when their buy dates differ. TARS AI (TAI) is included in the supported asset universe.
 - `.github/workflows/deploy-pages.yml` validates and deploys every push to `main`.
 
 Crypto markets never close. “Daily close” in this project means the automated 23:55 UTC snapshot.
@@ -72,6 +72,9 @@ history, and managed-default commands.
 
 Workflow dependencies are pinned to immutable commit SHAs. The application has no runtime package dependencies and sends no visitor data to third parties.
 
-## Management setup
+## Add a published profile
 
-Create a GitHub environment named `portfolio-management`, restrict who can run or approve it, and add the existing `PORTFOLIO_MANAGEMENT_SECRET` secret there or at repository scope. The management workflow only verifies that the secret exists; it never exposes the value to the page, workflow inputs, logs, or committed files.
+Create `profiles/<id>.json` manually, or use `manage.html` to compose and copy
+the JSON. The filename must match the profile's lowercase `id`. Commit and push
+the file; the Pages build validates it and makes it available in the dashboard's
+profile selector. Published profile files are read-only in the application.

@@ -203,7 +203,6 @@ function persistLocalProfiles() {
 }
 
 function bindEvents() {
-  $('#timeframe-days').value = String(config.timeframeDays ?? 30);
   const supportedIds = new Set(config.supportedAssets.map(({ id }) => id));
   localProfiles = loadLocalProfiles();
   if (localProfiles.length === 0) newLocalProfile();
@@ -214,7 +213,7 @@ function bindEvents() {
   }
   const managedSelector = $('#managed-profile-selector');
   managedSelector.replaceChildren(
-    ...config.profiles.map((profile) => profileOption(profile)),
+    ...config.profiles.map((profile) => profileOption(profile, ' · read only')),
     profileOption({ id: '__new__', name: 'Create new profile' }),
   );
   loadManagedProfile(config.defaultProfileId);
@@ -317,7 +316,6 @@ function bindEvents() {
   });
   $('#management-form').addEventListener('submit', (event) => {
     event.preventDefault();
-    const timeframeDays = Number($('#timeframe-days').value);
     const source = activeManagedId
       ? resolveProfilePortfolio(managedProfile(activeManagedId), config.defaultPortfolio)
       : config.defaultPortfolio;
@@ -339,10 +337,6 @@ function bindEvents() {
       config.defaultPortfolio,
       config.totalInvestment,
     );
-    if (!Number.isInteger(timeframeDays) || timeframeDays < 1 || timeframeDays > 366) {
-      $('#management-error').textContent = 'Use a timeframe between 1 and 366 days.';
-      return;
-    }
     if (!/^[a-z0-9][a-z0-9-]{0,39}$/.test(profileId) || !profileName) {
       $('#management-error').textContent = 'Use a lowercase profile ID and enter a profile name.';
       return;
@@ -354,16 +348,7 @@ function bindEvents() {
       return;
     }
     $('#management-error').textContent = '';
-    $('#workflow-json').value = JSON.stringify({
-      timeframeDays,
-      profile: {
-        id: profileId,
-        name: profileName,
-        type: profileType,
-        ...(profileBuyDate ? { buyDate: profileBuyDate } : {}),
-        portfolio,
-      },
-    }, null, 2);
+    $('#workflow-json').value = JSON.stringify(candidate, null, 2);
   });
 }
 
@@ -383,9 +368,17 @@ function loadLocalProfiles() {
 
 async function init() {
   try {
-    const response = await fetch('./data/portfolio.json', { cache: 'no-store' });
-    if (!response.ok) throw new Error('Portfolio configuration could not be loaded.');
-    config = await response.json();
+    const responses = await Promise.all([
+      fetch('./data/portfolio.json', { cache: 'no-store' }),
+      fetch('./profiles/index.json', { cache: 'no-store' }),
+    ]);
+    if (responses.some((response) => !response.ok)) {
+      throw new Error('Portfolio configuration could not be loaded.');
+    }
+    const [portfolioConfig, fileProfiles] = await Promise.all(
+      responses.map((response) => response.json()),
+    );
+    config = { ...portfolioConfig, profiles: fileProfiles };
     bindEvents();
   } catch (error) {
     console.error(error);

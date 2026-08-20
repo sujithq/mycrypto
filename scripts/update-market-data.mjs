@@ -2,6 +2,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { createAnalysisReport, resolveProfilePortfolio } from '../src/model.js';
+import { loadProfiles } from './load-profiles.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const portfolioPath = path.join(root, 'data', 'portfolio.json');
@@ -118,7 +119,8 @@ async function main() {
   console.log('Loading portfolio and existing market data…');
   const portfolioConfig = JSON.parse(await readFile(portfolioPath, 'utf8'));
   const market = JSON.parse(await readFile(marketPath, 'utf8'));
-  const configuredProfiles = (portfolioConfig.profiles ?? []).map((profile) =>
+  const profiles = await loadProfiles(root, portfolioConfig);
+  const configuredProfiles = profiles.map((profile) =>
     resolveProfilePortfolio(profile, portfolioConfig.defaultPortfolio));
   const configuredPortfolios = configuredProfiles.length
     ? configuredProfiles
@@ -171,7 +173,7 @@ async function main() {
   }, null, 2)}\n`);
 
   console.log('Generating and writing the trailing portfolio report…');
-  const defaultProfile = (portfolioConfig.profiles ?? [])
+  const defaultProfile = profiles
     .find(({ id }) => id === portfolioConfig.defaultProfileId);
   const defaultPortfolio = resolveProfilePortfolio(defaultProfile, portfolioConfig.defaultPortfolio);
   const report = createAnalysisReport(history, defaultPortfolio, now, portfolioConfig.timeframeDays);

@@ -56,8 +56,8 @@ function normalizePortfolio(saved) {
   });
 }
 
-function loadProfiles() {
-  const managed = (config.profiles ?? []).map((profile) => ({
+function loadProfiles(fileProfiles) {
+  const managed = fileProfiles.map((profile) => ({
     ...profile,
     source: 'managed',
     portfolio: resolveProfilePortfolio(profile, config.defaultPortfolio),
@@ -315,10 +315,11 @@ async function init() {
       fetch('./data/portfolio.json'),
       fetch('./data/market.json', { cache: 'no-store' }),
       fetch('./data/weekly-report.json', { cache: 'no-store' }),
+      fetch('./profiles/index.json', { cache: 'no-store' }),
     ]);
     if (responses.some((response) => !response.ok)) throw new Error('Dashboard data could not be loaded.');
-    [config, market, automatedReport] = await Promise.all(responses.map((response) => response.json()));
-    profiles = loadProfiles();
+    [config, market, automatedReport, profiles] = await Promise.all(responses.map((response) => response.json()));
+    profiles = loadProfiles(profiles);
     const selector = $('#profile-selector');
     selector.replaceChildren(...profiles.map((profile) => {
       const option = element('option', '', `${profile.name}${profile.source === 'local' ? ' · local' : ''}`);
