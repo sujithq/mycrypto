@@ -53,6 +53,14 @@ test('loads and validates file-based profiles', async () => {
   assert.equal(profiles.every(({ id }) => /^[a-z0-9-]+$/.test(id)), true);
 });
 
+test('provides a thesis for every supported asset', async () => {
+  const config = JSON.parse(await readFile(path.join(root, 'data', 'portfolio.json'), 'utf8'));
+  assert.equal(config.supportedAssets.every(({ thesis }) => typeof thesis === 'string' && thesis.trim()), true);
+  config.defaultPortfolio.forEach(({ id, thesis }) => {
+    assert.equal(config.supportedAssets.find((asset) => asset.id === id)?.thesis, thesis);
+  });
+});
+
 test('adds the first market snapshot to empty history', () => {
   const snapshot = { date: '2026-08-20', prices: prices(12) };
   assert.deepEqual(updateHistory([], snapshot), [snapshot]);

@@ -181,7 +181,7 @@ function renderTheses() {
     card.append(
       element('span', '', `${String(index + 1).padStart(2, '0')} / ${item.symbol}`),
       element('h3', '', item.name),
-      element('p', '', 'Supported for custom portfolio allocations and included in market data updates.'),
+      element('p', '', item.thesis ?? 'Supported for custom portfolio allocations and included in market data updates.'),
     );
     return card;
   }));
