@@ -1,6 +1,6 @@
 # Crypto Allocation Desk
 
-A no-backend GitHub Pages dashboard for configurable crypto portfolio profiles. It tracks daily EUR closes, calculates each holding’s evolution, publishes a trailing status report for every profile, and lets visitors manage their own allocation locally.
+A no-backend GitHub Pages dashboard for configurable crypto portfolio profiles. It tracks daily EUR closes, calculates each holding’s evolution, publishes a trailing status report for every profile, and includes a local-only owner tool for composing profile updates.
 
 > **Educational use only.** Crypto assets are highly volatile and can lose their entire value. This project does not provide financial advice.
 
@@ -42,9 +42,9 @@ Research and identifier references:
 - `.github/workflows/update-market-data.yml` runs hourly, fetches supported EUR quotes from CoinGecko, generates a trailing report for every published profile, commits changed data, and deploys the refreshed site.
 - Each update adds or replaces that day’s UTC snapshot. Stored history is retained beyond one year so older cached prices remain available even after they leave CoinGecko's public 365-day retrieval window. The chart and report still use the configured 366-day display window.
 - The dashboard can opt into browser-only live prices every 1, 5, 15, 30, or 60 minutes. Selecting an asset's `1D` range lazily loads and caches its rolling 24-hour CoinGecko series; while live prices are enabled, the open intraday chart follows the selected refresh interval. Settings, quotes, and per-asset intraday caches stay in `localStorage`; they do not change repository data or trigger a deployment.
-- Browser profiles are validated, can include actual buy dates, and are stored only in `localStorage`.
-- The management page can create, rename, edit, and delete browser-local simulations. It can also compose JSON for a file-based simulation or real portfolio without changing published profiles.
-- `manage.html` generates complete profile-file JSON. Real holdings can be entered row by row or pasted as JSON using an asset ID or symbol, `quantity`, `investedAmount`, and an optional `buyDate`. Legacy `amount`, `cost`, and `actualCost` fields are accepted on import. Assets may appear more than once when their buy dates differ. TARS AI (TAI) is included in the supported asset universe.
+- The local-only management build can create, rename, edit, and delete browser profiles stored in `localStorage`. It can also compose complete JSON for a file-based simulation or real portfolio without changing published profiles.
+- Standard builds omit `manage.html` and `src/manage.js`. Run `npm run build:manage` to include the owner tool locally. Publishing generated JSON still requires repository write access.
+- Real holdings can be entered row by row or pasted using an asset ID or symbol, `quantity`, `investedAmount`, and an optional `buyDate`. Legacy `amount`, `cost`, and `actualCost` fields are accepted on import. Assets may appear more than once with different buy dates. TARS AI (TAI) is included in the supported asset universe.
 - `.github/workflows/deploy-pages.yml` validates and deploys every push to `main`.
 
 Crypto markets never close. The repository keeps the latest automated quote
@@ -66,6 +66,10 @@ Open <http://localhost:8000>. To fetch live data locally, run
 `npm run update-data`. This uses the same updater as the scheduled workflow;
 see [`docs/local-development.md`](docs/local-development.md) for data refresh,
 history, and managed-default commands.
+
+The standard build matches the public Pages artifact and excludes management.
+To use the owner tool locally, run `npm run build:manage`, start the same static
+server, and open <http://localhost:8000/manage.html>.
 
 ### Calculate an asset quantity
 
@@ -91,11 +95,12 @@ cached. Online fallback results are returned without modifying the market file.
 2. Run **Update market data** once to create the initial history.
 3. Run **Validate and deploy Pages** if the default branch is not named `main`.
 
-Workflow dependencies are pinned to immutable commit SHAs. The application has no runtime package dependencies and sends no visitor data to third parties.
+Workflow dependencies are pinned to immutable commit SHAs. The application has no runtime package dependencies. Live-price and intraday requests contact CoinGecko from the browser.
 
 ## Add a published profile
 
-Create `profiles/<id>.json` manually, or use `manage.html` to compose and copy
-the JSON. The filename must match the profile's lowercase `id`. Commit and push
-the file; the Pages build validates it and makes it available in the dashboard's
-profile selector. Published profile files are read-only in the application.
+Create `profiles/<id>.json` manually, or run `npm run build:manage` and use the
+local `manage.html` tool to compose and copy the JSON. The filename must match
+the profile's lowercase `id`. Commit and push the file; the Pages build validates
+it and makes it available in the dashboard's profile selector. Published profile
+files are read-only in the application.

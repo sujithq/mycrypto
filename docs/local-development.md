@@ -14,6 +14,21 @@ python3 -m http.server 8000 --directory dist
 Open <http://localhost:8000> in a browser. The static server is needed because
 the dashboard loads its JSON files with `fetch()`.
 
+The standard build matches the production artifact and excludes the owner
+management tool.
+
+## Start the owner management tool
+
+```bash
+npm run build:manage
+python3 -m http.server 8000 --directory dist
+```
+
+Open <http://localhost:8000/manage.html>. This explicit build includes
+`manage.html` and `src/manage.js` for local use. It is an inclusion switch, not
+an authentication layer. The GitHub Pages workflows always run the standard
+build, which omits both files.
+
 ## Refresh market data locally
 
 Run the same data updater used by the scheduled workflow:
@@ -67,8 +82,8 @@ keeps the last good browser cache and retries after the selected interval.
 
 ## Add a published profile
 
-The combined management page at `manage.html` lets you edit a local browser
-portfolio and generate JSON for a published profile. The local portfolio is
+Run `npm run build:manage` to use `manage.html` for editing a browser-local
+portfolio and generating JSON for a published profile. The local portfolio is
 saved only in browser storage. To publish a profile:
 
 1. Create the JSON manually or click **Generate profile JSON** in `manage.html`.
@@ -92,7 +107,8 @@ entered manually or pasted into the management page as a JSON array containing
 `id` or `symbol`, `quantity`, `investedAmount`, and an optional `buyDate`.
 Legacy `amount`, `cost`, and `actualCost` fields are accepted when importing.
 Switching profiles does not modify historical prices. Browser-local profiles can
-be created, edited, and deleted on `manage.html`.
+be created, edited, and deleted with the local-only management build.
 
 The management page generates one complete profile object. It does not write or
-modify any published profile.
+modify any published profile. Publishing requires saving the generated JSON in
+the repository, committing it, and pushing with an authorized Git identity.

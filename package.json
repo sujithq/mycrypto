@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "build": "node scripts/build.mjs",
+    "build:manage": "node scripts/build.mjs --include-management",
     "test": "node --test",
     "market-quantity": "node .github/skills/market-quantity/scripts/calculate-market-quantity.mjs",
     "update-data": "node scripts/update-market-data.mjs",
