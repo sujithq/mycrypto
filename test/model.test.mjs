@@ -9,7 +9,7 @@ import {
   isValidPortfolio,
   resolveProfilePortfolio,
 } from '../src/model.js';
-import { combineHistoricalPrices, getPortfolioAssetIds, updateHistory } from '../scripts/update-market-data.mjs';
+import { combineHistoricalPrices, getSupportedAssetIds, updateHistory } from '../scripts/update-market-data.mjs';
 
 const portfolio = Array.from({ length: 10 }, (_, index) => ({
   id: `asset-${index}`,
@@ -23,8 +23,11 @@ const history = [
   { date: '2026-08-18', prices: prices(11) },
 ];
 
-test('selects each configured portfolio asset once for market updates', () => {
-  assert.deepEqual(getPortfolioAssetIds([...portfolio, portfolio[0]]), [...supportedIds]);
+test('selects every supported asset once for market updates', () => {
+  assert.deepEqual(getSupportedAssetIds({
+    supportedAssets: [...portfolio, portfolio[0], { id: 'supported-only' }],
+    defaultPortfolio: portfolio,
+  }), [...supportedIds, 'supported-only']);
 });
 
 test('adds the first market snapshot to empty history', () => {

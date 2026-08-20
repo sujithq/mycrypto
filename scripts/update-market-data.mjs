@@ -46,8 +46,8 @@ function utcDate(timestamp = Date.now()) {
   return new Date(timestamp).toISOString().slice(0, 10);
 }
 
-export function getPortfolioAssetIds(portfolio) {
-  return [...new Set(portfolio.map(({ id }) => id))];
+export function getSupportedAssetIds(portfolioConfig) {
+  return [...new Set((portfolioConfig.supportedAssets ?? []).map(({ id }) => id))];
 }
 
 export function updateHistory(history, snapshot) {
@@ -102,8 +102,8 @@ async function main() {
   const configuredPortfolios = configuredProfiles.length
     ? configuredProfiles
     : [portfolioConfig.defaultPortfolio];
-  const ids = getPortfolioAssetIds(configuredPortfolios.flat());
-  if (ids.length === 0) throw new Error('The configured portfolio contains no assets.');
+  const ids = getSupportedAssetIds(portfolioConfig);
+  if (ids.length === 0) throw new Error('The configuration contains no supported assets.');
   const currency = portfolioConfig.currency;
   const url = `${API}/coins/markets?vs_currency=${currency}&ids=${ids.map(encodeURIComponent).join(',')}&price_change_percentage=24h`;
   console.log(`Fetching current quotes for ${ids.length} assets…`);
