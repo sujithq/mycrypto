@@ -100,9 +100,15 @@ function loadManagedProfile(id) {
   $('#managed-profile-selector').value = profile.id;
   $('#managed-profile-id').value = profile.id;
   $('#managed-profile-name').value = profile.name;
+  $('#managed-profile-buy-date').value = profile.buyDate ?? '';
+  const portfolio = profile.portfolio ?? config.defaultPortfolio.map((item) => {
+    if (!profile.buyDate) return item;
+    const { buyDate, ...rest } = item;
+    return rest;
+  });
   renderFields(
     $('#management-fields'),
-    resolveProfilePortfolio(profile, config.defaultPortfolio),
+    portfolio,
     '0.01',
     'managed-asset',
   );
@@ -169,6 +175,7 @@ function bindEvents() {
       activeManagedId = null;
       $('#managed-profile-id').value = '';
       $('#managed-profile-name').value = '';
+      $('#managed-profile-buy-date').value = '';
       renderFields($('#management-fields'), config.defaultPortfolio, '0.01', 'managed-asset');
       updateTotal('#management-fields', '#management-total');
       return;
@@ -233,6 +240,7 @@ function bindEvents() {
     const portfolio = buildPortfolio('#management-fields', source);
     const profileId = $('#managed-profile-id').value.trim();
     const profileName = $('#managed-profile-name').value.trim();
+    const profileBuyDate = $('#managed-profile-buy-date').value;
     const validPortfolio = isValidPortfolio(portfolio, new Set(config.supportedAssets.map(({ id }) => id)), config.totalInvestment);
     if (!Number.isInteger(timeframeDays) || timeframeDays < 1 || timeframeDays > 366) {
       $('#management-error').textContent = 'Use a timeframe between 1 and 366 days.';
@@ -249,7 +257,12 @@ function bindEvents() {
     $('#management-error').textContent = '';
     $('#workflow-json').value = JSON.stringify({
       timeframeDays,
-      profile: { id: profileId, name: profileName, portfolio },
+      profile: {
+        id: profileId,
+        name: profileName,
+        ...(profileBuyDate ? { buyDate: profileBuyDate } : {}),
+        portfolio,
+      },
     }, null, 2);
   });
 }

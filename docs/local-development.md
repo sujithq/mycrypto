@@ -55,9 +55,12 @@ history.
 ## Portfolio profiles
 
 The dashboard includes managed monthly profiles beginning with January 2026.
-Each profile applies its own buy date or portfolio to the shared market history,
-so switching profiles does not modify historical prices. Browser-local profiles
-can be created, edited, and deleted on `manage.html`.
+Each profile can define its own assets, allocations, and per-asset buy dates.
+An optional profile buy date acts as the default for custom portfolio items
+without an individual buy date. Profiles without custom portfolio content keep
+the original behavior: their profile buy date applies to every default asset.
+Switching profiles does not modify historical prices. Browser-local profiles can
+be created, edited, and deleted on `manage.html`.
 
 The management page generates the complete managed workflow payload. Submitting
 it creates or updates one profile while preserving every other profile.

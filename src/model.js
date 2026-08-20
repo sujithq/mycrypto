@@ -19,7 +19,9 @@ export function resolveProfilePortfolio(profile, defaultPortfolio) {
   const source = profile?.portfolio ?? defaultPortfolio;
   return source.map((item) => ({
     ...item,
-    ...(profile?.buyDate ? { buyDate: profile.buyDate } : {}),
+    ...(profile?.buyDate && (!profile.portfolio || !item.buyDate)
+      ? { buyDate: profile.buyDate }
+      : {}),
   }));
 }
 

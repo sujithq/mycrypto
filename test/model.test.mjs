@@ -65,6 +65,21 @@ test('validates profiles with custom portfolios', () => {
   assert.equal(isValidProfile({ ...profile, portfolio: portfolio.slice(1) }, supportedIds, portfolio), false);
 });
 
+test('uses a profile buy date as the fallback for custom portfolio items', () => {
+  const customPortfolio = portfolio.map((item, index) =>
+    index === 0 ? { ...item, buyDate: '2026-02-01' } : item);
+  const profile = {
+    id: 'custom-dates',
+    name: 'Custom dates',
+    buyDate: '2026-03-01',
+    portfolio: customPortfolio,
+  };
+  const resolved = resolveProfilePortfolio(profile, portfolio);
+  assert.equal(resolved[0].buyDate, '2026-02-01');
+  assert.equal(resolved[1].buyDate, '2026-03-01');
+  assert.equal(isValidProfile(profile, supportedIds, portfolio), true);
+});
+
 test('calculates portfolio evolution from each asset baseline', () => {
   assert.deepEqual(calculateSeries(portfolio, history), [
     { date: '2026-08-11', value: 500 },

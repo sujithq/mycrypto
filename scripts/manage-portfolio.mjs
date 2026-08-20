@@ -46,6 +46,7 @@ if (!update.profile || typeof update.profile !== 'object') {
 const profile = {
   id: update.profile.id,
   name: update.profile.name,
+  ...(update.profile.buyDate ? { buyDate: update.profile.buyDate } : {}),
   portfolio: normalizePortfolio(update.profile.portfolio, config.supportedAssets),
 };
 console.log('Validating managed portfolio profile…');
