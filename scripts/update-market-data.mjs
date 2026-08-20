@@ -14,6 +14,7 @@ const sleep = (milliseconds) => new Promise((resolve) => setTimeout(resolve, mil
 async function fetchJson(url, attempts = 3) {
   let lastError;
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    console.log(`Request attempt ${attempt} of ${attempts}…`);
     try {
       const response = await fetch(url, {
         headers: { accept: 'application/json', 'user-agent': 'mycrypto-github-pages/1.0' },
@@ -25,11 +26,17 @@ async function fetchJson(url, attempts = 3) {
       const retryAfterHeader = response.headers.get('retry-after');
       const retryAfter = retryAfterHeader === null ? Number.NaN : Number(retryAfterHeader);
       if (attempt < attempts) {
-        await sleep(Number.isFinite(retryAfter) ? retryAfter * 1_000 : attempt * 5_000);
+        const delay = Number.isFinite(retryAfter) ? retryAfter * 1_000 : attempt * 5_000;
+        console.warn(`Request failed; retrying in ${delay / 1_000} seconds…`);
+        await sleep(delay);
       }
     } catch (error) {
       lastError = error;
-      if (attempt < attempts) await sleep(attempt * 5_000);
+      if (attempt < attempts) {
+        const delay = attempt * 5_000;
+        console.warn(`Request failed; retrying in ${delay / 1_000} seconds…`);
+        await sleep(delay);
+      }
     }
   }
   throw lastError ?? new Error('CoinGecko request failed.');
@@ -42,6 +49,7 @@ function utcDate(timestamp = Date.now()) {
 async function bootstrapHistory(ids, currency) {
   const byDate = new Map();
   for (const [index, id] of ids.entries()) {
+    console.log(`Fetching history for ${id} (${index + 1}/${ids.length})…`);
     const url = `${API}/coins/${encodeURIComponent(id)}/market_chart?vs_currency=${currency}&days=30&interval=daily`;
     const chart = await fetchJson(url);
     for (const [timestamp, price] of chart.prices ?? []) {
@@ -57,17 +65,20 @@ async function bootstrapHistory(ids, currency) {
 }
 
 async function main() {
+  console.log('Loading portfolio and existing market data…');
   const portfolioConfig = JSON.parse(await readFile(portfolioPath, 'utf8'));
   const market = JSON.parse(await readFile(marketPath, 'utf8'));
   const ids = portfolioConfig.supportedAssets.map(({ id }) => id);
   const currency = portfolioConfig.currency;
   const url = `${API}/coins/markets?vs_currency=${currency}&ids=${ids.map(encodeURIComponent).join(',')}&price_change_percentage=24h`;
+  console.log(`Fetching current quotes for ${ids.length} assets…`);
   const quotes = await fetchJson(url);
 
   const quoteIds = new Set(Array.isArray(quotes) ? quotes.map(({ id }) => id) : []);
   if (quoteIds.size !== ids.length || ids.some((id) => !quoteIds.has(id))) {
     throw new Error('CoinGecko returned incomplete market quotes.');
   }
+  console.log(`Received complete quotes for ${quotes.length} assets.`);
 
   const now = new Date().toISOString();
   const date = utcDate();
@@ -97,6 +108,7 @@ async function main() {
   else history.push(snapshot);
   history = history.sort((a, b) => a.date.localeCompare(b.date)).slice(-366);
 
+  console.log('Writing current market data…');
   await writeFile(marketPath, `${JSON.stringify({
     updatedAt: now,
     currency,
@@ -105,6 +117,7 @@ async function main() {
     history,
   }, null, 2)}\n`);
 
+  console.log('Generating and writing the trailing portfolio report…');
   const report = createAnalysisReport(history, portfolioConfig.defaultPortfolio, now, portfolioConfig.timeframeDays);
   await writeFile(reportPath, `${JSON.stringify(report, null, 2)}\n`);
   console.log(`Stored ${quotes.length} quotes and ${history.length} daily snapshots.`);

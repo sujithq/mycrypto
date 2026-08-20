@@ -31,6 +31,7 @@ function normalizePortfolio(items, supportedAssets) {
   });
 }
 
+console.log('Loading portfolio update and current data…');
 const config = JSON.parse(await readFile(portfolioPath, 'utf8'));
 const update = parseUpdate();
 const timeframeDays = Number(update.timeframeDays);
@@ -40,6 +41,7 @@ if (!Number.isInteger(timeframeDays) || timeframeDays < 1 || timeframeDays > 366
 
 const defaultPortfolio = normalizePortfolio(update.defaultPortfolio, config.supportedAssets);
 const supportedIds = new Set(config.supportedAssets.map(({ id }) => id));
+console.log('Validating managed portfolio defaults…');
 if (!isValidPortfolio(defaultPortfolio, supportedIds, config.totalInvestment)) {
   throw new Error(`Default portfolio must contain ten unique positive allocations totalling ${config.totalInvestment}.`);
 }
@@ -51,7 +53,9 @@ const next = {
 };
 
 const market = JSON.parse(await readFile(marketPath, 'utf8'));
+console.log('Generating the trailing portfolio report…');
 const report = createAnalysisReport(market.history ?? [], defaultPortfolio, new Date().toISOString(), timeframeDays);
+console.log('Writing portfolio defaults and report…');
 await writeFile(portfolioPath, `${JSON.stringify(next, null, 2)}\n`);
 await writeFile(reportPath, `${JSON.stringify(report, null, 2)}\n`);
 console.log('Updated managed portfolio defaults.');
