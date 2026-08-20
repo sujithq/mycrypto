@@ -1,7 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import { createAnalysisReport } from '../src/model.js';
+import { createAnalysisReport, resolveProfilePortfolio } from '../src/model.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const portfolioPath = path.join(root, 'data', 'portfolio.json');
@@ -97,7 +97,12 @@ async function main() {
   console.log('Loading portfolio and existing market data…');
   const portfolioConfig = JSON.parse(await readFile(portfolioPath, 'utf8'));
   const market = JSON.parse(await readFile(marketPath, 'utf8'));
-  const ids = getPortfolioAssetIds(portfolioConfig.defaultPortfolio);
+  const configuredProfiles = (portfolioConfig.profiles ?? []).map((profile) =>
+    resolveProfilePortfolio(profile, portfolioConfig.defaultPortfolio));
+  const configuredPortfolios = configuredProfiles.length
+    ? configuredProfiles
+    : [portfolioConfig.defaultPortfolio];
+  const ids = getPortfolioAssetIds(configuredPortfolios.flat());
   if (ids.length === 0) throw new Error('The configured portfolio contains no assets.');
   const currency = portfolioConfig.currency;
   const url = `${API}/coins/markets?vs_currency=${currency}&ids=${ids.map(encodeURIComponent).join(',')}&price_change_percentage=24h`;
@@ -127,7 +132,7 @@ async function main() {
     date,
     prices: Object.fromEntries(quotes.map((quote) => [quote.id, quote.current_price])),
   };
-  const configuredStart = portfolioConfig.defaultPortfolio
+  const configuredStart = configuredPortfolios.flat()
     .map(({ buyDate }) => buyDate)
     .filter(Boolean)
     .sort()[0];
@@ -145,7 +150,10 @@ async function main() {
   }, null, 2)}\n`);
 
   console.log('Generating and writing the trailing portfolio report…');
-  const report = createAnalysisReport(history, portfolioConfig.defaultPortfolio, now, portfolioConfig.timeframeDays);
+  const defaultProfile = (portfolioConfig.profiles ?? [])
+    .find(({ id }) => id === portfolioConfig.defaultProfileId);
+  const defaultPortfolio = resolveProfilePortfolio(defaultProfile, portfolioConfig.defaultPortfolio);
+  const report = createAnalysisReport(history, defaultPortfolio, now, portfolioConfig.timeframeDays);
   await writeFile(reportPath, `${JSON.stringify(report, null, 2)}\n`);
   console.log(`Stored ${quotes.length} quotes and ${history.length} daily snapshots.`);
 }

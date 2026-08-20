@@ -2,6 +2,17 @@
   "currency": "eur",
   "totalInvestment": 500,
   "timeframeDays": 366,
+  "defaultProfileId": "2026-01",
+  "profiles": [
+    { "id": "2026-01", "name": "January 2026", "buyDate": "2026-01-01" },
+    { "id": "2026-02", "name": "February 2026", "buyDate": "2026-02-01" },
+    { "id": "2026-03", "name": "March 2026", "buyDate": "2026-03-01" },
+    { "id": "2026-04", "name": "April 2026", "buyDate": "2026-04-01" },
+    { "id": "2026-05", "name": "May 2026", "buyDate": "2026-05-01" },
+    { "id": "2026-06", "name": "June 2026", "buyDate": "2026-06-01" },
+    { "id": "2026-07", "name": "July 2026", "buyDate": "2026-07-01" },
+    { "id": "2026-08", "name": "August 2026", "buyDate": "2026-08-01" }
+  ],
   "defaultPortfolio": [
     { "id": "bitcoin", "symbol": "BTC", "name": "Bitcoin", "amount": 60, "buyDate": "2026-01-01", "thesis": "Liquid macro anchor intended to moderate the higher-beta satellite positions." },
     { "id": "ethereum", "symbol": "ETH", "name": "Ethereum", "amount": 115, "buyDate": "2026-01-01", "thesis": "Largest allocation: settlement-layer exposure to DeFi, stablecoins and layer twos." },

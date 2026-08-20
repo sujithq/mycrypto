@@ -1,7 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import { createAnalysisReport, isValidPortfolio } from '../src/model.js';
+import { createAnalysisReport, isValidProfile, resolveProfilePortfolio } from '../src/model.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const portfolioPath = path.join(root, 'data', 'portfolio.json');
@@ -39,21 +39,35 @@ if (!Number.isInteger(timeframeDays) || timeframeDays < 1 || timeframeDays > 366
   throw new Error('timeframeDays must be an integer between 1 and 366.');
 }
 
-const defaultPortfolio = normalizePortfolio(update.defaultPortfolio, config.supportedAssets);
 const supportedIds = new Set(config.supportedAssets.map(({ id }) => id));
-console.log('Validating managed portfolio defaults…');
-if (!isValidPortfolio(defaultPortfolio, supportedIds, config.totalInvestment)) {
-  throw new Error(`Default portfolio must contain ten unique positive allocations totalling ${config.totalInvestment}.`);
+if (!update.profile || typeof update.profile !== 'object') {
+  throw new Error('The update must contain a profile.');
 }
+const profile = {
+  id: update.profile.id,
+  name: update.profile.name,
+  portfolio: normalizePortfolio(update.profile.portfolio, config.supportedAssets),
+};
+console.log('Validating managed portfolio profile…');
+if (!isValidProfile(profile, supportedIds, config.defaultPortfolio, config.totalInvestment)) {
+  throw new Error(`Profile must have a valid ID, name, and ten unique positive allocations totalling ${config.totalInvestment}.`);
+}
+const profiles = [...(config.profiles ?? [])];
+const profileIndex = profiles.findIndex(({ id }) => id === profile.id);
+if (profileIndex >= 0) profiles[profileIndex] = profile;
+else profiles.push(profile);
+profiles.sort((a, b) => a.id.localeCompare(b.id));
 
 const next = {
   ...config,
   timeframeDays,
-  defaultPortfolio,
+  profiles,
 };
 
 const market = JSON.parse(await readFile(marketPath, 'utf8'));
 console.log('Generating the trailing portfolio report…');
+const defaultProfile = profiles.find(({ id }) => id === config.defaultProfileId) ?? profiles[0];
+const defaultPortfolio = resolveProfilePortfolio(defaultProfile, config.defaultPortfolio);
 const report = createAnalysisReport(market.history ?? [], defaultPortfolio, new Date().toISOString(), timeframeDays);
 console.log('Writing portfolio defaults and report…');
 await writeFile(portfolioPath, `${JSON.stringify(next, null, 2)}\n`);

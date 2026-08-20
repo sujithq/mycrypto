@@ -41,13 +41,26 @@
           <p>Choose a local research portfolio. It is saved only in this browser and does not change the managed defaults.</p>
         </div>
         <form id="portfolio-form">
+          <div class="profile-controls">
+            <label>
+              <span>Local profile</span>
+              <select id="local-profile-selector"></select>
+            </label>
+            <label>
+              <span>Profile name</span>
+              <input id="local-profile-name" maxlength="80" required>
+            </label>
+          </div>
           <div id="portfolio-fields" class="portfolio-fields"></div>
           <p class="allocation-total">Allocated <strong id="allocation-total">€500</strong> / €500</p>
           <p class="form-error" id="form-error" role="alert"></p>
           <p class="form-status" id="form-status" role="status"></p>
           <div class="dialog-actions">
-            <button class="button button-quiet" id="reset-button" type="button">Reset to managed defaults</button>
-            <button class="button button-primary" type="submit">Save local portfolio</button>
+            <div>
+              <button class="button button-quiet" id="new-profile-button" type="button">New profile</button>
+              <button class="button button-quiet" id="delete-profile-button" type="button">Delete profile</button>
+            </div>
+            <button class="button button-primary" type="submit">Save profile</button>
           </div>
         </form>
       </section>
@@ -62,6 +75,20 @@
         </div>
 
         <form id="management-form">
+          <div class="profile-controls">
+            <label>
+              <span>Managed profile</span>
+              <select id="managed-profile-selector"></select>
+            </label>
+            <label>
+              <span>Profile ID</span>
+              <input id="managed-profile-id" pattern="[a-z0-9][a-z0-9-]{0,39}" maxlength="40" required>
+            </label>
+            <label>
+              <span>Profile name</span>
+              <input id="managed-profile-name" maxlength="80" required>
+            </label>
+          </div>
           <label class="timeframe-field">
             <span>Timeframe in days</span>
             <input id="timeframe-days" name="timeframeDays" type="number" min="1" max="366" step="1" required>
@@ -77,7 +104,7 @@
         <div class="workflow-output">
           <p class="eyebrow">GITHUB ACTIONS INPUT</p>
           <textarea id="workflow-json" readonly aria-label="Generated portfolio JSON"></textarea>
-          <p>Run <strong>Manage portfolio defaults</strong> in GitHub Actions and paste this JSON. The workflow is gated by GitHub permissions and checks that the repository secret is configured without exposing or requesting its value.</p>
+          <p>Run <strong>Manage portfolio defaults</strong> in GitHub Actions and paste this JSON. It creates or updates the selected profile while preserving the others.</p>
         </div>
       </section>
     </main>

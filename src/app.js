@@ -1,6 +1,14 @@
-import { calculateHoldings, calculateSeries, createAnalysisReport, isValidPortfolio } from './model.js';
+import {
+  calculateHoldings,
+  calculateSeries,
+  createAnalysisReport,
+  isValidPortfolio,
+  resolveProfilePortfolio,
+} from './model.js';
 
-const STORAGE_KEY = 'crypto-allocation-desk.portfolio.v1';
+const LEGACY_STORAGE_KEY = 'crypto-allocation-desk.portfolio.v1';
+const PROFILES_STORAGE_KEY = 'crypto-allocation-desk.profiles.v2';
+const ACTIVE_PROFILE_KEY = 'crypto-allocation-desk.active-profile.v2';
 const $ = (selector) => document.querySelector(selector);
 const euro = new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2 });
 const price = new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 6 });
@@ -11,6 +19,8 @@ let market;
 let report;
 let automatedReport;
 let portfolio;
+let activeProfile;
+let profiles = [];
 let chartSeries = [];
 
 function setTrend(element, value, suffix = '%') {
@@ -30,29 +40,64 @@ function element(tag, className, text) {
   return node;
 }
 
-function loadSavedPortfolio() {
+function normalizePortfolio(saved) {
+  const supportedIds = new Set(config.supportedAssets.map(({ id }) => id));
+  if (!isValidPortfolio(saved, supportedIds, config.totalInvestment)) return null;
+  return saved.map((item) => {
+    const asset = config.supportedAssets.find(({ id }) => id === item.id);
+    return {
+      ...asset,
+      amount: Number(item.amount),
+      buyDate: item.buyDate,
+      thesis: item.thesis ?? 'Custom selection from the tracked asset universe.',
+    };
+  });
+}
+
+function loadProfiles() {
+  const managed = (config.profiles ?? []).map((profile) => ({
+    ...profile,
+    source: 'managed',
+    portfolio: resolveProfilePortfolio(profile, config.defaultPortfolio),
+  }));
   try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    const supportedIds = new Set(config.supportedAssets.map(({ id }) => id));
-    if (isValidPortfolio(saved, supportedIds, config.totalInvestment)) {
-      return saved.map((item) => {
-        const asset = config.supportedAssets.find(({ id }) => id === item.id);
-        return {
-          ...asset,
-          amount: Number(item.amount),
-          buyDate: item.buyDate,
-          thesis: item.thesis ?? 'Custom selection from the tracked asset universe.',
-        };
-      });
+    const local = JSON.parse(localStorage.getItem(PROFILES_STORAGE_KEY));
+    const custom = Array.isArray(local)
+      ? local.flatMap((profile) => {
+        const normalized = normalizePortfolio(profile.portfolio);
+        return normalized && profile.id && profile.name
+          ? [{ ...profile, source: 'local', portfolio: normalized }]
+          : [];
+      })
+      : [];
+    const legacy = normalizePortfolio(JSON.parse(localStorage.getItem(LEGACY_STORAGE_KEY)));
+    if (legacy && !custom.some(({ id }) => id === 'legacy')) {
+      custom.push({ id: 'legacy', name: 'My saved portfolio', source: 'local', portfolio: legacy });
+      localStorage.setItem(PROFILES_STORAGE_KEY, JSON.stringify(custom));
+      localStorage.removeItem(LEGACY_STORAGE_KEY);
     }
+    return [...managed, ...custom];
   } catch {
-    try {
-      localStorage.removeItem(STORAGE_KEY);
-    } catch {
-      // Storage access may be denied; managed defaults remain usable.
-    }
+    return managed;
   }
-  return structuredClone(config.defaultPortfolio);
+}
+
+function selectProfile(id) {
+  activeProfile = profiles.find((profile) => profile.id === id)
+    ?? profiles.find((profile) => profile.id === config.defaultProfileId)
+    ?? profiles[0];
+  portfolio = structuredClone(activeProfile?.portfolio ?? config.defaultPortfolio);
+  try {
+    localStorage.setItem(ACTIVE_PROFILE_KEY, activeProfile.id);
+  } catch {
+    // Storage access may be denied; the selected profile still works for this page.
+  }
+  $('#profile-selector').value = activeProfile.id;
+  const start = portfolio.map(({ buyDate }) => buyDate).filter(Boolean).sort()[0];
+  $('#profile-description').textContent = start
+    ? `${activeProfile.name} · simulation from ${start}`
+    : activeProfile.name;
+  render();
 }
 
 function renderMetrics(holdings, series) {
@@ -228,6 +273,7 @@ function render() {
 
 function bindEvents() {
   window.addEventListener('resize', drawChart);
+  $('#profile-selector').addEventListener('change', ({ target }) => selectProfile(target.value));
 }
 
 async function init() {
@@ -239,8 +285,29 @@ async function init() {
     ]);
     if (responses.some((response) => !response.ok)) throw new Error('Dashboard data could not be loaded.');
     [config, market, automatedReport] = await Promise.all(responses.map((response) => response.json()));
+    profiles = loadProfiles();
+    const selector = $('#profile-selector');
+    selector.replaceChildren(...profiles.map((profile) => {
+      const option = element('option', '', `${profile.name}${profile.source === 'local' ? ' · local' : ''}`);
+      option.value = profile.id;
+      return option;
+    }));
+    let savedProfileId;
+    try {
+      savedProfileId = localStorage.getItem(ACTIVE_PROFILE_KEY);
+    } catch {
+      // Use the managed default when storage access is denied.
+    }
+    activeProfile = profiles.find(({ id }) => id === savedProfileId)
+      ?? profiles.find(({ id }) => id === config.defaultProfileId)
+      ?? profiles[0];
+    portfolio = structuredClone(activeProfile?.portfolio ?? config.defaultPortfolio);
+    selector.value = activeProfile?.id ?? '';
+    const start = portfolio.map(({ buyDate }) => buyDate).filter(Boolean).sort()[0];
+    $('#profile-description').textContent = start
+      ? `${activeProfile.name} · simulation from ${start}`
+      : activeProfile.name;
     report = automatedReport;
-    portfolio = loadSavedPortfolio();
     $('#data-status').textContent = market.updatedAt
       ? `${shortDate.format(new Date(market.updatedAt)).toUpperCase()} UTC`
       : 'AWAITING UPDATE';

@@ -1,10 +1,13 @@
-import { isValidPortfolio } from './model.js';
+import { isValidPortfolio, resolveProfilePortfolio } from './model.js';
 
 const $ = (selector) => document.querySelector(selector);
 const euro = new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2 });
-const STORAGE_KEY = 'crypto-allocation-desk.portfolio.v1';
+const PROFILES_STORAGE_KEY = 'crypto-allocation-desk.profiles.v2';
 
 let config;
+let localProfiles = [];
+let activeLocalId;
+let activeManagedId;
 
 function element(tag, className, text) {
   const node = document.createElement(tag);
@@ -81,54 +84,155 @@ function buildPortfolio(fieldsSelector, sourcePortfolio) {
   });
 }
 
+function profileOption(profile, suffix = '') {
+  const option = element('option', '', `${profile.name}${suffix}`);
+  option.value = profile.id;
+  return option;
+}
+
+function managedProfile(id) {
+  return config.profiles.find((profile) => profile.id === id);
+}
+
+function loadManagedProfile(id) {
+  const profile = managedProfile(id) ?? config.profiles[0];
+  activeManagedId = profile.id;
+  $('#managed-profile-selector').value = profile.id;
+  $('#managed-profile-id').value = profile.id;
+  $('#managed-profile-name').value = profile.name;
+  renderFields(
+    $('#management-fields'),
+    resolveProfilePortfolio(profile, config.defaultPortfolio),
+    '0.01',
+    'managed-asset',
+  );
+  updateTotal('#management-fields', '#management-total');
+}
+
+function renderLocalProfileSelector() {
+  const selector = $('#local-profile-selector');
+  selector.replaceChildren(...localProfiles.map((profile) => profileOption(profile)));
+  selector.value = activeLocalId ?? '';
+}
+
+function loadLocalProfile(id) {
+  const profile = localProfiles.find((item) => item.id === id);
+  if (!profile) return;
+  activeLocalId = profile.id;
+  $('#local-profile-selector').value = profile.id;
+  $('#local-profile-name').value = profile.name;
+  renderFields($('#portfolio-fields'), profile.portfolio, '1', 'local-asset');
+  updateTotal('#portfolio-fields', '#allocation-total');
+}
+
+function newLocalProfile() {
+  const template = managedProfile(activeManagedId) ?? config.profiles[0];
+  activeLocalId = `local-${Date.now()}`;
+  const profile = {
+    id: activeLocalId,
+    name: `${template.name} custom`,
+    portfolio: structuredClone(resolveProfilePortfolio(template, config.defaultPortfolio)),
+  };
+  localProfiles.push(profile);
+  renderLocalProfileSelector();
+  loadLocalProfile(profile.id);
+  $('#form-error').textContent = '';
+  $('#form-status').textContent = 'New unsaved profile.';
+}
+
+function persistLocalProfiles() {
+  localStorage.setItem(PROFILES_STORAGE_KEY, JSON.stringify(localProfiles));
+}
+
 function bindEvents() {
   $('#timeframe-days').value = String(config.timeframeDays ?? 30);
   const supportedIds = new Set(config.supportedAssets.map(({ id }) => id));
-  let localPortfolio = loadLocalPortfolio();
-  renderFields($('#portfolio-fields'), localPortfolio, '1', 'local-asset');
-  renderFields($('#management-fields'), config.defaultPortfolio, '0.01', 'managed-asset');
-  updateTotal('#portfolio-fields', '#allocation-total');
-  updateTotal('#management-fields', '#management-total');
+  localProfiles = loadLocalProfiles();
+  if (localProfiles.length === 0) newLocalProfile();
+  else {
+    activeLocalId = localProfiles[0].id;
+    renderLocalProfileSelector();
+    loadLocalProfile(activeLocalId);
+  }
+  const managedSelector = $('#managed-profile-selector');
+  managedSelector.replaceChildren(
+    ...config.profiles.map((profile) => profileOption(profile)),
+    profileOption({ id: '__new__', name: 'Create new profile' }),
+  );
+  loadManagedProfile(config.defaultProfileId);
 
   $('#portfolio-fields').addEventListener('input', () => updateTotal('#portfolio-fields', '#allocation-total'));
   $('#management-fields').addEventListener('input', () => updateTotal('#management-fields', '#management-total'));
-  $('#reset-button').addEventListener('click', () => {
+  $('#local-profile-selector').addEventListener('change', ({ target }) => loadLocalProfile(target.value));
+  $('#managed-profile-selector').addEventListener('change', ({ target }) => {
+    if (target.value === '__new__') {
+      activeManagedId = null;
+      $('#managed-profile-id').value = '';
+      $('#managed-profile-name').value = '';
+      renderFields($('#management-fields'), config.defaultPortfolio, '0.01', 'managed-asset');
+      updateTotal('#management-fields', '#management-total');
+      return;
+    }
+    loadManagedProfile(target.value);
+  });
+  $('#new-profile-button').addEventListener('click', newLocalProfile);
+  $('#delete-profile-button').addEventListener('click', () => {
+    if (!activeLocalId) return;
+    localProfiles = localProfiles.filter(({ id }) => id !== activeLocalId);
     try {
-      localStorage.removeItem(STORAGE_KEY);
+      persistLocalProfiles();
     } catch {
-      $('#form-error').textContent = 'Could not clear the saved portfolio.';
+      $('#form-error').textContent = 'Could not delete the saved profile.';
       $('#form-status').textContent = '';
       return;
     }
-    localPortfolio = structuredClone(config.defaultPortfolio);
-    renderFields($('#portfolio-fields'), localPortfolio, '1', 'local-asset');
-    updateTotal('#portfolio-fields', '#allocation-total');
+    if (localProfiles.length === 0) newLocalProfile();
+    else {
+      activeLocalId = localProfiles[0].id;
+      renderLocalProfileSelector();
+      loadLocalProfile(activeLocalId);
+    }
     $('#form-error').textContent = '';
-    $('#form-status').textContent = 'Reset to managed defaults.';
+    $('#form-status').textContent = 'Profile deleted.';
   });
   $('#portfolio-form').addEventListener('submit', (event) => {
     event.preventDefault();
-    const portfolio = buildPortfolio('#portfolio-fields', localPortfolio);
+    const current = localProfiles.find(({ id }) => id === activeLocalId);
+    const portfolio = buildPortfolio('#portfolio-fields', current?.portfolio ?? config.defaultPortfolio);
+    const name = $('#local-profile-name').value.trim();
     if (!isValidPortfolio(portfolio, supportedIds, config.totalInvestment)) {
       $('#form-error').textContent = 'Choose ten unique assets with positive values totalling the configured investment.';
       $('#form-status').textContent = '';
       return;
     }
+    if (!name) {
+      $('#form-error').textContent = 'Enter a profile name.';
+      return;
+    }
+    const profile = { id: activeLocalId, name, portfolio };
+    const index = localProfiles.findIndex(({ id }) => id === activeLocalId);
+    if (index >= 0) localProfiles[index] = profile;
+    else localProfiles.push(profile);
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(portfolio));
+      persistLocalProfiles();
     } catch {
-      $('#form-error').textContent = 'Could not save this portfolio in browser storage.';
+      $('#form-error').textContent = 'Could not save profiles in browser storage.';
       $('#form-status').textContent = '';
       return;
     }
-    localPortfolio = portfolio;
+    renderLocalProfileSelector();
     $('#form-error').textContent = '';
-    $('#form-status').textContent = 'Local portfolio saved.';
+    $('#form-status').textContent = 'Local profile saved.';
   });
   $('#management-form').addEventListener('submit', (event) => {
     event.preventDefault();
     const timeframeDays = Number($('#timeframe-days').value);
-    const portfolio = buildPortfolio('#management-fields', config.defaultPortfolio);
+    const source = activeManagedId
+      ? resolveProfilePortfolio(managedProfile(activeManagedId), config.defaultPortfolio)
+      : config.defaultPortfolio;
+    const portfolio = buildPortfolio('#management-fields', source);
+    const profileId = $('#managed-profile-id').value.trim();
+    const profileName = $('#managed-profile-name').value.trim();
     const validPortfolio = isValidPortfolio(portfolio, new Set(config.supportedAssets.map(({ id }) => id)), config.totalInvestment);
     if (!Number.isInteger(timeframeDays) || timeframeDays < 1 || timeframeDays > 366) {
       $('#management-error').textContent = 'Use a timeframe between 1 and 366 days.';
@@ -138,21 +242,30 @@ function bindEvents() {
       $('#management-error').textContent = 'Choose ten unique assets with positive values totalling the configured investment.';
       return;
     }
+    if (!/^[a-z0-9][a-z0-9-]{0,39}$/.test(profileId) || !profileName) {
+      $('#management-error').textContent = 'Use a lowercase profile ID and enter a profile name.';
+      return;
+    }
     $('#management-error').textContent = '';
-    $('#workflow-json').value = JSON.stringify({ timeframeDays, defaultPortfolio: portfolio }, null, 2);
+    $('#workflow-json').value = JSON.stringify({
+      timeframeDays,
+      profile: { id: profileId, name: profileName, portfolio },
+    }, null, 2);
   });
 }
 
-function loadLocalPortfolio() {
+function loadLocalProfiles() {
   try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if (isValidPortfolio(saved, new Set(config.supportedAssets.map(({ id }) => id)), config.totalInvestment)) {
-      return saved;
-    }
+    const saved = JSON.parse(localStorage.getItem(PROFILES_STORAGE_KEY));
+    const supportedIds = new Set(config.supportedAssets.map(({ id }) => id));
+    return Array.isArray(saved)
+      ? saved.filter((profile) =>
+        profile?.id && profile?.name
+        && isValidPortfolio(profile.portfolio, supportedIds, config.totalInvestment))
+      : [];
   } catch {
-    // Fall back to managed defaults when browser storage is unavailable.
+    return [];
   }
-  return structuredClone(config.defaultPortfolio);
 }
 
 async function init() {

@@ -1,17 +1,37 @@
+export function isValidDate(date) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return false;
+  const parsed = new Date(`${date}T00:00:00Z`);
+  return Number.isFinite(parsed.getTime()) && parsed.toISOString().slice(0, 10) === date;
+}
+
 export function isValidPortfolio(portfolio, supportedIds, target = 500) {
   if (!Array.isArray(portfolio) || portfolio.length !== 10) return false;
   const ids = portfolio.map(({ id }) => id);
   if (new Set(ids).size !== ids.length || ids.some((id) => !supportedIds.has(id))) return false;
   const amounts = portfolio.map(({ amount }) => Number(amount));
   const dates = portfolio.map(({ buyDate }) => buyDate).filter(Boolean);
-  const validDate = (date) => {
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return false;
-    const parsed = new Date(`${date}T00:00:00Z`);
-    return Number.isFinite(parsed.getTime()) && parsed.toISOString().slice(0, 10) === date;
-  };
   return amounts.every((amount) => Number.isFinite(amount) && amount > 0)
-    && dates.every(validDate)
+    && dates.every(isValidDate)
     && Math.abs(amounts.reduce((sum, amount) => sum + amount, 0) - target) < 0.01;
+}
+
+export function resolveProfilePortfolio(profile, defaultPortfolio) {
+  const source = profile?.portfolio ?? defaultPortfolio;
+  return source.map((item) => ({
+    ...item,
+    ...(profile?.buyDate ? { buyDate: profile.buyDate } : {}),
+  }));
+}
+
+export function isValidProfile(profile, supportedIds, defaultPortfolio, target = 500) {
+  return Boolean(
+    profile
+    && /^[a-z0-9][a-z0-9-]{0,39}$/.test(profile.id)
+    && typeof profile.name === 'string'
+    && profile.name.trim()
+    && (!profile.buyDate || isValidDate(profile.buyDate))
+    && isValidPortfolio(resolveProfilePortfolio(profile, defaultPortfolio), supportedIds, target),
+  );
 }
 
 export function getBaselinePrices(portfolio, history) {

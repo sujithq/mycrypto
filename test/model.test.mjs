@@ -5,7 +5,9 @@ import {
   calculateSeries,
   createAnalysisReport,
   filterHistoryByTimeframe,
+  isValidProfile,
   isValidPortfolio,
+  resolveProfilePortfolio,
 } from '../src/model.js';
 import { combineHistoricalPrices, getPortfolioAssetIds, updateHistory } from '../scripts/update-market-data.mjs';
 
@@ -46,6 +48,21 @@ test('accepts exactly ten unique positive allocations totalling €500', () => {
   assert.equal(isValidPortfolio([...portfolio.slice(0, 9), portfolio[0]], supportedIds), false);
   assert.equal(isValidPortfolio(portfolio.map((item, index) => ({ ...item, amount: index ? 50 : 40 })), supportedIds), false);
   assert.equal(isValidPortfolio(portfolio.map((item, index) => index ? item : { ...item, buyDate: '2026-02-31' }), supportedIds), false);
+});
+
+test('resolves and validates a profile-wide buy date', () => {
+  const profile = { id: '2026-03', name: 'March 2026', buyDate: '2026-03-01' };
+  const resolved = resolveProfilePortfolio(profile, portfolio);
+  assert.equal(resolved.every(({ buyDate }) => buyDate === '2026-03-01'), true);
+  assert.equal(isValidProfile(profile, supportedIds, portfolio), true);
+  assert.equal(isValidProfile({ ...profile, id: 'March 2026' }, supportedIds, portfolio), false);
+  assert.equal(isValidProfile({ ...profile, buyDate: '2026-02-31' }, supportedIds, portfolio), false);
+});
+
+test('validates profiles with custom portfolios', () => {
+  const profile = { id: 'custom', name: 'Custom', portfolio };
+  assert.equal(isValidProfile(profile, supportedIds, portfolio), true);
+  assert.equal(isValidProfile({ ...profile, portfolio: portfolio.slice(1) }, supportedIds, portfolio), false);
 });
 
 test('calculates portfolio evolution from each asset baseline', () => {
