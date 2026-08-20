@@ -97,10 +97,11 @@ function bindEvents() {
       localStorage.removeItem(STORAGE_KEY);
     } catch {
       $('#form-error').textContent = 'Could not clear the saved portfolio.';
+      $('#form-status').textContent = '';
       return;
     }
     localPortfolio = structuredClone(config.defaultPortfolio);
-    renderFields($('#portfolio-fields'), config.defaultPortfolio, '1', 'local-asset');
+    renderFields($('#portfolio-fields'), localPortfolio, '1', 'local-asset');
     updateTotal('#portfolio-fields', '#allocation-total');
     $('#form-error').textContent = '';
     $('#form-status').textContent = 'Reset to managed defaults.';
@@ -110,12 +111,14 @@ function bindEvents() {
     const portfolio = buildPortfolio('#portfolio-fields', localPortfolio);
     if (!isValidPortfolio(portfolio, managedIds, config.totalInvestment)) {
       $('#form-error').textContent = 'Choose ten unique assets with positive values totalling the configured investment.';
+      $('#form-status').textContent = '';
       return;
     }
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(portfolio));
     } catch {
       $('#form-error').textContent = 'Could not save this portfolio in browser storage.';
+      $('#form-status').textContent = '';
       return;
     }
     localPortfolio = portfolio;
