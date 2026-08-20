@@ -1,4 +1,9 @@
-import { isValidPortfolio, resolveProfilePortfolio } from './model.js';
+import {
+  isValidPortfolio,
+  isValidProfile,
+  parseRealPortfolioJson,
+  resolveProfilePortfolio,
+} from './model.js';
 
 const $ = (selector) => document.querySelector(selector);
 const euro = new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2 });
@@ -16,7 +21,7 @@ function element(tag, className, text) {
   return node;
 }
 
-function renderFields(fields, portfolio, amountStep = '0.01', idPrefix = 'asset') {
+function renderFields(fields, portfolio, amountStep = '0.01', idPrefix = 'asset', type = 'simulated') {
   fields.replaceChildren();
 
   portfolio.forEach((item, index) => {
@@ -40,12 +45,23 @@ function renderFields(fields, portfolio, amountStep = '0.01', idPrefix = 'asset'
     const amount = document.createElement('input');
     amount.name = 'amount';
     amount.type = 'number';
-    amount.min = '1';
-    amount.max = String(config.totalInvestment);
+    amount.min = '0.01';
+    if (type !== 'real') amount.max = String(config.totalInvestment);
     amount.step = amountStep;
     amount.value = String(item.amount);
     amount.setAttribute('aria-label', `Actual invested value ${index + 1}`);
     amountWrap.append(amount);
+
+    const quantity = document.createElement('input');
+    quantity.name = 'quantity';
+    quantity.type = 'number';
+    quantity.min = '0.00000001';
+    quantity.step = 'any';
+    quantity.value = item.quantity ?? '';
+    quantity.placeholder = 'Quantity';
+    quantity.hidden = type !== 'real';
+    quantity.required = type === 'real';
+    quantity.setAttribute('aria-label', `Current quantity ${index + 1}`);
 
     const buyDate = document.createElement('input');
     buyDate.name = 'buyDate';
@@ -58,7 +74,7 @@ function renderFields(fields, portfolio, amountStep = '0.01', idPrefix = 'asset'
     remove.dataset.index = String(index);
     remove.setAttribute('aria-label', `Remove asset ${index + 1}`);
 
-    row.append(label, select, amountWrap, buyDate, remove);
+    row.append(label, select, amountWrap, quantity, buyDate, remove);
     fields.append(row);
   });
 }
@@ -69,7 +85,11 @@ function updateTotal(fieldsSelector, outputSelector) {
     .reduce((sum, amount) => sum + (Number.isFinite(amount) ? amount : 0), 0);
   const output = $(outputSelector);
   output.textContent = euro.format(total);
-  output.classList.toggle('negative', Math.abs(total - config.totalInvestment) >= .01);
+  const isReal = fieldsSelector === '#management-fields' && $('#managed-profile-type')?.value === 'real';
+  output.classList.toggle('negative', !isReal && Math.abs(total - config.totalInvestment) >= .01);
+  if (fieldsSelector === '#management-fields') {
+    $('#management-total-label').textContent = isReal ? 'Cost basis' : 'Allocated';
+  }
 }
 
 function buildPortfolio(fieldsSelector, sourcePortfolio) {
@@ -78,6 +98,7 @@ function buildPortfolio(fieldsSelector, sourcePortfolio) {
   const ids = [...fields.querySelectorAll('select[name="asset"]')].map(({ value }) => value);
   const amounts = [...fields.querySelectorAll('input[name="amount"]')].map(({ value }) => Number(value));
   const buyDates = [...fields.querySelectorAll('input[name="buyDate"]')].map(({ value }) => value);
+  const quantities = [...fields.querySelectorAll('input[name="quantity"]')].map(({ value }) => value);
 
   return ids.map((id, index) => {
     const selected = config.supportedAssets.find((asset) => asset.id === id);
@@ -85,6 +106,7 @@ function buildPortfolio(fieldsSelector, sourcePortfolio) {
     return {
       ...selected,
       amount: amounts[index],
+      ...(quantities[index] ? { quantity: Number(quantities[index]) } : {}),
       buyDate: buyDates[index] || undefined,
       thesis: existing?.thesis ?? rows[index]?.dataset.thesis ?? 'Managed default portfolio selection.',
     };
@@ -98,14 +120,16 @@ function addAsset(fieldsSelector, totalSelector, idPrefix, amountStep) {
     amount: 1,
     thesis: 'Managed default portfolio selection.',
   });
-  renderFields($(fieldsSelector), current, amountStep, idPrefix);
+  const type = fieldsSelector === '#management-fields' ? $('#managed-profile-type').value : 'simulated';
+  renderFields($(fieldsSelector), current, amountStep, idPrefix, type);
   updateTotal(fieldsSelector, totalSelector);
 }
 
 function removeAsset(fieldsSelector, totalSelector, idPrefix, amountStep, index) {
   const current = buildPortfolio(fieldsSelector, []);
   current.splice(index, 1);
-  renderFields($(fieldsSelector), current, amountStep, idPrefix);
+  const type = fieldsSelector === '#management-fields' ? $('#managed-profile-type').value : 'simulated';
+  renderFields($(fieldsSelector), current, amountStep, idPrefix, type);
   updateTotal(fieldsSelector, totalSelector);
 }
 
@@ -125,6 +149,7 @@ function loadManagedProfile(id) {
   $('#managed-profile-selector').value = profile.id;
   $('#managed-profile-id').value = profile.id;
   $('#managed-profile-name').value = profile.name;
+  $('#managed-profile-type').value = profile.type === 'real' ? 'real' : 'simulated';
   $('#managed-profile-buy-date').value = profile.buyDate ?? '';
   const portfolio = profile.portfolio ?? config.defaultPortfolio.map((item) => {
     if (!profile.buyDate) return item;
@@ -136,7 +161,9 @@ function loadManagedProfile(id) {
     portfolio,
     '0.01',
     'managed-asset',
+    profile.type,
   );
+  $('#real-portfolio-import').hidden = profile.type !== 'real';
   updateTotal('#management-fields', '#management-total');
 }
 
@@ -212,12 +239,32 @@ function bindEvents() {
       activeManagedId = null;
       $('#managed-profile-id').value = '';
       $('#managed-profile-name').value = '';
+      $('#managed-profile-type').value = 'simulated';
       $('#managed-profile-buy-date').value = '';
       renderFields($('#management-fields'), config.defaultPortfolio, '0.01', 'managed-asset');
+      $('#real-portfolio-import').hidden = true;
       updateTotal('#management-fields', '#management-total');
       return;
     }
     loadManagedProfile(target.value);
+  });
+  $('#managed-profile-type').addEventListener('change', ({ target }) => {
+    const portfolio = buildPortfolio('#management-fields', []);
+    renderFields($('#management-fields'), portfolio, '0.01', 'managed-asset', target.value);
+    $('#real-portfolio-import').hidden = target.value !== 'real';
+    updateTotal('#management-fields', '#management-total');
+  });
+  $('#import-real-portfolio-button').addEventListener('click', () => {
+    try {
+      const imported = parseRealPortfolioJson($('#real-portfolio-json').value, config.supportedAssets);
+      renderFields($('#management-fields'), imported, '0.01', 'managed-asset', 'real');
+      updateTotal('#management-fields', '#management-total');
+      $('#management-error').textContent = '';
+    } catch (error) {
+      $('#management-error').textContent = error instanceof Error
+        ? error.message
+        : 'Could not import the holdings JSON.';
+    }
   });
   $('#new-profile-button').addEventListener('click', newLocalProfile);
   $('#delete-profile-button').addEventListener('click', () => {
@@ -278,21 +325,32 @@ function bindEvents() {
     const profileId = $('#managed-profile-id').value.trim();
     const profileName = $('#managed-profile-name').value.trim();
     const profileBuyDate = $('#managed-profile-buy-date').value;
-    const resolvedPortfolio = resolveProfilePortfolio({
+    const profileType = $('#managed-profile-type').value;
+    const candidate = {
+      id: profileId,
+      name: profileName,
+      type: profileType,
       ...(profileBuyDate ? { buyDate: profileBuyDate } : {}),
       portfolio,
-    }, config.defaultPortfolio);
-    const validPortfolio = isValidPortfolio(resolvedPortfolio, new Set(config.supportedAssets.map(({ id }) => id)), config.totalInvestment);
+    };
+    const validProfile = isValidProfile(
+      candidate,
+      new Set(config.supportedAssets.map(({ id }) => id)),
+      config.defaultPortfolio,
+      config.totalInvestment,
+    );
     if (!Number.isInteger(timeframeDays) || timeframeDays < 1 || timeframeDays > 366) {
       $('#management-error').textContent = 'Use a timeframe between 1 and 366 days.';
       return;
     }
-    if (!validPortfolio) {
-      $('#management-error').textContent = 'Choose one or more valid purchases with positive values totalling the configured investment. Repeated assets need different buy dates.';
-      return;
-    }
     if (!/^[a-z0-9][a-z0-9-]{0,39}$/.test(profileId) || !profileName) {
       $('#management-error').textContent = 'Use a lowercase profile ID and enter a profile name.';
+      return;
+    }
+    if (!validProfile) {
+      $('#management-error').textContent = profileType === 'real'
+        ? 'Choose valid holdings with positive quantities and cost values. Repeated assets need different buy dates.'
+        : 'Choose one or more valid purchases with positive values totalling the configured investment. Repeated assets need different buy dates.';
       return;
     }
     $('#management-error').textContent = '';
@@ -301,6 +359,7 @@ function bindEvents() {
       profile: {
         id: profileId,
         name: profileName,
+        type: profileType,
         ...(profileBuyDate ? { buyDate: profileBuyDate } : {}),
         portfolio,
       },

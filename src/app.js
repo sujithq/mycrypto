@@ -1,5 +1,7 @@
 import {
   calculateHoldings,
+  calculateRealHoldings,
+  calculateRealSeries,
   calculateSeries,
   createAnalysisReport,
   isValidPortfolio,
@@ -94,9 +96,11 @@ function selectProfile(id) {
   }
   $('#profile-selector').value = activeProfile.id;
   const start = portfolio.map(({ buyDate }) => buyDate).filter(Boolean).sort()[0];
-  $('#profile-description').textContent = start
-    ? `${activeProfile.name} · simulation from ${start}`
-    : activeProfile.name;
+  $('#profile-description').textContent = activeProfile.type === 'real'
+    ? `${activeProfile.name} · real holdings${start ? ` from ${start}` : ''}`
+    : start
+      ? `${activeProfile.name} · simulation from ${start}`
+      : activeProfile.name;
   render();
 }
 
@@ -114,11 +118,13 @@ function renderMetrics(holdings, series) {
   $('#invested-value').textContent = euro.format(invested);
   $('#current-value').textContent = current === null ? '—' : euro.format(current);
   setTrend($('#total-return'), totalReturnPct);
-  if (Number.isFinite(totalReturnPct)) $('#total-return').append(' since model start');
+  if (Number.isFinite(totalReturnPct)) {
+    $('#total-return').append(activeProfile.type === 'real' ? ' total return' : ' since model start');
+  }
   setTrend($('#daily-move'), weighted24h);
   $('#tracking-period').textContent = series.length
-    ? `Model start ${shortDate.format(new Date(`${series[0].date}T00:00:00Z`))}`
-    : 'Model start —';
+    ? `${activeProfile.type === 'real' ? 'Tracked from' : 'Model start'} ${shortDate.format(new Date(`${series[0].date}T00:00:00Z`))}`
+    : `${activeProfile.type === 'real' ? 'Tracked from' : 'Model start'} —`;
 }
 
 function renderHoldings(holdings) {
@@ -138,7 +144,8 @@ function renderHoldings(holdings) {
     allocationCell.append(`${euro.format(item.amount)} `);
     const bar = element('span', 'allocation-bar');
     const fill = document.createElement('i');
-    fill.style.width = `${Math.min(100, item.amount / config.totalInvestment * 400)}%`;
+    const invested = portfolio.reduce((sum, holding) => sum + holding.amount, 0);
+    fill.style.width = `${Math.min(100, item.amount / invested * 100)}%`;
     bar.append(fill);
     allocationCell.append(bar);
 
@@ -271,13 +278,25 @@ function drawChart() {
 
 function render() {
   $('#holdings-title').textContent = `${portfolio.length} portfolio ${portfolio.length === 1 ? 'asset' : 'assets'}`;
-  chartSeries = calculateSeries(portfolio, market.history, config.timeframeDays);
-  const holdings = calculateHoldings(portfolio, market.history, market.assets);
+  const isReal = activeProfile.type === 'real';
+  chartSeries = isReal
+    ? calculateRealSeries(portfolio, market.history, config.timeframeDays)
+    : calculateSeries(portfolio, market.history, config.timeframeDays);
+  const holdings = isReal
+    ? calculateRealHoldings(portfolio, market.assets)
+    : calculateHoldings(portfolio, market.history, market.assets);
   const isDefaultPortfolio = portfolio.every((item, index) =>
     item.id === config.defaultPortfolio[index]?.id
     && item.amount === config.defaultPortfolio[index]?.amount
     && (item.buyDate ?? null) === (config.defaultPortfolio[index]?.buyDate ?? null));
-  report = isDefaultPortfolio ? automatedReport : createAnalysisReport(market.history, portfolio, new Date().toISOString(), config.timeframeDays);
+  report = !isReal && isDefaultPortfolio
+    ? automatedReport
+    : createAnalysisReport(market.history, portfolio, new Date().toISOString(), config.timeframeDays);
+  $('#page-kicker').textContent = isReal ? 'REAL PORTFOLIO · MANAGED' : 'MODEL PORTFOLIO · AGGRESSIVE';
+  $('#portfolio-brief').textContent = isReal
+    ? 'Actual holdings entered manually and marked using the latest available EUR prices.'
+    : 'A hypothetical €500 allocation tracked at the daily UTC close. Built for perspective—not predictions.';
+  $('#chart-legend-label').textContent = isReal ? 'Market value' : 'Model value';
   renderMetrics(holdings, chartSeries);
   renderHoldings(holdings);
   renderTheses();
@@ -318,9 +337,11 @@ async function init() {
     portfolio = structuredClone(activeProfile?.portfolio ?? config.defaultPortfolio);
     selector.value = activeProfile?.id ?? '';
     const start = portfolio.map(({ buyDate }) => buyDate).filter(Boolean).sort()[0];
-    $('#profile-description').textContent = start
-      ? `${activeProfile.name} · simulation from ${start}`
-      : activeProfile.name;
+    $('#profile-description').textContent = activeProfile.type === 'real'
+      ? `${activeProfile.name} · real holdings${start ? ` from ${start}` : ''}`
+      : start
+        ? `${activeProfile.name} · simulation from ${start}`
+        : activeProfile.name;
     report = automatedReport;
     $('#data-status').textContent = market.updatedAt
       ? `${shortDate.format(new Date(market.updatedAt)).toUpperCase()} UTC`

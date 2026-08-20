@@ -90,6 +90,13 @@
               <input id="managed-profile-name" maxlength="80" required>
             </label>
             <label>
+              <span>Portfolio type</span>
+              <select id="managed-profile-type">
+                <option value="simulated">Simulation</option>
+                <option value="real">Real portfolio</option>
+              </select>
+            </label>
+            <label>
               <span>Default buy date</span>
               <input id="managed-profile-buy-date" type="date">
             </label>
@@ -100,7 +107,12 @@
           </label>
           <div id="management-fields" class="portfolio-fields management-fields"></div>
           <button class="button button-quiet" id="add-managed-asset-button" type="button">Add purchase</button>
-          <p class="allocation-total">Allocated <strong id="management-total">€500</strong></p>
+          <div id="real-portfolio-import" class="workflow-output" hidden>
+            <label for="real-portfolio-json">Paste real holdings as JSON</label>
+            <textarea id="real-portfolio-json" placeholder='[{"symbol":"BTC","quantity":0.1,"cost":5000,"buyDate":"2026-01-01"}]'></textarea>
+            <button class="button button-quiet" id="import-real-portfolio-button" type="button">Import holdings</button>
+          </div>
+          <p class="allocation-total"><span id="management-total-label">Allocated</span> <strong id="management-total">€500</strong></p>
           <p class="form-error" id="management-error" role="alert"></p>
           <div class="dialog-actions">
             <button class="button button-primary" type="submit">Generate workflow JSON</button>

@@ -23,6 +23,7 @@ function normalizePortfolio(items, supportedAssets) {
     return {
       ...asset,
       amount: Number(item.amount),
+      ...(item.quantity !== undefined ? { quantity: Number(item.quantity) } : {}),
       ...(item.buyDate ? { buyDate: item.buyDate } : {}),
       thesis: typeof item.thesis === 'string' && item.thesis.trim()
         ? item.thesis.trim()
@@ -46,12 +47,13 @@ if (!update.profile || typeof update.profile !== 'object') {
 const profile = {
   id: update.profile.id,
   name: update.profile.name,
+  type: update.profile.type === 'real' ? 'real' : 'simulated',
   ...(update.profile.buyDate ? { buyDate: update.profile.buyDate } : {}),
   portfolio: normalizePortfolio(update.profile.portfolio, config.supportedAssets),
 };
 console.log('Validating managed portfolio profile…');
 if (!isValidProfile(profile, supportedIds, config.defaultPortfolio, config.totalInvestment)) {
-  throw new Error(`Profile must have a valid ID, name, and positive purchases totalling ${config.totalInvestment}; repeated assets require different buy dates.`);
+  throw new Error(`Profile must have a valid ID, name, and positive holdings${profile.type === 'real' ? ' with quantities and cost values' : ` totalling ${config.totalInvestment}`}; repeated assets require different buy dates.`);
 }
 const profiles = [...(config.profiles ?? [])];
 const profileIndex = profiles.findIndex(({ id }) => id === profile.id);

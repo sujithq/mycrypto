@@ -27,12 +27,12 @@
     <main id="main">
       <section class="hero" aria-labelledby="page-title">
         <div>
-          <p class="eyebrow">MODEL PORTFOLIO · AGGRESSIVE</p>
+          <p class="eyebrow" id="page-kicker">MODEL PORTFOLIO · AGGRESSIVE</p>
           <h1 id="page-title">Your portfolio.<br><em>One clear view.</em></h1>
         </div>
         <div class="hero-note">
           <span>Investment brief / 001</span>
-          <p>A hypothetical €500 allocation tracked at the daily UTC close. Built for perspective—not predictions.</p>
+          <p id="portfolio-brief">A hypothetical €500 allocation tracked at the daily UTC close. Built for perspective—not predictions.</p>
         </div>
       </section>
 
@@ -72,7 +72,7 @@
               <p class="eyebrow">DAILY CLOSE · EUR</p>
               <h2 id="performance-title">Portfolio evolution</h2>
             </div>
-            <div class="chart-legend"><span></span> Model value</div>
+            <div class="chart-legend"><span></span> <span id="chart-legend-label">Model value</span></div>
           </div>
           <div class="chart-wrap">
             <canvas id="portfolio-chart" role="img" aria-label="Portfolio value over time"></canvas>

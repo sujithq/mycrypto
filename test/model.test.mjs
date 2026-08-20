@@ -2,11 +2,15 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   calculateHoldings,
+  calculateRealHoldings,
+  calculateRealSeries,
   calculateSeries,
   createAnalysisReport,
   filterHistoryByTimeframe,
   isValidProfile,
   isValidPortfolio,
+  isValidRealPortfolio,
+  parseRealPortfolioJson,
   resolveProfilePortfolio,
 } from '../src/model.js';
 import {
@@ -105,6 +109,31 @@ test('validates profiles with custom portfolios', () => {
   assert.equal(isValidProfile({ ...profile, portfolio: portfolio.slice(1) }, supportedIds, portfolio), false);
 });
 
+test('validates real portfolios without requiring the simulated €500 total', () => {
+  const real = [
+    { ...portfolio[0], amount: 1200, quantity: 0.05, buyDate: '2026-08-11' },
+    { ...portfolio[1], amount: 800, quantity: 0.4, buyDate: '2026-08-18' },
+  ];
+  assert.equal(isValidRealPortfolio(real, supportedIds), true);
+  assert.equal(isValidProfile({ id: 'client-a', name: 'Client A', type: 'real', portfolio: real }, supportedIds, portfolio), true);
+  assert.equal(isValidRealPortfolio(real.map(({ quantity, ...item }) => item), supportedIds), false);
+  assert.equal(isValidRealPortfolio(real.map((item) => ({ ...item, quantity: 0 })), supportedIds), false);
+});
+
+test('parses pasted real holdings by symbol or asset id', () => {
+  const supportedAssets = portfolio.map(({ id, symbol }) => ({ id, symbol, name: id }));
+  assert.deepEqual(parseRealPortfolioJson(JSON.stringify([
+    { symbol: 'A0', quantity: 2, cost: 100, buyDate: '2026-08-11' },
+  ]), supportedAssets), [{
+    ...supportedAssets[0],
+    amount: 100,
+    quantity: 2,
+    buyDate: '2026-08-11',
+    thesis: 'Manually managed real portfolio holding.',
+  }]);
+  assert.throws(() => parseRealPortfolioJson('[{"symbol":"NOPE"}]', supportedAssets), /Unsupported asset/);
+});
+
 test('uses a profile buy date as the fallback for custom portfolio items', () => {
   const customPortfolio = portfolio.map((item, index) =>
     index === 0 ? { ...item, buyDate: '2026-02-01' } : item);
@@ -174,6 +203,19 @@ test('calculates current holding values and returns', () => {
   const holdings = calculateHoldings(portfolio, history, assets);
   assert.equal(holdings[0].value, 60);
   assert.equal(holdings[0].returnPct, 20);
+});
+
+test('calculates real holdings from quantities and actual cost', () => {
+  const real = [{ ...portfolio[0], amount: 40, quantity: 2, buyDate: '2026-08-11' }];
+  const assets = { [portfolio[0].id]: { price: 30, change24hPct: 2 } };
+  assert.deepEqual(calculateRealSeries(real, history), [
+    { date: '2026-08-11', value: 20 },
+    { date: '2026-08-18', value: 22 },
+  ]);
+  const [holding] = calculateRealHoldings(real, assets);
+  assert.equal(holding.value, 60);
+  assert.equal(holding.startPrice, 20);
+  assert.equal(holding.returnPct, 50);
 });
 
 test('creates an allocation-weighted trailing report', () => {

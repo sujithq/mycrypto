@@ -20,6 +20,19 @@ export function isValidPortfolio(portfolio, supportedIds, target = 500) {
     && Math.abs(amounts.reduce((sum, amount) => sum + amount, 0) - target) < 0.01;
 }
 
+export function isValidRealPortfolio(portfolio, supportedIds) {
+  if (!Array.isArray(portfolio) || portfolio.length === 0) return false;
+  const ids = portfolio.map(({ id }) => id);
+  const purchases = portfolio.map(({ id, buyDate }) => `${id}:${buyDate ?? ''}`);
+  const dates = portfolio.map(({ buyDate }) => buyDate).filter(Boolean);
+  return ids.every((id) => supportedIds.has(id))
+    && portfolio.every(({ amount, quantity }) =>
+      Number.isFinite(Number(amount)) && Number(amount) > 0
+      && Number.isFinite(Number(quantity)) && Number(quantity) > 0)
+    && dates.every(isValidDate)
+    && new Set(purchases).size === purchases.length;
+}
+
 export function resolveProfilePortfolio(profile, defaultPortfolio) {
   const source = profile?.portfolio ?? defaultPortfolio;
   return source.map((item) => ({
@@ -37,8 +50,34 @@ export function isValidProfile(profile, supportedIds, defaultPortfolio, target =
     && typeof profile.name === 'string'
     && profile.name.trim()
     && (!profile.buyDate || isValidDate(profile.buyDate))
-    && isValidPortfolio(resolveProfilePortfolio(profile, defaultPortfolio), supportedIds, target),
+    && (profile.type === 'real'
+      ? isValidRealPortfolio(resolveProfilePortfolio(profile, defaultPortfolio), supportedIds)
+      : (!profile.type || profile.type === 'simulated')
+        && isValidPortfolio(resolveProfilePortfolio(profile, defaultPortfolio), supportedIds, target)),
   );
+}
+
+export function parseRealPortfolioJson(raw, supportedAssets) {
+  const parsed = JSON.parse(raw);
+  const items = Array.isArray(parsed) ? parsed : parsed?.profile?.portfolio;
+  if (!Array.isArray(items) || items.length === 0) {
+    throw new Error('Paste a JSON array of holdings or generated workflow JSON.');
+  }
+  return items.map((item) => {
+    const key = String(item.id ?? item.symbol ?? '').toLowerCase();
+    const asset = supportedAssets.find(({ id, symbol }) =>
+      id.toLowerCase() === key || symbol.toLowerCase() === key);
+    if (!asset) throw new Error(`Unsupported asset: ${item.id ?? item.symbol ?? 'unknown'}`);
+    return {
+      ...asset,
+      amount: Number(item.amount ?? item.cost ?? item.actualCost),
+      quantity: Number(item.quantity),
+      ...(item.buyDate ? { buyDate: item.buyDate } : {}),
+      thesis: typeof item.thesis === 'string' && item.thesis.trim()
+        ? item.thesis.trim()
+        : 'Manually managed real portfolio holding.',
+    };
+  });
 }
 
 export function getBaselinePrices(portfolio, history) {
@@ -88,6 +127,30 @@ export function calculateHoldings(portfolio, history, assets) {
       : null;
     const returnPct = value === null ? null : ((value - item.amount) / item.amount) * 100;
     return { ...item, ...quote, startPrice, value, returnPct };
+  });
+}
+
+export function calculateRealSeries(portfolio, history, timeframeDays) {
+  return filterHistoryByTimeframe(history, timeframeDays).flatMap((entry) => {
+    const active = portfolio.filter(({ buyDate }) => !buyDate || entry.date >= buyDate);
+    if (active.length === 0 || active.some(({ id }) => !Number.isFinite(entry.prices?.[id]))) return [];
+    const value = active.reduce((sum, item) => sum + Number(item.quantity) * entry.prices[item.id], 0);
+    return [{ date: entry.date, value: Math.round(value * 100) / 100 }];
+  });
+}
+
+export function calculateRealHoldings(portfolio, assets) {
+  return portfolio.map((item) => {
+    const quote = assets[item.id] ?? {};
+    const value = Number.isFinite(quote.price) ? Number(item.quantity) * quote.price : null;
+    const returnPct = value === null ? null : ((value - item.amount) / item.amount) * 100;
+    return {
+      ...item,
+      ...quote,
+      startPrice: item.amount / item.quantity,
+      value,
+      returnPct,
+    };
   });
 }
 

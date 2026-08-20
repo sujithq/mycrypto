@@ -224,7 +224,7 @@ dialog {
 dialog::backdrop { background: rgb(3 9 7 / .8); backdrop-filter: blur(4px); }
 .dialog-copy { margin: 22px 0; color: var(--muted); font-size: .8rem; line-height: 1.6; }
 .portfolio-fields { display: grid; gap: 8px; }
-.portfolio-field { display: grid; grid-template-columns: 28px 1fr 110px 150px auto; align-items: center; gap: 10px; }
+.portfolio-field { display: grid; grid-template-columns: 28px 1fr 110px 110px 150px auto; align-items: center; gap: 10px; }
 .portfolio-field label { color: var(--dim); font: .65rem ui-monospace, monospace; }
 select, input {
   width: 100%;
@@ -249,6 +249,7 @@ select:focus-visible, input:focus-visible, button:focus-visible, a:focus-visible
 .profile-controls label { display: grid; gap: 10px; }
 .workflow-output { margin-top: 42px; }
 .workflow-output textarea { width: 100%; min-height: 360px; padding: 16px; color: var(--ink); border: 1px solid var(--line); background: var(--canvas); font: .75rem/1.5 ui-monospace, monospace; }
+#real-portfolio-import textarea { min-height: 140px; margin: 10px 0; }
 .workflow-output p:last-child { color: var(--muted); font-size: .8rem; line-height: 1.6; }
 
 noscript { position: fixed; inset: auto 0 0; padding: 1rem; color: var(--canvas); background: var(--acid); text-align: center; }
@@ -287,7 +288,7 @@ noscript { position: fixed; inset: auto 0 0; padding: 1rem; color: var(--canvas)
   footer p:last-child { text-align: left; }
   .header-actions { gap: 10px; }
   .portfolio-field { grid-template-columns: 28px 1fr; }
-  .portfolio-field .amount-field, .portfolio-field input[type="date"], .portfolio-field .remove-asset { grid-column: 2; }
+  .portfolio-field .amount-field, .portfolio-field input[name="quantity"], .portfolio-field input[type="date"], .portfolio-field .remove-asset { grid-column: 2; }
   dialog { padding: 22px 16px; }
   .dialog-actions { align-items: stretch; flex-direction: column-reverse; }
   .dialog-actions .button { width: 100%; }
