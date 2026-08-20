@@ -1,13 +1,22 @@
 {
-  "generatedAt": null,
-  "periodStart": null,
-  "periodEnd": null,
-  "status": "Awaiting the first market data update",
-  "summary": "Run the Update market data workflow to generate the first trailing analysis.",
-  "portfolioChangePct": null,
-  "bestPerformer": null,
-  "worstPerformer": null,
+  "generatedAt": "2026-08-20T05:40:48.039Z",
+  "periodStart": "2026-01-01",
+  "periodEnd": "2026-08-20",
+  "status": "Range-bound",
+  "summary": "The model portfolio moved +0.87% over a 366-day trailing window (232 closes).",
+  "portfolioChangePct": 0.8655,
+  "bestPerformer": {
+    "symbol": "HYPE",
+    "changePct": 180.7736
+  },
+  "worstPerformer": {
+    "symbol": "ARB",
+    "changePct": -52.9226
+  },
   "observations": [
-    "Crypto assets are volatile and this dashboard is for information, not financial advice."
+    "HYPE led the portfolio at +180.77%.",
+    "ARB was weakest at -52.92%.",
+    "This early report uses 232 closes; the target 366-day window has 367.",
+    "Momentum is descriptive, not predictive; review concentration and downside before acting."
   ]
 }

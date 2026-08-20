@@ -1,0 +1,19 @@
+{
+  "id": "test",
+  "name": "test",
+  "buyDate": "2026-03-01",
+  "portfolio": [
+    {
+      "id": "bitcoin",
+      "amount": 250,
+      "quantity": 0.005
+    },
+    {
+      "id": "tars-protocol",
+      "amount": 250,
+      "buyDate": "2026-03-15",
+      "quantity": 333
+    }
+  ],
+  "type": "real"
+}
