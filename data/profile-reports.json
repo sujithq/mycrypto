@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-20T12:16:08.220Z",
+  "generatedAt": "2026-08-20T13:25:58.934Z",
   "reports": {
     "test": {
       "profile": {
@@ -7,23 +7,23 @@
         "name": "test",
         "type": "real"
       },
-      "generatedAt": "2026-08-20T12:16:08.220Z",
+      "generatedAt": "2026-08-20T13:25:58.934Z",
       "periodStart": "2026-08-13",
       "periodEnd": "2026-08-20",
       "status": "Strong momentum",
-      "summary": "The portfolio moved +13.62% over a 366-day trailing window (8 closes).",
-      "portfolioChangePct": 13.6185,
+      "summary": "The portfolio moved +13.95% over a 366-day trailing window (8 closes).",
+      "portfolioChangePct": 13.9532,
       "bestPerformer": {
         "symbol": "HYPE",
-        "changePct": 25.8732
+        "changePct": 26.6139
       },
       "worstPerformer": {
-        "symbol": "TAO",
-        "changePct": 3.3308
+        "symbol": "INJ",
+        "changePct": 1.2311
       },
       "observations": [
-        "HYPE led the portfolio at +25.87%.",
-        "TAO was weakest at +3.33%.",
+        "HYPE led the portfolio at +26.61%.",
+        "INJ was weakest at +1.23%.",
         "This early report uses 8 closes; the target 366-day window has 367.",
         "Momentum is descriptive, not predictive; review concentration and downside before acting."
       ]
