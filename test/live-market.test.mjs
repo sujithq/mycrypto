@@ -1,7 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
+  calculateIntradayAssetSeries,
   canUseLiveMarketSnapshot,
+  canUseIntradayMarketSnapshot,
+  createIntradayMarketSnapshot,
   createLiveMarketSnapshot,
   isLiveMarketRefreshDue,
   mergeLiveMarketSnapshot,
@@ -67,6 +70,33 @@ test('expires live browser data at the configured interval', () => {
   const snapshot = { updatedAt: '2026-08-20T12:00:00.000Z' };
   assert.equal(isLiveMarketRefreshDue(snapshot, 5, Date.parse('2026-08-20T12:04:59.999Z')), false);
   assert.equal(isLiveMarketRefreshDue(snapshot, 5, Date.parse('2026-08-20T12:05:00.000Z')), true);
+});
+
+test('normalizes intraday prices and calculates real and simulated position values', () => {
+  const snapshot = createIntradayMarketSnapshot({
+    prices: [
+      [Date.parse('2026-08-19T23:55:00.000Z'), 60_000],
+      [Date.parse('2026-08-20T12:00:00.000Z'), 61_000],
+    ],
+  }, 'bitcoin', 'eur', '2026-08-20T12:00:30.000Z');
+
+  assert.equal(canUseIntradayMarketSnapshot(snapshot, 'bitcoin', 'eur'), true);
+  assert.equal(canUseIntradayMarketSnapshot(snapshot, 'ethereum', 'eur'), false);
+  assert.deepEqual(calculateIntradayAssetSeries(snapshot, { quantity: 0.001 }), [
+    { timestamp: Date.parse('2026-08-19T23:55:00.000Z'), value: 60 },
+    { timestamp: Date.parse('2026-08-20T12:00:00.000Z'), value: 61 },
+  ]);
+  assert.deepEqual(calculateIntradayAssetSeries(snapshot, {
+    investedAmount: 50,
+    startPrice: 50_000,
+    buyDate: '2026-08-20',
+  }), [
+    { timestamp: Date.parse('2026-08-20T12:00:00.000Z'), value: 61 },
+  ]);
+  assert.throws(() => createIntradayMarketSnapshot({ prices: [[Date.now(), 60_000]] }, 'bitcoin', 'eur'));
+  assert.throws(() => createIntradayMarketSnapshot({ prices: {} }, 'bitcoin', 'eur'));
+  assert.equal(canUseIntradayMarketSnapshot({ ...snapshot, prices: [...snapshot.prices].reverse() }, 'bitcoin', 'eur'), false);
+  assert.equal(canUseIntradayMarketSnapshot({ ...snapshot, prices: [null, ...snapshot.prices] }, 'bitcoin', 'eur'), false);
 });
 
 test('overlays live quotes and replaces only the current UTC point', () => {

@@ -75,12 +75,12 @@
             </div>
           </div>
           <div class="asset-chart-summary">
-            <span id="asset-range-label">Since purchase</span>
+            <span id="asset-range-label" role="status" aria-live="polite">Since purchase</span>
             <strong id="asset-range-return">—</strong>
           </div>
           <div class="chart-wrap asset-chart-wrap">
             <canvas id="asset-chart" role="img" aria-label="Asset position value over time"></canvas>
-            <p id="asset-chart-empty" class="empty-state" hidden>More daily closes are needed for this range.</p>
+            <p id="asset-chart-empty" class="empty-state" role="status" aria-live="polite" hidden>More daily closes are needed for this range.</p>
           </div>
           <div class="chart-axis" aria-hidden="true">
             <span id="asset-chart-start">—</span><span id="asset-chart-end">—</span>

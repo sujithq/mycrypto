@@ -53,6 +53,13 @@ minutes, with 5 minutes as the default. The setting and latest complete quote
 set are stored in `localStorage`, so a fresh cache is restored immediately on
 reload without another request.
 
+Selecting `1D` in an asset detail view lazily requests that asset's rolling
+24-hour CoinGecko market chart and stores the timestamped prices in
+`crypto-allocation-desk.intraday-market-cache.v1`. A fresh per-asset cache is
+used immediately on later visits. The active intraday chart refreshes at the
+selected interval only while **Live prices** is enabled; otherwise selection
+performs at most one refresh and does not start a timer.
+
 Live quotes replace the current UTC date's point only in browser memory. They
 do not write `data/market.json`, run a workflow, or deploy the site. Turning
 the switch off immediately restores the repository snapshot. A failed request

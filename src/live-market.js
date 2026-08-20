@@ -33,6 +33,52 @@ export function createLiveMarketSnapshot(quotes, ids, currency, updatedAt = new 
   };
 }
 
+export function createIntradayMarketSnapshot(data, assetId, currency, updatedAt = new Date().toISOString()) {
+  const byTimestamp = new Map();
+  for (const point of Array.isArray(data?.prices) ? data.prices : []) {
+    const timestamp = Number(point?.[0]);
+    const price = Number(point?.[1]);
+    if (Number.isFinite(timestamp) && timestamp > 0 && Number.isFinite(price) && price > 0) {
+      byTimestamp.set(timestamp, price);
+    }
+  }
+  const prices = [...byTimestamp]
+    .sort(([left], [right]) => left - right)
+    .map(([timestamp, price]) => ({ timestamp, price }));
+  if (!assetId || !currency || !Number.isFinite(Date.parse(updatedAt)) || prices.length < 2) {
+    throw new Error('CoinGecko returned incomplete intraday market data.');
+  }
+  return { assetId, currency, updatedAt, prices };
+}
+
+export function canUseIntradayMarketSnapshot(snapshot, assetId, currency) {
+  return snapshot?.assetId === assetId
+    && snapshot?.currency === currency
+    && Number.isFinite(Date.parse(snapshot?.updatedAt))
+    && Array.isArray(snapshot?.prices)
+    && snapshot.prices.length > 1
+    && snapshot.prices.every((point, index, prices) => Number.isFinite(point?.timestamp)
+      && point.timestamp > 0
+      && Number.isFinite(point.price)
+      && point.price > 0
+      && (index === 0 || point.timestamp > prices[index - 1]?.timestamp));
+}
+
+export function calculateIntradayAssetSeries(snapshot, holding) {
+  const quantity = Number(holding?.quantity);
+  const investedAmount = Number(holding?.investedAmount);
+  const startPrice = Number(holding?.startPrice);
+  const units = Number.isFinite(quantity) && quantity > 0
+    ? quantity
+    : investedAmount / startPrice;
+  if (!Number.isFinite(units) || units <= 0) return [];
+  return snapshot.prices.flatMap(({ timestamp, price }) => (
+    holding?.buyDate && new Date(timestamp).toISOString().slice(0, 10) < holding.buyDate
+      ? []
+      : [{ timestamp, value: Math.round(units * price * 100) / 100 }]
+  ));
+}
+
 export function canUseLiveMarketSnapshot(snapshot, publishedMarket, ids) {
   const snapshotTime = Date.parse(snapshot?.updatedAt);
   const publishedTime = Date.parse(publishedMarket?.updatedAt);

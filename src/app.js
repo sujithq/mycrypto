@@ -11,7 +11,10 @@ import {
   resolveProfilePortfolio,
 } from './model.js';
 import {
+  calculateIntradayAssetSeries,
+  canUseIntradayMarketSnapshot,
   canUseLiveMarketSnapshot,
+  createIntradayMarketSnapshot,
   createLiveMarketSnapshot,
   isLiveMarketRefreshDue,
   mergeLiveMarketSnapshot,
@@ -23,13 +26,23 @@ const PROFILES_STORAGE_KEY = 'crypto-allocation-desk.profiles.v2';
 const ACTIVE_PROFILE_KEY = 'crypto-allocation-desk.active-profile.v2';
 const LIVE_MARKET_SETTINGS_KEY = 'crypto-allocation-desk.live-market-settings.v1';
 const LIVE_MARKET_CACHE_KEY = 'crypto-allocation-desk.live-market-cache.v1';
+const INTRADAY_MARKET_CACHE_KEY = 'crypto-allocation-desk.intraday-market-cache.v1';
 const LIVE_MARKET_API = 'https://api.coingecko.com/api/v3/coins/markets';
+const INTRADAY_MARKET_API = 'https://api.coingecko.com/api/v3/coins';
 const $ = (selector) => document.querySelector(selector);
 const euro = new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2 });
 const price = new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 6 });
 const quantity = new Intl.NumberFormat('en-IE', { maximumSignificantDigits: 8 });
 const shortDate = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', timeZone: 'UTC' });
 const detailDate = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' });
+const intradayDate = new Intl.DateTimeFormat('en-GB', {
+  day: '2-digit',
+  month: 'short',
+  hour: '2-digit',
+  minute: '2-digit',
+  hour12: false,
+  timeZone: 'UTC',
+});
 const shortTime = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' });
 const RANGE_LABELS = {
   '1d': '1 day',
@@ -59,6 +72,10 @@ let liveMarketSnapshot = null;
 let liveMarketTimer = null;
 let liveMarketRefreshing = false;
 let liveMarketRefreshFailed = false;
+let intradayMarketSnapshots = {};
+let intradayMarketTimer = null;
+const intradayMarketRefreshingIds = new Set();
+const intradayMarketFailedIds = new Set();
 
 function setTrend(element, value, suffix = '%') {
   element.classList.remove('positive', 'negative');
@@ -95,6 +112,15 @@ function writeStoredJson(key, value) {
 
 function supportedAssetIds() {
   return config.supportedAssets.map(({ id }) => id);
+}
+
+function getIntradayMarketSnapshot(assetId) {
+  const snapshot = intradayMarketSnapshots[assetId];
+  return canUseIntradayMarketSnapshot(snapshot, assetId, config.currency) ? snapshot : null;
+}
+
+function activeIntradayAssetId() {
+  return holdings[activeAssetIndex]?.id ?? null;
 }
 
 function hasActiveLiveMarket() {
@@ -302,15 +328,21 @@ function renderReport() {
   list.replaceChildren(...report.observations.map((observation) => element('li', '', observation)));
 }
 
+function chartPointDate(point) {
+  if (Number.isFinite(point.timestamp)) return new Date(point.timestamp);
+  return point.date ? new Date(`${point.date}T00:00:00Z`) : new Date(NaN);
+}
+
+function formatChartPointDate(point, dateFormat) {
+  const date = chartPointDate(point);
+  return Number.isFinite(date.getTime()) ? dateFormat.format(date).toUpperCase() : '—';
+}
+
 function drawValueChart({ canvas, empty, series, startOutput, endOutput, seriesLabel, dateFormat = shortDate }) {
   empty.hidden = series.length > 1;
   canvas.hidden = series.length <= 1;
-  startOutput.textContent = series[0]
-    ? dateFormat.format(new Date(`${series[0].date}T00:00:00Z`)).toUpperCase()
-    : '—';
-  endOutput.textContent = series.at(-1)
-    ? dateFormat.format(new Date(`${series.at(-1).date}T00:00:00Z`)).toUpperCase()
-    : '—';
+  startOutput.textContent = series[0] ? formatChartPointDate(series[0], dateFormat) : '—';
+  endOutput.textContent = series.at(-1) ? formatChartPointDate(series.at(-1), dateFormat) : '—';
   if (series.length <= 1) return;
 
   const rect = canvas.getBoundingClientRect();
@@ -382,7 +414,7 @@ function drawValueChart({ canvas, empty, series, startOutput, endOutput, seriesL
   context.fillStyle = '#b9f227';
   context.fill();
 
-  canvas.setAttribute('aria-label', `${seriesLabel} from ${euro.format(series[0].value)} on ${series[0].date} to ${euro.format(last.value)} on ${last.date}.`);
+  canvas.setAttribute('aria-label', `${seriesLabel} from ${euro.format(series[0].value)} on ${formatChartPointDate(series[0], dateFormat)} UTC to ${euro.format(last.value)} on ${formatChartPointDate(last, dateFormat)} UTC.`);
 }
 
 function drawChart() {
@@ -397,11 +429,38 @@ function drawChart() {
 }
 
 function renderAssetRange() {
-  const visibleSeries = filterSeriesByRange(assetSeries, assetRange);
+  const item = holdings[activeAssetIndex];
+  const isIntraday = assetRange === '1d';
+  const intradaySnapshot = isIntraday && item ? getIntradayMarketSnapshot(item.id) : null;
+  const intradayPosition = activeProfile.type === 'real'
+    ? { quantity: item?.quantity, buyDate: item?.buyDate }
+    : { investedAmount: item?.investedAmount, startPrice: item?.startPrice, buyDate: item?.buyDate };
+  const visibleSeries = isIntraday
+    ? intradaySnapshot
+      ? calculateIntradayAssetSeries(intradaySnapshot, intradayPosition)
+      : []
+    : filterSeriesByRange(assetSeries, assetRange);
   document.querySelectorAll('#asset-range-control [data-range]').forEach((button) => {
     button.setAttribute('aria-pressed', String(button.dataset.range === assetRange));
   });
-  $('#asset-range-label').textContent = RANGE_LABELS[assetRange];
+  let rangeLabel = RANGE_LABELS[assetRange];
+  const empty = $('#asset-chart-empty');
+  if (isIntraday && item) {
+    const isRefreshing = intradayMarketRefreshingIds.has(item.id);
+    const failed = intradayMarketFailedIds.has(item.id);
+    if (isRefreshing) rangeLabel += ' · updating';
+    else if (failed) rangeLabel += intradaySnapshot ? ' · cached' : ' · unavailable';
+    else if (intradaySnapshot) rangeLabel += ` · ${shortTime.format(Date.parse(intradaySnapshot.updatedAt))} UTC`;
+    empty.textContent = isRefreshing
+      ? 'Loading intraday prices…'
+      : failed
+        ? 'Intraday prices are temporarily unavailable.'
+        : 'Intraday prices are not available yet.';
+  } else {
+    empty.textContent = 'More daily closes are needed for this range.';
+  }
+  $('#asset-chart-title').textContent = isIntraday && item ? `${item.name} intraday` : 'Evolution since purchase';
+  $('#asset-range-label').textContent = rangeLabel;
   const first = visibleSeries[0]?.value;
   const last = visibleSeries.at(-1)?.value;
   const rangeReturn = Number.isFinite(first) && first > 0 && Number.isFinite(last)
@@ -410,12 +469,12 @@ function renderAssetRange() {
   setTrend($('#asset-range-return'), rangeReturn);
   drawValueChart({
     canvas: $('#asset-chart'),
-    empty: $('#asset-chart-empty'),
+    empty,
     series: visibleSeries,
     startOutput: $('#asset-chart-start'),
     endOutput: $('#asset-chart-end'),
     seriesLabel: `${holdings[activeAssetIndex]?.name ?? 'Asset'} position value`,
-    dateFormat: detailDate,
+    dateFormat: isIntraday ? intradayDate : detailDate,
   });
 }
 
@@ -458,6 +517,7 @@ function showAssetDetail(index) {
   activeAssetIndex = index;
   lastAssetIndex = index;
   assetRange = 'all';
+  clearIntradayMarketTimer();
   renderAssetDetail(index);
   document.querySelectorAll('[data-portfolio-view]').forEach((section) => { section.hidden = true; });
   $('#asset-detail').hidden = false;
@@ -469,6 +529,7 @@ function showAssetDetail(index) {
 function showPortfolioView(restoreScroll) {
   activeAssetIndex = null;
   assetSeries = [];
+  clearIntradayMarketTimer();
   $('#asset-detail').hidden = true;
   document.querySelectorAll('[data-portfolio-view]').forEach((section) => { section.hidden = false; });
   document.title = 'Crypto Allocation Desk';
@@ -525,6 +586,73 @@ function renderMarketChange() {
 function clearLiveMarketTimer() {
   if (liveMarketTimer !== null) window.clearTimeout(liveMarketTimer);
   liveMarketTimer = null;
+}
+
+function clearIntradayMarketTimer() {
+  if (intradayMarketTimer !== null) window.clearTimeout(intradayMarketTimer);
+  intradayMarketTimer = null;
+}
+
+function scheduleIntradayMarketRefresh(delay) {
+  clearIntradayMarketTimer();
+  const assetId = activeIntradayAssetId();
+  if (!liveMarketSettings.enabled || document.hidden || assetRange !== '1d' || !assetId) return;
+  const interval = liveMarketSettings.intervalMinutes * 60_000;
+  const updatedAt = Date.parse(getIntradayMarketSnapshot(assetId)?.updatedAt);
+  const remaining = Number.isFinite(updatedAt) ? Math.max(0, interval - (Date.now() - updatedAt)) : 0;
+  intradayMarketTimer = window.setTimeout(
+    () => refreshIntradayMarket(assetId),
+    delay ?? remaining,
+  );
+}
+
+async function refreshIntradayMarket(assetId = activeIntradayAssetId()) {
+  if (!assetId || document.hidden) {
+    scheduleIntradayMarketRefresh();
+    return;
+  }
+  if (assetId !== activeIntradayAssetId() || assetRange !== '1d' || intradayMarketRefreshingIds.has(assetId)) return;
+  const cached = getIntradayMarketSnapshot(assetId);
+  if (!isLiveMarketRefreshDue(cached, liveMarketSettings.intervalMinutes)) {
+    if (activeIntradayAssetId() === assetId && assetRange === '1d') renderAssetRange();
+    scheduleIntradayMarketRefresh();
+    return;
+  }
+
+  intradayMarketRefreshingIds.add(assetId);
+  intradayMarketFailedIds.delete(assetId);
+  if (activeIntradayAssetId() === assetId && assetRange === '1d') renderAssetRange();
+  let failed = false;
+  try {
+    const query = new URLSearchParams({
+      vs_currency: config.currency,
+      days: '1',
+      precision: 'full',
+    });
+    const response = await fetch(`${INTRADAY_MARKET_API}/${encodeURIComponent(assetId)}/market_chart?${query}`, {
+      cache: 'no-store',
+      headers: { accept: 'application/json' },
+      signal: AbortSignal.timeout(20_000),
+    });
+    if (!response.ok) throw new Error(`Intraday market request failed (${response.status}).`);
+    const snapshot = createIntradayMarketSnapshot(
+      await response.json(),
+      assetId,
+      config.currency,
+      new Date().toISOString(),
+    );
+    intradayMarketSnapshots = { ...intradayMarketSnapshots, [assetId]: snapshot };
+    intradayMarketFailedIds.delete(assetId);
+    writeStoredJson(INTRADAY_MARKET_CACHE_KEY, intradayMarketSnapshots);
+  } catch (error) {
+    failed = true;
+    intradayMarketFailedIds.add(assetId);
+    console.error(error);
+  } finally {
+    intradayMarketRefreshingIds.delete(assetId);
+    if (activeIntradayAssetId() === assetId && assetRange === '1d') renderAssetRange();
+    scheduleIntradayMarketRefresh(failed ? liveMarketSettings.intervalMinutes * 60_000 : undefined);
+  }
 }
 
 function scheduleLiveMarketRefresh(delay) {
@@ -590,6 +718,7 @@ function applyLiveMarketSettings(settings) {
   liveMarketSettings = normalizeLiveMarketSettings(settings);
   writeStoredJson(LIVE_MARKET_SETTINGS_KEY, liveMarketSettings);
   clearLiveMarketTimer();
+  clearIntradayMarketTimer();
   liveMarketRefreshFailed = false;
   if (liveMarketSettings.enabled
     && canUseLiveMarketSnapshot(liveMarketSnapshot, publishedMarket, supportedAssetIds())) {
@@ -599,6 +728,16 @@ function applyLiveMarketSettings(settings) {
   }
   renderMarketChange();
   scheduleLiveMarketRefresh();
+  scheduleIntradayMarketRefresh();
+}
+
+function initializeIntradayMarket() {
+  const cached = readStoredJson(INTRADAY_MARKET_CACHE_KEY);
+  intradayMarketSnapshots = Object.fromEntries(supportedAssetIds().flatMap((assetId) => (
+    canUseIntradayMarketSnapshot(cached?.[assetId], assetId, config.currency)
+      ? [[assetId, cached[assetId]]]
+      : []
+  )));
 }
 
 function initializeLiveMarket() {
@@ -663,15 +802,25 @@ function bindEvents() {
     if (!trigger) return;
     assetRange = trigger.dataset.range;
     renderAssetRange();
+    if (assetRange === '1d') refreshIntradayMarket();
+    else clearIntradayMarketTimer();
   });
   document.addEventListener('keydown', ({ key }) => {
     if (key === 'Escape' && activeAssetIndex !== null) closeAssetDetail();
   });
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) clearLiveMarketTimer();
-    else scheduleLiveMarketRefresh();
+    if (document.hidden) {
+      clearLiveMarketTimer();
+      clearIntradayMarketTimer();
+    } else {
+      scheduleLiveMarketRefresh();
+      scheduleIntradayMarketRefresh();
+    }
   });
-  window.addEventListener('online', () => scheduleLiveMarketRefresh(0));
+  window.addEventListener('online', () => {
+    scheduleLiveMarketRefresh(0);
+    scheduleIntradayMarketRefresh(0);
+  });
 }
 
 async function init() {
@@ -685,6 +834,7 @@ async function init() {
     if (responses.some((response) => !response.ok)) throw new Error('Dashboard data could not be loaded.');
     [config, publishedMarket, profileReports, profiles] = await Promise.all(responses.map((response) => response.json()));
     initializeLiveMarket();
+    initializeIntradayMarket();
     profiles = loadProfiles(profiles);
     const selector = $('#profile-selector');
     selector.replaceChildren(...profiles.map((profile) => {
