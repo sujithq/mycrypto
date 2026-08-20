@@ -103,7 +103,7 @@ function bindEvents() {
     renderFields($('#portfolio-fields'), config.defaultPortfolio, '1', 'local-asset');
     updateTotal('#portfolio-fields', '#allocation-total');
     $('#form-error').textContent = '';
-    $('#form-status').textContent = '';
+    $('#form-status').textContent = 'Reset to managed defaults.';
   });
   $('#portfolio-form').addEventListener('submit', (event) => {
     event.preventDefault();
