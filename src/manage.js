@@ -83,7 +83,7 @@ function buildPortfolio(fieldsSelector, sourcePortfolio) {
 
 function bindEvents() {
   $('#timeframe-days').value = String(config.timeframeDays ?? 30);
-  const managedIds = new Set(config.supportedAssets.map(({ id }) => id));
+  const supportedIds = new Set(config.supportedAssets.map(({ id }) => id));
   let localPortfolio = loadLocalPortfolio();
   renderFields($('#portfolio-fields'), localPortfolio, '1', 'local-asset');
   renderFields($('#management-fields'), config.defaultPortfolio, '0.01', 'managed-asset');
@@ -109,7 +109,7 @@ function bindEvents() {
   $('#portfolio-form').addEventListener('submit', (event) => {
     event.preventDefault();
     const portfolio = buildPortfolio('#portfolio-fields', localPortfolio);
-    if (!isValidPortfolio(portfolio, managedIds, config.totalInvestment)) {
+    if (!isValidPortfolio(portfolio, supportedIds, config.totalInvestment)) {
       $('#form-error').textContent = 'Choose ten unique assets with positive values totalling the configured investment.';
       $('#form-status').textContent = '';
       return;
