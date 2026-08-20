@@ -8,7 +8,7 @@ Actions workflow. Use Node.js 20 or newer.
 ```bash
 npm ci
 npm run check
-python3 -m http.server 8000
+python3 -m http.server 8000 --directory dist
 ```
 
 Open <http://localhost:8000> in a browser. The static server is needed because

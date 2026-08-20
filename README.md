@@ -56,7 +56,7 @@ Requires Node.js 20 or newer.
 npm ci
 npm test
 npm run build
-python3 -m http.server 8000
+python3 -m http.server 8000 --directory dist
 ```
 
 Open <http://localhost:8000>. To fetch live data locally, run
