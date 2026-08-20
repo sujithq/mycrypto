@@ -82,11 +82,12 @@ async function backfillHistory(history, ids, currency, startDate) {
   const from = Date.parse(`${startDate}T00:00:00Z`) / 1_000;
   const to = Date.now() / 1_000;
   const seriesByAsset = {};
-  for (const id of ids) {
+  for (const [index, id] of ids.entries()) {
     const url = `${API}/coins/${encodeURIComponent(id)}/market_chart/range?vs_currency=${encodeURIComponent(currency)}&from=${from}&to=${to}`;
     const result = await fetchJson(url);
     if (!Array.isArray(result?.prices)) throw new Error(`CoinGecko returned no historical prices for ${id}.`);
     seriesByAsset[id] = result.prices;
+    if (index < ids.length - 1) await sleep(5_000);
   }
   return combineHistoricalPrices(seriesByAsset, ids)
     .reduce((next, snapshot) => updateHistory(next, snapshot), history);
