@@ -50,6 +50,11 @@ export function getPortfolioAssetIds(portfolio) {
   return [...new Set(portfolio.map(({ id }) => id))];
 }
 
+export function updateHistory(history, snapshot) {
+  const next = history.filter((entry) => entry.date !== snapshot.date);
+  return [...next, snapshot].sort((a, b) => a.date.localeCompare(b.date)).slice(-366);
+}
+
 async function main() {
   console.log('Loading portfolio and existing market data…');
   const portfolioConfig = JSON.parse(await readFile(portfolioPath, 'utf8'));
@@ -80,16 +85,11 @@ async function main() {
     },
   ]));
 
-  const history = Array.isArray(market.history) ? market.history : [];
-
   const snapshot = {
     date,
     prices: Object.fromEntries(quotes.map((quote) => [quote.id, quote.current_price])),
   };
-  const existingIndex = history.findIndex((entry) => entry.date === date);
-  if (existingIndex >= 0) history[existingIndex] = snapshot;
-  else history.push(snapshot);
-  history = history.sort((a, b) => a.date.localeCompare(b.date)).slice(-366);
+  const history = updateHistory(Array.isArray(market.history) ? market.history : [], snapshot);
 
   console.log('Writing current market data…');
   await writeFile(marketPath, `${JSON.stringify({
