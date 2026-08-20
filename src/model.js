@@ -68,10 +68,15 @@ export function parseRealPortfolioJson(raw, supportedAssets) {
     const asset = supportedAssets.find(({ id, symbol }) =>
       id.toLowerCase() === key || symbol.toLowerCase() === key);
     if (!asset) throw new Error(`Unsupported asset: ${item.id ?? item.symbol ?? 'unknown'}`);
+    const amount = Number(item.amount ?? item.cost ?? item.actualCost);
+    const quantity = Number(item.quantity);
+    if (!Number.isFinite(amount) || amount <= 0 || !Number.isFinite(quantity) || quantity <= 0) {
+      throw new Error(`${asset.symbol} needs a positive quantity and cost.`);
+    }
     return {
       ...asset,
-      amount: Number(item.amount ?? item.cost ?? item.actualCost),
-      quantity: Number(item.quantity),
+      amount,
+      quantity,
       ...(item.buyDate ? { buyDate: item.buyDate } : {}),
       thesis: typeof item.thesis === 'string' && item.thesis.trim()
         ? item.thesis.trim()

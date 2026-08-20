@@ -132,6 +132,7 @@ test('parses pasted real holdings by symbol or asset id', () => {
     thesis: 'Manually managed real portfolio holding.',
   }]);
   assert.throws(() => parseRealPortfolioJson('[{"symbol":"NOPE"}]', supportedAssets), /Unsupported asset/);
+  assert.throws(() => parseRealPortfolioJson('[{"symbol":"A0"}]', supportedAssets), /positive quantity and cost/);
 });
 
 test('uses a profile buy date as the fallback for custom portfolio items', () => {
