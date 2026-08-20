@@ -22,10 +22,10 @@ Run the same data updater used by the scheduled workflow:
 npm run update-data
 ```
 
-A normal run reuses a complete snapshot already captured on the same UTC date,
-so running it again makes no CoinGecko requests. Use `npm run
-update-data:force` to refresh current quotes anyway. The scheduled 23:55 UTC
-workflow uses the forced command to ensure it captures a fresh daily close.
+A normal run reuses complete current quotes for up to five minutes. Once those
+quotes are five minutes old, another run fetches fresh prices and replaces the
+current UTC date's snapshot. Use `npm run update-data:force` to refresh current
+quotes sooner. The scheduled hourly workflow uses the forced command.
 
 The script fetches EUR quotes for the configured default portfolio from
 CoinGecko in one combined request, updates `data/market.json`, and regenerates

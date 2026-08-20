@@ -200,12 +200,12 @@ test('fills the public history window when the cache is empty', () => {
   });
 });
 
-test('reuses a complete current-day market snapshot unless refresh is forced', () => {
+test('reuses complete quotes for five minutes and refreshes stale intraday quotes', () => {
   const now = Date.parse('2026-08-20T12:00:00Z');
   const ids = [...supportedIds];
   const current = { date: '2026-08-20', prices: prices(400) };
   const market = {
-    updatedAt: '2026-08-20T09:37:40.996Z',
+    updatedAt: '2026-08-20T11:57:00.000Z',
     assets: Object.fromEntries(ids.map((id, index) => [id, { price: index + 1 }])),
     history: [...completeHistoryWindow(now), current],
   };
@@ -214,6 +214,10 @@ test('reuses a complete current-day market snapshot unless refresh is forced', (
     fetchCurrentQuotes: false,
     history: { gapDate: null, startDate: null, assetIds: [] },
   });
+  assert.equal(getMarketUpdatePlan({
+    ...market,
+    updatedAt: '2026-08-20T11:55:00.000Z',
+  }, ids, now).fetchCurrentQuotes, true);
   assert.equal(getMarketUpdatePlan(market, ids, now, true).fetchCurrentQuotes, true);
 });
 
@@ -225,7 +229,7 @@ test('fetches current quotes when the same-day cache is incomplete', () => {
   delete assets['asset-4'];
 
   assert.equal(getMarketUpdatePlan({
-    updatedAt: '2026-08-20T09:37:40.996Z',
+    updatedAt: '2026-08-20T11:57:00.000Z',
     assets,
     history: [...completeHistoryWindow(now), current],
   }, ids, now).fetchCurrentQuotes, true);

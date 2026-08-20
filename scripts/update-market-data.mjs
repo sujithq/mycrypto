@@ -10,6 +10,7 @@ const marketPath = path.join(root, 'data', 'market.json');
 const reportsPath = path.join(root, 'data', 'profile-reports.json');
 const API = 'https://api.coingecko.com/api/v3';
 const PUBLIC_HISTORY_DAYS = 365;
+const CURRENT_QUOTES_MAX_AGE_MS = 5 * 60_000;
 
 const sleep = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
 
@@ -132,10 +133,13 @@ export function getHistoryBackfillPlan(history, ids, timestamp = Date.now()) {
 
 export function getMarketUpdatePlan(market, ids, timestamp = Date.now(), forceCurrentQuotes = false) {
   const updatedAt = Date.parse(market?.updatedAt);
+  const quoteAge = timestamp - updatedAt;
   const assets = market?.assets ?? {};
   const history = Array.isArray(market?.history) ? market.history : [];
   const currentSnapshot = history.find(({ date }) => date === utcDate(timestamp));
   const hasCurrentQuotes = Number.isFinite(updatedAt)
+    && quoteAge >= 0
+    && quoteAge < CURRENT_QUOTES_MAX_AGE_MS
     && utcDate(updatedAt) === utcDate(timestamp)
     && Object.keys(assets).length === ids.length
     && ids.every((id) => Number.isFinite(assets[id]?.price))
