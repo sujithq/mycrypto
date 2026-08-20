@@ -4,20 +4,29 @@ export function isValidDate(date) {
   return Number.isFinite(parsed.getTime()) && parsed.toISOString().slice(0, 10) === date;
 }
 
+export function normalizePortfolioInvestments(portfolio) {
+  if (!Array.isArray(portfolio)) return portfolio;
+  return portfolio.map(({ amount, ...item }) => ({
+    ...item,
+    investedAmount: item.investedAmount ?? amount,
+  }));
+}
+
 export function isValidPortfolio(portfolio, supportedIds, target = 500) {
   if (!Array.isArray(portfolio) || portfolio.length === 0) return false;
   const ids = portfolio.map(({ id }) => id);
   if (ids.some((id) => !supportedIds.has(id))) return false;
-  const amounts = portfolio.map(({ amount }) => Number(amount));
+  const investedAmounts = portfolio.map(({ investedAmount }) => Number(investedAmount));
   const dates = portfolio.map(({ buyDate }) => buyDate).filter(Boolean);
   const purchases = portfolio.map(({ id, buyDate }) => `${id}:${buyDate ?? ''}`);
   const repeatedIds = ids.filter((id, index) => ids.indexOf(id) !== index);
   if (repeatedIds.some((id) =>
     portfolio.some((item) => item.id === id && !item.buyDate))
     || new Set(purchases).size !== purchases.length) return false;
-  return amounts.every((amount) => Number.isFinite(amount) && amount > 0)
+  return investedAmounts.every((investedAmount) =>
+    Number.isFinite(investedAmount) && investedAmount > 0)
     && dates.every(isValidDate)
-    && Math.abs(amounts.reduce((sum, amount) => sum + amount, 0) - target) < 0.01;
+    && Math.abs(investedAmounts.reduce((sum, investedAmount) => sum + investedAmount, 0) - target) < 0.01;
 }
 
 export function isValidRealPortfolio(portfolio, supportedIds) {
@@ -26,8 +35,8 @@ export function isValidRealPortfolio(portfolio, supportedIds) {
   const purchases = portfolio.map(({ id, buyDate }) => `${id}:${buyDate ?? ''}`);
   const dates = portfolio.map(({ buyDate }) => buyDate).filter(Boolean);
   return ids.every((id) => supportedIds.has(id))
-    && portfolio.every(({ amount, quantity }) =>
-      Number.isFinite(Number(amount)) && Number(amount) > 0
+    && portfolio.every(({ investedAmount, quantity }) =>
+      Number.isFinite(Number(investedAmount)) && Number(investedAmount) > 0
       && Number.isFinite(Number(quantity)) && Number(quantity) > 0)
     && dates.every(isValidDate)
     && new Set(purchases).size === purchases.length;
@@ -72,14 +81,15 @@ export function parseRealPortfolioJson(raw, supportedAssets) {
     const asset = supportedAssets.find(({ id, symbol }) =>
       id.toLowerCase() === key || symbol.toLowerCase() === key);
     if (!asset) throw new Error(`Unsupported asset: ${item.id ?? item.symbol ?? 'unknown'}`);
-    const amount = Number(item.amount ?? item.cost ?? item.actualCost);
+    const investedAmount = Number(item.investedAmount ?? item.amount ?? item.cost ?? item.actualCost);
     const quantity = Number(item.quantity);
-    if (!Number.isFinite(amount) || amount <= 0 || !Number.isFinite(quantity) || quantity <= 0) {
-      throw new Error(`${asset.symbol} needs a positive quantity and cost.`);
+    if (!Number.isFinite(investedAmount) || investedAmount <= 0
+      || !Number.isFinite(quantity) || quantity <= 0) {
+      throw new Error(`${asset.symbol} needs a positive quantity and invested amount.`);
     }
     return {
       ...asset,
-      amount,
+      investedAmount,
       quantity,
       ...(item.buyDate ? { buyDate: item.buyDate } : {}),
       thesis: typeof item.thesis === 'string' && item.thesis.trim()
@@ -111,11 +121,11 @@ export function filterHistoryByTimeframe(history, timeframeDays) {
 export function calculateSeries(portfolio, history, timeframeDays) {
   const baseline = getBaselinePrices(portfolio, history);
   return filterHistoryByTimeframe(history, timeframeDays).flatMap((entry) => {
-    const values = portfolio.map(({ id, amount, buyDate }, index) => {
+    const values = portfolio.map(({ id, investedAmount, buyDate }, index) => {
       const startPrice = baseline[index];
       const price = entry.prices?.[id];
       return (!buyDate || entry.date >= buyDate) && Number.isFinite(startPrice) && Number.isFinite(price) && startPrice > 0
-        ? amount * (price / startPrice)
+        ? investedAmount * (price / startPrice)
         : null;
     });
     const total = values.reduce((sum, value) => sum + value, 0);
@@ -132,9 +142,11 @@ export function calculateHoldings(portfolio, history, assets) {
     const startPrice = baseline[index];
     const currentPrice = quote.price;
     const value = Number.isFinite(startPrice) && startPrice > 0 && Number.isFinite(currentPrice)
-      ? item.amount * (currentPrice / startPrice)
+      ? item.investedAmount * (currentPrice / startPrice)
       : null;
-    const returnPct = value === null ? null : ((value - item.amount) / item.amount) * 100;
+    const returnPct = value === null
+      ? null
+      : ((value - item.investedAmount) / item.investedAmount) * 100;
     return { ...item, ...quote, startPrice, value, returnPct };
   });
 }
@@ -152,11 +164,13 @@ export function calculateRealHoldings(portfolio, assets) {
   return portfolio.map((item) => {
     const quote = assets[item.id] ?? {};
     const value = Number.isFinite(quote.price) ? Number(item.quantity) * quote.price : null;
-    const returnPct = value === null ? null : ((value - item.amount) / item.amount) * 100;
+    const returnPct = value === null
+      ? null
+      : ((value - item.investedAmount) / item.investedAmount) * 100;
     return {
       ...item,
       ...quote,
-      startPrice: item.amount / item.quantity,
+      startPrice: item.investedAmount / item.quantity,
       value,
       returnPct,
     };
@@ -192,7 +206,7 @@ export function createAnalysisReport(history, portfolio, generatedAt = new Date(
     if (!Number.isFinite(startPrice) || !Number.isFinite(endPrice) || startPrice <= 0) return [];
     return [{
       symbol: asset.symbol,
-      amount: asset.amount,
+      investedAmount: asset.investedAmount,
       changePct: ((endPrice - startPrice) / startPrice) * 100,
     }];
   });
@@ -209,9 +223,9 @@ export function createAnalysisReport(history, portfolio, generatedAt = new Date(
       observations: ['The report will be published when every portfolio asset has comparable prices.'],
     };
   }
-  const totalAmount = changes.reduce((sum, asset) => sum + asset.amount, 0);
-  const portfolioChangePct = totalAmount
-    ? changes.reduce((sum, asset) => sum + asset.changePct * asset.amount, 0) / totalAmount
+  const totalInvestedAmount = changes.reduce((sum, asset) => sum + asset.investedAmount, 0);
+  const portfolioChangePct = totalInvestedAmount
+    ? changes.reduce((sum, asset) => sum + asset.changePct * asset.investedAmount, 0) / totalInvestedAmount
     : null;
   const ranked = [...changes].sort((a, b) => b.changePct - a.changePct);
   const best = ranked[0] ?? null;

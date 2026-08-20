@@ -5,6 +5,7 @@ import {
   calculateSeries,
   createAnalysisReport,
   isValidPortfolio,
+  normalizePortfolioInvestments,
   resolveProfilePortfolio,
 } from './model.js';
 
@@ -42,14 +43,15 @@ function element(tag, className, text) {
   return node;
 }
 
-function normalizePortfolio(saved) {
+function normalizeSavedPortfolio(saved) {
+  const normalized = normalizePortfolioInvestments(saved);
   const supportedIds = new Set(config.supportedAssets.map(({ id }) => id));
-  if (!isValidPortfolio(saved, supportedIds, config.totalInvestment)) return null;
-  return saved.map((item) => {
+  if (!isValidPortfolio(normalized, supportedIds, config.totalInvestment)) return null;
+  return normalized.map((item) => {
     const asset = config.supportedAssets.find(({ id }) => id === item.id);
     return {
       ...asset,
-      amount: Number(item.amount),
+      investedAmount: Number(item.investedAmount),
       buyDate: item.buyDate,
       thesis: item.thesis ?? 'Custom selection from the tracked asset universe.',
     };
@@ -66,13 +68,13 @@ function loadProfiles(fileProfiles) {
     const local = JSON.parse(localStorage.getItem(PROFILES_STORAGE_KEY));
     const custom = Array.isArray(local)
       ? local.flatMap((profile) => {
-        const normalized = normalizePortfolio(profile.portfolio);
+        const normalized = normalizeSavedPortfolio(profile.portfolio);
         return normalized && profile.id && profile.name
           ? [{ ...profile, source: 'local', portfolio: normalized }]
           : [];
       })
       : [];
-    const legacy = normalizePortfolio(JSON.parse(localStorage.getItem(LEGACY_STORAGE_KEY)));
+    const legacy = normalizeSavedPortfolio(JSON.parse(localStorage.getItem(LEGACY_STORAGE_KEY)));
     if (legacy && !custom.some(({ id }) => id === 'legacy')) {
       custom.push({ id: 'legacy', name: 'My saved portfolio', source: 'local', portfolio: legacy });
       localStorage.setItem(PROFILES_STORAGE_KEY, JSON.stringify(custom));
@@ -105,14 +107,14 @@ function selectProfile(id) {
 }
 
 function renderMetrics(holdings, series) {
-  const invested = portfolio.reduce((sum, item) => sum + item.amount, 0);
+  const invested = portfolio.reduce((sum, item) => sum + item.investedAmount, 0);
   const valued = holdings.filter(({ value }) => Number.isFinite(value));
   const current = valued.length === holdings.length
     ? valued.reduce((sum, item) => sum + item.value, 0)
     : null;
   const totalReturnPct = current === null ? null : ((current - invested) / invested) * 100;
   const weighted24h = holdings.every(({ change24hPct }) => Number.isFinite(change24hPct))
-    ? holdings.reduce((sum, item) => sum + item.change24hPct * item.amount, 0) / invested
+    ? holdings.reduce((sum, item) => sum + item.change24hPct * item.investedAmount, 0) / invested
     : null;
 
   $('#invested-value').textContent = euro.format(invested);
@@ -141,11 +143,11 @@ function renderHoldings(holdings) {
     assetCell.append(assetWrap);
 
     const allocationCell = document.createElement('td');
-    allocationCell.append(`${euro.format(item.amount)} `);
+    allocationCell.append(`${euro.format(item.investedAmount)} `);
     const bar = element('span', 'allocation-bar');
     const fill = document.createElement('i');
-    const invested = portfolio.reduce((sum, holding) => sum + holding.amount, 0);
-    fill.style.width = `${Math.min(100, item.amount / invested * 100)}%`;
+    const invested = portfolio.reduce((sum, holding) => sum + holding.investedAmount, 0);
+    fill.style.width = `${Math.min(100, item.investedAmount / invested * 100)}%`;
     bar.append(fill);
     allocationCell.append(bar);
 

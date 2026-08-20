@@ -21,12 +21,14 @@ function normalizeDate(dateInput) {
   return date;
 }
 
-export function calculateMarketQuantity(assetInput, amountInput, portfolioConfig, market, dateInput) {
+export function calculateMarketQuantity(assetInput, investedAmountInput, portfolioConfig, market, dateInput) {
   const assetKey = String(assetInput ?? '').trim().toLowerCase();
-  const amount = Number(amountInput);
+  const investedAmount = Number(investedAmountInput);
   const date = normalizeDate(dateInput);
   if (!assetKey) throw new Error('Provide an asset symbol or CoinGecko ID.');
-  if (!Number.isFinite(amount) || amount <= 0) throw new Error('Amount must be a positive number.');
+  if (!Number.isFinite(investedAmount) || investedAmount <= 0) {
+    throw new Error('Invested amount must be a positive number.');
+  }
 
   const asset = portfolioConfig.supportedAssets?.find(({ id, symbol }) =>
     id.toLowerCase() === assetKey || symbol.toLowerCase() === assetKey);
@@ -48,10 +50,10 @@ export function calculateMarketQuantity(assetInput, amountInput, portfolioConfig
     id: asset.id,
     symbol: asset.symbol,
     name: asset.name,
-    amount,
+    investedAmount,
     currency: String(market.currency ?? portfolioConfig.currency ?? '').toUpperCase(),
     price,
-    quantity: amount / price,
+    quantity: investedAmount / price,
     date: date ?? market.updatedAt?.slice(0, 10) ?? null,
     updatedAt: market.updatedAt ?? null,
     source: market.source ?? null,
@@ -104,14 +106,14 @@ export async function fetchHistoricalPrice(assetId, currency, date, options) {
 
 export async function calculateMarketQuantityWithFallback(
   assetInput,
-  amountInput,
+  investedAmountInput,
   portfolioConfig,
   market,
   dateInput,
   options,
 ) {
   try {
-    return calculateMarketQuantity(assetInput, amountInput, portfolioConfig, market, dateInput);
+    return calculateMarketQuantity(assetInput, investedAmountInput, portfolioConfig, market, dateInput);
   } catch (error) {
     const date = normalizeDate(dateInput);
     const isDatedCacheMiss = date
@@ -129,7 +131,7 @@ export async function calculateMarketQuantityWithFallback(
       throw new Error(`No cached market price for ${asset.symbol} on ${date}. CoinGecko's public API only provides the latest 365 days; the earliest retrievable full UTC date is ${publicStart}.`);
     }
     const online = await fetchHistoricalPrice(asset.id, currency, date, requestOptions);
-    const result = calculateMarketQuantity(assetInput, amountInput, portfolioConfig, {
+    const result = calculateMarketQuantity(assetInput, investedAmountInput, portfolioConfig, {
       ...market,
       history: [{ date, prices: { [asset.id]: online.price } }],
     }, date);
@@ -141,14 +143,14 @@ export async function calculateMarketQuantityWithFallback(
   }
 }
 
-async function main([assetInput, amountInput, dateInput]) {
+async function main([assetInput, investedAmountInput, dateInput]) {
   const [portfolioConfig, market] = await Promise.all([
     readFile(path.join(repositoryRoot, 'data', 'portfolio.json'), 'utf8').then(JSON.parse),
     readFile(path.join(repositoryRoot, 'data', 'market.json'), 'utf8').then(JSON.parse),
   ]);
   const result = await calculateMarketQuantityWithFallback(
     assetInput,
-    amountInput,
+    investedAmountInput,
     portfolioConfig,
     market,
     dateInput,

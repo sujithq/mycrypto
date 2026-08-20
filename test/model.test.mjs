@@ -36,7 +36,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const portfolio = Array.from({ length: 10 }, (_, index) => ({
   id: `asset-${index}`,
   symbol: `A${index}`,
-  amount: 50,
+  investedAmount: 50,
 }));
 const supportedIds = new Set(portfolio.map(({ id }) => id));
 const prices = (multiplier) => Object.fromEntries(portfolio.map(({ id }, index) => [id, (index + 1) * multiplier]));
@@ -211,16 +211,16 @@ test('merges downloaded history without replacing existing asset prices', () => 
 
 test('accepts positive purchases totalling €500', () => {
   assert.equal(isValidPortfolio(portfolio, supportedIds), true);
-  assert.equal(isValidPortfolio([{ ...portfolio[0], amount: 500 }], supportedIds), true);
+  assert.equal(isValidPortfolio([{ ...portfolio[0], investedAmount: 500 }], supportedIds), true);
   assert.equal(isValidPortfolio([], supportedIds), false);
-  assert.equal(isValidPortfolio(portfolio.map((item, index) => ({ ...item, amount: index ? 50 : 40 })), supportedIds), false);
+  assert.equal(isValidPortfolio(portfolio.map((item, index) => ({ ...item, investedAmount: index ? 50 : 40 })), supportedIds), false);
   assert.equal(isValidPortfolio(portfolio.map((item, index) => index ? item : { ...item, buyDate: '2026-02-31' }), supportedIds), false);
 });
 
 test('accepts repeated assets only with different buy dates', () => {
   const repeated = [
-    { ...portfolio[0], amount: 250, buyDate: '2026-08-11' },
-    { ...portfolio[0], amount: 250, buyDate: '2026-08-18' },
+    { ...portfolio[0], investedAmount: 250, buyDate: '2026-08-11' },
+    { ...portfolio[0], investedAmount: 250, buyDate: '2026-08-18' },
   ];
   assert.equal(isValidPortfolio(repeated, supportedIds), true);
   assert.equal(isValidPortfolio(repeated.map((item) => ({ ...item, buyDate: '2026-08-11' })), supportedIds), false);
@@ -244,8 +244,8 @@ test('validates profiles with custom portfolios', () => {
 
 test('validates real portfolios without requiring the simulated €500 total', () => {
   const real = [
-    { ...portfolio[0], amount: 1200, quantity: 0.05, buyDate: '2026-08-11' },
-    { ...portfolio[1], amount: 800, quantity: 0.4, buyDate: '2026-08-18' },
+    { ...portfolio[0], investedAmount: 1200, quantity: 0.05, buyDate: '2026-08-11' },
+    { ...portfolio[1], investedAmount: 800, quantity: 0.4, buyDate: '2026-08-18' },
   ];
   assert.equal(isValidRealPortfolio(real, supportedIds), true);
   assert.equal(isValidProfile({ id: 'client-a', name: 'Client A', type: 'real', portfolio: real }, supportedIds, portfolio), true);
@@ -259,13 +259,13 @@ test('parses pasted real holdings by symbol or asset id', () => {
     { symbol: 'A0', quantity: 2, cost: 100, buyDate: '2026-08-11' },
   ]), supportedAssets), [{
     ...supportedAssets[0],
-    amount: 100,
+    investedAmount: 100,
     quantity: 2,
     buyDate: '2026-08-11',
     thesis: 'Manually managed real portfolio holding.',
   }]);
   assert.throws(() => parseRealPortfolioJson('[{"symbol":"NOPE"}]', supportedAssets), /Unsupported asset/);
-  assert.throws(() => parseRealPortfolioJson('[{"symbol":"A0"}]', supportedAssets), /positive quantity and cost/);
+  assert.throws(() => parseRealPortfolioJson('[{"symbol":"A0"}]', supportedAssets), /positive quantity and invested amount/);
 });
 
 test('parses generated real profile JSON', () => {
@@ -275,17 +275,28 @@ test('parses generated real profile JSON', () => {
     name: 'Client A',
     type: 'real',
     portfolio: [
-      { id: supportedAssets[0].id, amount: 100, quantity: 2, buyDate: '2026-08-11' },
+      { id: supportedAssets[0].id, investedAmount: 100, quantity: 2, buyDate: '2026-08-11' },
     ],
   };
 
   assert.deepEqual(parseRealPortfolioJson(JSON.stringify(generatedProfile), supportedAssets), [{
     ...supportedAssets[0],
-    amount: 100,
+    investedAmount: 100,
     quantity: 2,
     buyDate: '2026-08-11',
     thesis: 'Manually managed real portfolio holding.',
   }]);
+});
+
+test('normalizes real holding investment fields to investedAmount', () => {
+  const supportedAssets = portfolio.map(({ id, symbol }) => ({ id, symbol, name: id }));
+  const parsed = parseRealPortfolioJson(JSON.stringify([
+    { symbol: 'A0', investedAmount: 100, quantity: 2 },
+    { symbol: 'A1', amount: 50, quantity: 1 },
+  ]), supportedAssets);
+
+  assert.deepEqual(parsed.map(({ investedAmount }) => investedAmount), [100, 50]);
+  assert.equal(parsed.some((item) => Object.hasOwn(item, 'amount')), false);
 });
 
 test('uses a profile buy date as the fallback for custom portfolio items', () => {
@@ -309,8 +320,8 @@ test('adds configured asset metadata to sparse profile holdings', () => {
     name: 'Test',
     buyDate: '2026-03-01',
     portfolio: [
-      { id: portfolio[0].id, amount: 250 },
-      { id: 'supported-only', amount: 250, thesis: 'Profile description.' },
+      { id: portfolio[0].id, investedAmount: 250 },
+      { id: 'supported-only', investedAmount: 250, thesis: 'Profile description.' },
     ],
   };
   const supportedAssets = [
@@ -321,12 +332,12 @@ test('adds configured asset metadata to sparse profile holdings', () => {
   assert.deepEqual(resolved[0], {
     ...supportedAssets[0],
     ...portfolio[0],
-    amount: 250,
+    investedAmount: 250,
     buyDate: '2026-03-01',
   });
   assert.deepEqual(resolved[1], {
     ...supportedAssets[1],
-    amount: 250,
+    investedAmount: 250,
     thesis: 'Profile description.',
     buyDate: '2026-03-01',
   });
@@ -338,8 +349,8 @@ test('validates repeated profile assets using the profile buy-date fallback', ()
     name: 'Repeat fallback',
     buyDate: '2026-08-11',
     portfolio: [
-      { ...portfolio[0], amount: 250 },
-      { ...portfolio[0], amount: 250, buyDate: '2026-08-18' },
+      { ...portfolio[0], investedAmount: 250 },
+      { ...portfolio[0], investedAmount: 250, buyDate: '2026-08-18' },
     ],
   };
   assert.equal(isValidProfile(profile, supportedIds, portfolio), true);
@@ -364,8 +375,8 @@ test('uses optional buy dates as each asset baseline', () => {
 
 test('uses separate baselines for repeated asset purchases', () => {
   const repeated = [
-    { ...portfolio[0], amount: 250, buyDate: '2026-08-11' },
-    { ...portfolio[0], amount: 250, buyDate: '2026-08-18' },
+    { ...portfolio[0], investedAmount: 250, buyDate: '2026-08-11' },
+    { ...portfolio[0], investedAmount: 250, buyDate: '2026-08-18' },
   ];
   assert.deepEqual(calculateSeries(repeated, history), [
     { date: '2026-08-18', value: 525 },
@@ -388,8 +399,8 @@ test('calculates current holding values and returns', () => {
   assert.equal(holdings[0].returnPct, 20);
 });
 
-test('calculates real holdings from quantities and actual cost', () => {
-  const real = [{ ...portfolio[0], amount: 40, quantity: 2, buyDate: '2026-08-11' }];
+test('calculates real holdings from quantities and invested amounts', () => {
+  const real = [{ ...portfolio[0], investedAmount: 40, quantity: 2, buyDate: '2026-08-11' }];
   const assets = { [portfolio[0].id]: { price: 30, change24hPct: 2 } };
   assert.deepEqual(calculateRealSeries(real, history), [
     { date: '2026-08-11', value: 20 },
@@ -422,7 +433,7 @@ test('creates an identified report for every published profile', () => {
       id: 'extra',
       name: 'Extra',
       type: 'real',
-      portfolio: [{ id: extraAsset.id, amount: 500, quantity: 50, buyDate: '2026-08-11' }],
+      portfolio: [{ id: extraAsset.id, investedAmount: 500, quantity: 50, buyDate: '2026-08-11' }],
     },
   ];
   const result = createProfileReports(completeHistory, profiles, {

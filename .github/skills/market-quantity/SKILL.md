@@ -4,7 +4,7 @@ description: Calculate the quantity of a supported crypto asset that can be boug
 license: MIT
 metadata:
   author: sujithq
-  version: "1.3.0"
+  version: "1.4.0"
 ---
 
 # Market Quantity
@@ -15,7 +15,7 @@ market snapshot.
 ## Inputs
 
 - Asset: a supported symbol or CoinGecko ID, matched case-insensitively.
-- Amount: a positive number denominated in `data/market.json`'s `currency`.
+- Invested amount: a positive number denominated in `data/market.json`'s `currency`.
 - Date: optional `YYYY-MM-DD` date for an exact historical snapshot. Omit it to
   use the latest stored quote.
 
@@ -28,15 +28,15 @@ market snapshot.
    ```
 
 2. Read the JSON result.
-3. Return the asset name and symbol, requested fiat amount and currency, unit price,
-   calculated quantity, market timestamp, and source.
+3. Return the asset name and symbol, requested fiat amount as `investedAmount`,
+   currency, unit price, calculated quantity, market timestamp, and source.
 4. State whether the result used `data/market.json` or an online CoinGecko
   fallback. When a date was supplied, identify it as a historical simulation.
 
 The calculation is:
 
 $$
-\text{quantity} = \frac{\text{amount}}{\text{market price}}
+	ext{quantity} = \frac{\text{invested amount}}{\text{market price}}
 $$
 
 ## Rules
@@ -55,8 +55,8 @@ $$
 - Match a supplied date exactly. Do not silently use a nearby snapshot when the
   requested date is unavailable from both the cache and CoinGecko.
 - Preserve enough decimal places for the result to reconstruct the requested
-  amount accurately. Include the unrounded quantity when precision matters.
-- If the asset, amount, or price is invalid, or CoinGecko cannot return the
+  invested amount accurately. Include the unrounded quantity when precision matters.
+- If the asset, invested amount, or price is invalid, or CoinGecko cannot return the
   requested date, return the calculator error rather than estimating.
 
 ## Example

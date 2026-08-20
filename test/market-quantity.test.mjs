@@ -34,7 +34,7 @@ test('calculates quantity from a case-insensitive asset symbol', () => {
     id: 'tars-protocol',
     symbol: 'TAI',
     name: 'TARS AI',
-    amount: 250,
+    investedAmount: 250,
     currency: 'EUR',
     price: 0.01,
     quantity: 25_000,
@@ -44,10 +44,10 @@ test('calculates quantity from a case-insensitive asset symbol', () => {
   });
 });
 
-test('accepts a CoinGecko asset ID and numeric string amount', () => {
+test('accepts a CoinGecko asset ID and numeric string invested amount', () => {
   const result = calculateMarketQuantity('bitcoin', '250', portfolioConfig, market);
   assert.equal(result.quantity, 0.005);
-  assert.equal(result.amount, 250);
+  assert.equal(result.investedAmount, 250);
 });
 
 test('calculates quantity from an exact historical market date', () => {

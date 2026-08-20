@@ -1,6 +1,7 @@
 import {
   isValidPortfolio,
   isValidProfile,
+  normalizePortfolioInvestments,
   parseRealPortfolioJson,
   resolveProfilePortfolio,
 } from './model.js';
@@ -21,7 +22,7 @@ function element(tag, className, text) {
   return node;
 }
 
-function renderFields(fields, portfolio, amountStep = '0.01', idPrefix = 'asset', type = 'simulated') {
+function renderFields(fields, portfolio, investedAmountStep = '0.01', idPrefix = 'asset', type = 'simulated') {
   fields.replaceChildren();
 
   portfolio.forEach((item, index) => {
@@ -41,16 +42,16 @@ function renderFields(fields, portfolio, amountStep = '0.01', idPrefix = 'asset'
       select.append(option);
     });
 
-    const amountWrap = element('div', 'amount-field');
-    const amount = document.createElement('input');
-    amount.name = 'amount';
-    amount.type = 'number';
-    amount.min = '0.01';
-    if (type !== 'real') amount.max = String(config.totalInvestment);
-    amount.step = amountStep;
-    amount.value = String(item.amount);
-    amount.setAttribute('aria-label', `Actual invested value ${index + 1}`);
-    amountWrap.append(amount);
+    const investedAmountWrap = element('div', 'invested-amount-field');
+    const investedAmount = document.createElement('input');
+    investedAmount.name = 'investedAmount';
+    investedAmount.type = 'number';
+    investedAmount.min = '0.01';
+    if (type !== 'real') investedAmount.max = String(config.totalInvestment);
+    investedAmount.step = investedAmountStep;
+    investedAmount.value = String(item.investedAmount);
+    investedAmount.setAttribute('aria-label', `Invested amount ${index + 1}`);
+    investedAmountWrap.append(investedAmount);
 
     const quantity = document.createElement('input');
     quantity.name = 'quantity';
@@ -74,15 +75,16 @@ function renderFields(fields, portfolio, amountStep = '0.01', idPrefix = 'asset'
     remove.dataset.index = String(index);
     remove.setAttribute('aria-label', `Remove asset ${index + 1}`);
 
-    row.append(label, select, amountWrap, quantity, buyDate, remove);
+    row.append(label, select, investedAmountWrap, quantity, buyDate, remove);
     fields.append(row);
   });
 }
 
 function updateTotal(fieldsSelector, outputSelector) {
-  const total = [...document.querySelectorAll(`${fieldsSelector} input[name="amount"]`)]
+  const total = [...document.querySelectorAll(`${fieldsSelector} input[name="investedAmount"]`)]
     .map(({ value }) => Number(value))
-    .reduce((sum, amount) => sum + (Number.isFinite(amount) ? amount : 0), 0);
+    .reduce((sum, investedAmount) =>
+      sum + (Number.isFinite(investedAmount) ? investedAmount : 0), 0);
   const output = $(outputSelector);
   output.textContent = euro.format(total);
   const isReal = fieldsSelector === '#management-fields' && $('#managed-profile-type')?.value === 'real';
@@ -96,7 +98,8 @@ function buildPortfolio(fieldsSelector, sourcePortfolio) {
   const fields = $(fieldsSelector);
   const rows = [...fields.querySelectorAll('.portfolio-field')];
   const ids = [...fields.querySelectorAll('select[name="asset"]')].map(({ value }) => value);
-  const amounts = [...fields.querySelectorAll('input[name="amount"]')].map(({ value }) => Number(value));
+  const investedAmounts = [...fields.querySelectorAll('input[name="investedAmount"]')]
+    .map(({ value }) => Number(value));
   const buyDates = [...fields.querySelectorAll('input[name="buyDate"]')].map(({ value }) => value);
   const quantities = [...fields.querySelectorAll('input[name="quantity"]')].map(({ value }) => value);
 
@@ -105,7 +108,7 @@ function buildPortfolio(fieldsSelector, sourcePortfolio) {
     const existing = sourcePortfolio.find((asset) => asset.id === id);
     return {
       ...selected,
-      amount: amounts[index],
+      investedAmount: investedAmounts[index],
       ...(quantities[index] ? { quantity: Number(quantities[index]) } : {}),
       buyDate: buyDates[index] || undefined,
       thesis: existing?.thesis ?? rows[index]?.dataset.thesis ?? 'Managed default portfolio selection.',
@@ -113,23 +116,23 @@ function buildPortfolio(fieldsSelector, sourcePortfolio) {
   });
 }
 
-function addAsset(fieldsSelector, totalSelector, idPrefix, amountStep) {
+function addAsset(fieldsSelector, totalSelector, idPrefix, investedAmountStep) {
   const current = buildPortfolio(fieldsSelector, []);
   current.push({
     ...config.supportedAssets[0],
-    amount: 1,
+    investedAmount: 1,
     thesis: 'Managed default portfolio selection.',
   });
   const type = fieldsSelector === '#management-fields' ? $('#managed-profile-type').value : 'simulated';
-  renderFields($(fieldsSelector), current, amountStep, idPrefix, type);
+  renderFields($(fieldsSelector), current, investedAmountStep, idPrefix, type);
   updateTotal(fieldsSelector, totalSelector);
 }
 
-function removeAsset(fieldsSelector, totalSelector, idPrefix, amountStep, index) {
+function removeAsset(fieldsSelector, totalSelector, idPrefix, investedAmountStep, index) {
   const current = buildPortfolio(fieldsSelector, []);
   current.splice(index, 1);
   const type = fieldsSelector === '#management-fields' ? $('#managed-profile-type').value : 'simulated';
-  renderFields($(fieldsSelector), current, amountStep, idPrefix, type);
+  renderFields($(fieldsSelector), current, investedAmountStep, idPrefix, type);
   updateTotal(fieldsSelector, totalSelector);
 }
 
@@ -343,7 +346,7 @@ function bindEvents() {
     }
     if (!validProfile) {
       $('#management-error').textContent = profileType === 'real'
-        ? 'Choose valid holdings with positive quantities and cost values. Repeated assets need different buy dates.'
+        ? 'Choose valid holdings with positive quantities and invested amounts. Repeated assets need different buy dates.'
         : 'Choose one or more valid purchases with positive values totalling the configured investment. Repeated assets need different buy dates.';
       return;
     }
@@ -357,9 +360,13 @@ function loadLocalProfiles() {
     const saved = JSON.parse(localStorage.getItem(PROFILES_STORAGE_KEY));
     const supportedIds = new Set(config.supportedAssets.map(({ id }) => id));
     return Array.isArray(saved)
-      ? saved.filter((profile) =>
-        profile?.id && profile?.name
-        && isValidPortfolio(profile.portfolio, supportedIds, config.totalInvestment))
+      ? saved.flatMap((profile) => {
+        const portfolio = normalizePortfolioInvestments(profile?.portfolio);
+        return profile?.id && profile?.name
+          && isValidPortfolio(portfolio, supportedIds, config.totalInvestment)
+          ? [{ ...profile, portfolio }]
+          : [];
+      })
       : [];
   } catch {
     return [];

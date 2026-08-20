@@ -236,9 +236,9 @@ select, input {
   background: var(--canvas);
 }
 select:focus-visible, input:focus-visible, button:focus-visible, a:focus-visible { outline: 2px solid var(--acid); outline-offset: 2px; }
-.amount-field { position: relative; }
-.amount-field::before { position: absolute; z-index: 1; top: 11px; left: 11px; content: "€"; color: var(--dim); }
-.amount-field input { padding-left: 26px; }
+.invested-amount-field { position: relative; }
+.invested-amount-field::before { position: absolute; z-index: 1; top: 11px; left: 11px; content: "€"; color: var(--dim); }
+.invested-amount-field input { padding-left: 26px; }
 .allocation-total { margin: 20px 0 5px; color: var(--muted); text-align: right; }
 .form-error { min-height: 1.2em; color: var(--danger); font-size: .75rem; text-align: right; }
 .form-status { min-height: 1.2em; color: var(--acid); font-size: .75rem; text-align: right; }
@@ -288,7 +288,7 @@ noscript { position: fixed; inset: auto 0 0; padding: 1rem; color: var(--canvas)
   footer p:last-child { text-align: left; }
   .header-actions { gap: 10px; }
   .portfolio-field { grid-template-columns: 28px 1fr; }
-  .portfolio-field .amount-field, .portfolio-field input[name="quantity"], .portfolio-field input[type="date"], .portfolio-field .remove-asset { grid-column: 2; }
+  .portfolio-field .invested-amount-field, .portfolio-field input[name="quantity"], .portfolio-field input[type="date"], .portfolio-field .remove-asset { grid-column: 2; }
   dialog { padding: 22px 16px; }
   .dialog-actions { align-items: stretch; flex-direction: column-reverse; }
   .dialog-actions .button { width: 100%; }
