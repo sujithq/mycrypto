@@ -205,6 +205,9 @@ td:first-child { padding-left: 0; text-align: left; }
 .thesis-card span { color: var(--acid); font: .65rem ui-monospace, monospace; }
 .thesis-card h3 { margin: 38px 0 12px; font-size: 1rem; }
 .thesis-card p { color: var(--muted); font-size: .7rem; line-height: 1.5; }
+.supported-assets { margin-top: 56px; }
+.supported-assets > .section-heading { margin-bottom: 24px; }
+.supported-assets > .section-heading h3 { margin: 4px 0 0; font-size: 1.25rem; }
 
 footer { padding: 28px 0 42px; display: flex; justify-content: space-between; gap: 24px; color: var(--dim); font: .58rem/1.6 ui-monospace, monospace; letter-spacing: .07em; }
 footer p:last-child { max-width: 500px; text-align: right; }

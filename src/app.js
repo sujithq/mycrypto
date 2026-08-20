@@ -165,6 +165,19 @@ function renderTheses() {
     );
     grid.append(card);
   });
+
+  const selectedIds = new Set(portfolio.map(({ id }) => id));
+  const remaining = config.supportedAssets.filter(({ id }) => !selectedIds.has(id));
+  $('#supported-assets').hidden = remaining.length === 0;
+  $('#supported-assets-grid').replaceChildren(...remaining.map((item, index) => {
+    const card = element('article', 'thesis-card');
+    card.append(
+      element('span', '', `${String(index + 1).padStart(2, '0')} / ${item.symbol}`),
+      element('h3', '', item.name),
+      element('p', '', 'Supported for custom portfolio allocations and included in market data updates.'),
+    );
+    return card;
+  }));
 }
 
 function renderReport() {
@@ -257,6 +270,7 @@ function drawChart() {
 }
 
 function render() {
+  $('#holdings-title').textContent = `${portfolio.length} portfolio ${portfolio.length === 1 ? 'asset' : 'assets'}`;
   chartSeries = calculateSeries(portfolio, market.history, config.timeframeDays);
   const holdings = calculateHoldings(portfolio, market.history, market.assets);
   const isDefaultPortfolio = portfolio.every((item, index) =>
