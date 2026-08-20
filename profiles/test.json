@@ -6,13 +6,13 @@
     {
       "id": "bitcoin",
       "amount": 250,
-      "quantity": 0.005
+      "quantity": 0.00438660
     },
     {
       "id": "tars-protocol",
       "amount": 250,
       "buyDate": "2026-03-15",
-      "quantity": 333
+      "quantity": 13762.6388
     }
   ],
   "type": "real"
