@@ -200,10 +200,8 @@ td:first-child { padding-left: 0; text-align: left; }
 .allocation-bar { display: inline-block; width: 52px; height: 3px; margin-left: 8px; vertical-align: middle; background: var(--line); }
 .allocation-bar i { display: block; height: 100%; background: var(--acid); }
 
-.thesis-grid { display: grid; grid-template-columns: repeat(5, 1fr); }
-.thesis-card { min-height: 190px; padding: 22px; border: 1px solid var(--line); border-left: 0; }
-.thesis-card:first-child, .thesis-card:nth-child(6) { border-left: 1px solid var(--line); }
-.thesis-card:nth-child(n+6) { border-top: 0; }
+.thesis-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 1px; background: var(--line); }
+.thesis-card { min-height: 190px; padding: 22px; background: var(--bg); }
 .thesis-card span { color: var(--acid); font: .65rem ui-monospace, monospace; }
 .thesis-card h3 { margin: 38px 0 12px; font-size: 1rem; }
 .thesis-card p { color: var(--muted); font-size: .7rem; line-height: 1.5; }
@@ -223,7 +221,7 @@ dialog {
 dialog::backdrop { background: rgb(3 9 7 / .8); backdrop-filter: blur(4px); }
 .dialog-copy { margin: 22px 0; color: var(--muted); font-size: .8rem; line-height: 1.6; }
 .portfolio-fields { display: grid; gap: 8px; }
-.portfolio-field { display: grid; grid-template-columns: 28px 1fr 110px 150px; align-items: center; gap: 10px; }
+.portfolio-field { display: grid; grid-template-columns: 28px 1fr 110px 150px auto; align-items: center; gap: 10px; }
 .portfolio-field label { color: var(--dim); font: .65rem ui-monospace, monospace; }
 select, input {
   width: 100%;
@@ -286,7 +284,7 @@ noscript { position: fixed; inset: auto 0 0; padding: 1rem; color: var(--canvas)
   footer p:last-child { text-align: left; }
   .header-actions { gap: 10px; }
   .portfolio-field { grid-template-columns: 28px 1fr; }
-  .portfolio-field .amount-field, .portfolio-field input[type="date"] { grid-column: 2; }
+  .portfolio-field .amount-field, .portfolio-field input[type="date"], .portfolio-field .remove-asset { grid-column: 2; }
   dialog { padding: 22px 16px; }
   .dialog-actions { align-items: stretch; flex-direction: column-reverse; }
   .dialog-actions .button { width: 100%; }

@@ -5,11 +5,16 @@ export function isValidDate(date) {
 }
 
 export function isValidPortfolio(portfolio, supportedIds, target = 500) {
-  if (!Array.isArray(portfolio) || portfolio.length !== 10) return false;
+  if (!Array.isArray(portfolio) || portfolio.length === 0) return false;
   const ids = portfolio.map(({ id }) => id);
-  if (new Set(ids).size !== ids.length || ids.some((id) => !supportedIds.has(id))) return false;
+  if (ids.some((id) => !supportedIds.has(id))) return false;
   const amounts = portfolio.map(({ amount }) => Number(amount));
   const dates = portfolio.map(({ buyDate }) => buyDate).filter(Boolean);
+  const purchases = portfolio.map(({ id, buyDate }) => `${id}:${buyDate ?? ''}`);
+  const repeatedIds = ids.filter((id, index) => ids.indexOf(id) !== index);
+  if (repeatedIds.some((id) =>
+    portfolio.some((item) => item.id === id && !item.buyDate))
+    || new Set(purchases).size !== purchases.length) return false;
   return amounts.every((amount) => Number.isFinite(amount) && amount > 0)
     && dates.every(isValidDate)
     && Math.abs(amounts.reduce((sum, amount) => sum + amount, 0) - target) < 0.01;
@@ -37,12 +42,11 @@ export function isValidProfile(profile, supportedIds, defaultPortfolio, target =
 }
 
 export function getBaselinePrices(portfolio, history) {
-  return Object.fromEntries(portfolio.map(({ id }) => {
-    const buyDate = portfolio.find((asset) => asset.id === id)?.buyDate;
+  return portfolio.map(({ id, buyDate }) => {
     const first = history.find((entry) =>
       (!buyDate || entry.date >= buyDate) && Number.isFinite(entry.prices?.[id]));
-    return [id, first?.prices[id] ?? null];
-  }));
+    return first?.prices[id] ?? null;
+  });
 }
 
 export function filterHistoryByTimeframe(history, timeframeDays) {
@@ -59,8 +63,8 @@ export function filterHistoryByTimeframe(history, timeframeDays) {
 export function calculateSeries(portfolio, history, timeframeDays) {
   const baseline = getBaselinePrices(portfolio, history);
   return filterHistoryByTimeframe(history, timeframeDays).flatMap((entry) => {
-    const values = portfolio.map(({ id, amount, buyDate }) => {
-      const startPrice = baseline[id];
+    const values = portfolio.map(({ id, amount, buyDate }, index) => {
+      const startPrice = baseline[index];
       const price = entry.prices?.[id];
       return (!buyDate || entry.date >= buyDate) && Number.isFinite(startPrice) && Number.isFinite(price) && startPrice > 0
         ? amount * (price / startPrice)
@@ -75,9 +79,9 @@ export function calculateSeries(portfolio, history, timeframeDays) {
 
 export function calculateHoldings(portfolio, history, assets) {
   const baseline = getBaselinePrices(portfolio, history);
-  return portfolio.map((item) => {
+  return portfolio.map((item, index) => {
     const quote = assets[item.id] ?? {};
-    const startPrice = baseline[item.id];
+    const startPrice = baseline[index];
     const currentPrice = quote.price;
     const value = Number.isFinite(startPrice) && startPrice > 0 && Number.isFinite(currentPrice)
       ? item.amount * (currentPrice / startPrice)

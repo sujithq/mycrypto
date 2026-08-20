@@ -42,12 +42,22 @@ test('combines complete historical prices into daily snapshots', () => {
   ]);
 });
 
-test('accepts exactly ten unique positive allocations totalling €500', () => {
+test('accepts positive purchases totalling €500', () => {
   assert.equal(isValidPortfolio(portfolio, supportedIds), true);
-  assert.equal(isValidPortfolio(portfolio.slice(0, 9), supportedIds), false);
-  assert.equal(isValidPortfolio([...portfolio.slice(0, 9), portfolio[0]], supportedIds), false);
+  assert.equal(isValidPortfolio([{ ...portfolio[0], amount: 500 }], supportedIds), true);
+  assert.equal(isValidPortfolio([], supportedIds), false);
   assert.equal(isValidPortfolio(portfolio.map((item, index) => ({ ...item, amount: index ? 50 : 40 })), supportedIds), false);
   assert.equal(isValidPortfolio(portfolio.map((item, index) => index ? item : { ...item, buyDate: '2026-02-31' }), supportedIds), false);
+});
+
+test('accepts repeated assets only with different buy dates', () => {
+  const repeated = [
+    { ...portfolio[0], amount: 250, buyDate: '2026-08-11' },
+    { ...portfolio[0], amount: 250, buyDate: '2026-08-18' },
+  ];
+  assert.equal(isValidPortfolio(repeated, supportedIds), true);
+  assert.equal(isValidPortfolio(repeated.map((item) => ({ ...item, buyDate: '2026-08-11' })), supportedIds), false);
+  assert.equal(isValidPortfolio(repeated.map(({ buyDate, ...item }) => item), supportedIds), false);
 });
 
 test('resolves and validates a profile-wide buy date', () => {
@@ -95,6 +105,16 @@ test('uses optional buy dates as each asset baseline', () => {
   ]);
   const report = createAnalysisReport(history, datedPortfolio, '2026-08-19T00:00:00.000Z');
   assert.equal(report.periodStart, '2026-08-18');
+});
+
+test('uses separate baselines for repeated asset purchases', () => {
+  const repeated = [
+    { ...portfolio[0], amount: 250, buyDate: '2026-08-11' },
+    { ...portfolio[0], amount: 250, buyDate: '2026-08-18' },
+  ];
+  assert.deepEqual(calculateSeries(repeated, history), [
+    { date: '2026-08-18', value: 525 },
+  ]);
 });
 
 test('filters history by trailing timeframe', () => {

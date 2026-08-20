@@ -1,6 +1,6 @@
 # Crypto Allocation Desk
 
-A no-backend GitHub Pages dashboard for a hypothetical, aggressive €500 crypto portfolio. It tracks daily EUR closes, calculates each holding’s evolution, publishes a configurable trailing status report, and lets visitors configure or reset their own ten-asset allocation locally.
+A no-backend GitHub Pages dashboard for a hypothetical, aggressive €500 crypto portfolio. It tracks daily EUR closes, calculates each holding’s evolution, publishes a configurable trailing status report, and lets visitors configure or reset their own allocation locally.
 
 > **Educational use only.** Crypto assets are highly volatile and can lose their entire value. This project does not provide financial advice.
 
@@ -42,7 +42,7 @@ Research and identifier references:
 - Each update adds or replaces that day’s UTC snapshot, so history accumulates from scheduled or local runs without separate per-asset requests.
 - Browser profiles are validated, can include actual buy dates, and are stored only in `localStorage`.
 - The management page can create, rename, edit, and delete browser-local profiles. It also generates workflow JSON that creates or updates one managed profile while preserving the others.
-- `manage.html` is the shared management page for local portfolio selection and preparing JSON for the **Manage portfolio defaults** workflow. The default ten assets, actual buy values, optional buy dates, and timeframe can be updated without editing JSON by hand. TARS AI (TAI) is included in the supported asset universe.
+- `manage.html` is the shared management page for local portfolio selection and preparing JSON for the **Manage portfolio defaults** workflow. Asset purchases, actual buy values, optional buy dates, and timeframe can be updated without editing JSON by hand. Assets may appear more than once when their buy dates differ. TARS AI (TAI) is included in the supported asset universe.
 - `.github/workflows/manage-portfolio.yml` validates and commits managed defaults. It gates execution through GitHub permissions/environment protection and checks that `PORTFOLIO_MANAGEMENT_SECRET` is configured without requesting, printing, or passing the secret value as workflow input.
 - `.github/workflows/deploy-pages.yml` validates and deploys every push to `main`.
 

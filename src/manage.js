@@ -21,6 +21,7 @@ function renderFields(fields, portfolio, amountStep = '0.01', idPrefix = 'asset'
 
   portfolio.forEach((item, index) => {
     const row = element('div', 'portfolio-field management-field');
+    row.dataset.thesis = item.thesis ?? '';
     const label = element('label', '', String(index + 1).padStart(2, '0'));
     label.htmlFor = `${idPrefix}-${index}`;
 
@@ -52,7 +53,12 @@ function renderFields(fields, portfolio, amountStep = '0.01', idPrefix = 'asset'
     buyDate.value = item.buyDate ?? '';
     buyDate.setAttribute('aria-label', `Buy date ${index + 1}`);
 
-    row.append(label, select, amountWrap, buyDate);
+    const remove = element('button', 'button button-quiet remove-asset', 'Remove');
+    remove.type = 'button';
+    remove.dataset.index = String(index);
+    remove.setAttribute('aria-label', `Remove asset ${index + 1}`);
+
+    row.append(label, select, amountWrap, buyDate, remove);
     fields.append(row);
   });
 }
@@ -68,6 +74,7 @@ function updateTotal(fieldsSelector, outputSelector) {
 
 function buildPortfolio(fieldsSelector, sourcePortfolio) {
   const fields = $(fieldsSelector);
+  const rows = [...fields.querySelectorAll('.portfolio-field')];
   const ids = [...fields.querySelectorAll('select[name="asset"]')].map(({ value }) => value);
   const amounts = [...fields.querySelectorAll('input[name="amount"]')].map(({ value }) => Number(value));
   const buyDates = [...fields.querySelectorAll('input[name="buyDate"]')].map(({ value }) => value);
@@ -79,9 +86,27 @@ function buildPortfolio(fieldsSelector, sourcePortfolio) {
       ...selected,
       amount: amounts[index],
       buyDate: buyDates[index] || undefined,
-      thesis: existing?.thesis ?? 'Managed default portfolio selection.',
+      thesis: existing?.thesis ?? rows[index]?.dataset.thesis ?? 'Managed default portfolio selection.',
     };
   });
+}
+
+function addAsset(fieldsSelector, totalSelector, idPrefix, amountStep) {
+  const current = buildPortfolio(fieldsSelector, []);
+  current.push({
+    ...config.supportedAssets[0],
+    amount: 1,
+    thesis: 'Managed default portfolio selection.',
+  });
+  renderFields($(fieldsSelector), current, amountStep, idPrefix);
+  updateTotal(fieldsSelector, totalSelector);
+}
+
+function removeAsset(fieldsSelector, totalSelector, idPrefix, amountStep, index) {
+  const current = buildPortfolio(fieldsSelector, []);
+  current.splice(index, 1);
+  renderFields($(fieldsSelector), current, amountStep, idPrefix);
+  updateTotal(fieldsSelector, totalSelector);
 }
 
 function profileOption(profile, suffix = '') {
@@ -169,6 +194,18 @@ function bindEvents() {
 
   $('#portfolio-fields').addEventListener('input', () => updateTotal('#portfolio-fields', '#allocation-total'));
   $('#management-fields').addEventListener('input', () => updateTotal('#management-fields', '#management-total'));
+  $('#portfolio-fields').addEventListener('click', ({ target }) => {
+    if (!target.matches('.remove-asset')) return;
+    removeAsset('#portfolio-fields', '#allocation-total', 'local-asset', '1', Number(target.dataset.index));
+  });
+  $('#management-fields').addEventListener('click', ({ target }) => {
+    if (!target.matches('.remove-asset')) return;
+    removeAsset('#management-fields', '#management-total', 'managed-asset', '0.01', Number(target.dataset.index));
+  });
+  $('#add-local-asset-button').addEventListener('click', () =>
+    addAsset('#portfolio-fields', '#allocation-total', 'local-asset', '1'));
+  $('#add-managed-asset-button').addEventListener('click', () =>
+    addAsset('#management-fields', '#management-total', 'managed-asset', '0.01'));
   $('#local-profile-selector').addEventListener('change', ({ target }) => loadLocalProfile(target.value));
   $('#managed-profile-selector').addEventListener('change', ({ target }) => {
     if (target.value === '__new__') {
@@ -208,7 +245,7 @@ function bindEvents() {
     const portfolio = buildPortfolio('#portfolio-fields', current?.portfolio ?? config.defaultPortfolio);
     const name = $('#local-profile-name').value.trim();
     if (!isValidPortfolio(portfolio, supportedIds, config.totalInvestment)) {
-      $('#form-error').textContent = 'Choose ten unique assets with positive values totalling the configured investment.';
+      $('#form-error').textContent = 'Choose one or more valid purchases with positive values totalling the configured investment. Repeated assets need different buy dates.';
       $('#form-status').textContent = '';
       return;
     }
@@ -247,7 +284,7 @@ function bindEvents() {
       return;
     }
     if (!validPortfolio) {
-      $('#management-error').textContent = 'Choose ten unique assets with positive values totalling the configured investment.';
+      $('#management-error').textContent = 'Choose one or more valid purchases with positive values totalling the configured investment. Repeated assets need different buy dates.';
       return;
     }
     if (!/^[a-z0-9][a-z0-9-]{0,39}$/.test(profileId) || !profileName) {

@@ -51,7 +51,7 @@ const profile = {
 };
 console.log('Validating managed portfolio profile…');
 if (!isValidProfile(profile, supportedIds, config.defaultPortfolio, config.totalInvestment)) {
-  throw new Error(`Profile must have a valid ID, name, and ten unique positive allocations totalling ${config.totalInvestment}.`);
+  throw new Error(`Profile must have a valid ID, name, and positive purchases totalling ${config.totalInvestment}; repeated assets require different buy dates.`);
 }
 const profiles = [...(config.profiles ?? [])];
 const profileIndex = profiles.findIndex(({ id }) => id === profile.id);
