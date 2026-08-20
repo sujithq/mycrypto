@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-20T09:44:31.337Z",
+  "generatedAt": "2026-08-20T11:11:53.842Z",
   "reports": {
     "test": {
       "profile": {
@@ -7,23 +7,23 @@
         "name": "test",
         "type": "real"
       },
-      "generatedAt": "2026-08-20T09:44:31.337Z",
+      "generatedAt": "2026-08-20T11:11:53.842Z",
       "periodStart": "2026-03-15",
       "periodEnd": "2026-08-20",
       "status": "Risk-off",
-      "summary": "The portfolio moved -31.01% over a 366-day trailing window (159 closes).",
-      "portfolioChangePct": -31.0124,
+      "summary": "The portfolio moved -31.44% over a 366-day trailing window (159 closes).",
+      "portfolioChangePct": -31.4362,
       "bestPerformer": {
         "symbol": "BTC",
-        "changePct": -1.2217
+        "changePct": -1.1156
       },
       "worstPerformer": {
         "symbol": "TAI",
-        "changePct": -60.8031
+        "changePct": -61.7568
       },
       "observations": [
-        "BTC led the portfolio at -1.22%.",
-        "TAI was weakest at -60.80%.",
+        "BTC led the portfolio at -1.12%.",
+        "TAI was weakest at -61.76%.",
         "This early report uses 159 closes; the target 366-day window has 367.",
         "Momentum is descriptive, not predictive; review concentration and downside before acting."
       ]
@@ -34,23 +34,23 @@
         "name": "test2",
         "type": "real"
       },
-      "generatedAt": "2026-08-20T09:44:31.337Z",
+      "generatedAt": "2026-08-20T11:11:53.842Z",
       "periodStart": "2026-06-15",
       "periodEnd": "2026-08-20",
       "status": "Risk-off",
-      "summary": "The portfolio moved -15.84% over a 366-day trailing window (67 closes).",
-      "portfolioChangePct": -15.8401,
+      "summary": "The portfolio moved -16.51% over a 366-day trailing window (67 closes).",
+      "portfolioChangePct": -16.5105,
       "bestPerformer": {
         "symbol": "BTC",
-        "changePct": 8.4275
+        "changePct": 8.544
       },
       "worstPerformer": {
         "symbol": "TAI",
-        "changePct": -40.1077
+        "changePct": -41.5651
       },
       "observations": [
-        "BTC led the portfolio at +8.43%.",
-        "TAI was weakest at -40.11%.",
+        "BTC led the portfolio at +8.54%.",
+        "TAI was weakest at -41.57%.",
         "This early report uses 67 closes; the target 366-day window has 367.",
         "Momentum is descriptive, not predictive; review concentration and downside before acting."
       ]
