@@ -57,7 +57,10 @@ npm run build
 python3 -m http.server 8000
 ```
 
-Open <http://localhost:8000>. To fetch live data, run `npm run update-data`; the public API may rate-limit repeated requests.
+Open <http://localhost:8000>. To fetch live data locally, run
+`npm run update-data`. This uses the same updater as the scheduled workflow;
+see [`docs/local-development.md`](docs/local-development.md) for data refresh,
+bootstrap, and managed-default commands.
 
 ## GitHub Pages setup
 
