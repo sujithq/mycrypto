@@ -74,7 +74,7 @@ export function combineHistoricalPrices(seriesByAsset, ids) {
 
 async function backfillHistory(history, ids, currency, startDate) {
   if (!startDate || history.some((entry) =>
-    entry.date <= startDate && ids.every((id) => Number.isFinite(entry.prices?.[id])))) {
+    entry.date === startDate && ids.every((id) => Number.isFinite(entry.prices?.[id])))) {
     return history;
   }
 
