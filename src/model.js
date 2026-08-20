@@ -61,7 +61,9 @@ export function isValidProfile(profile, supportedIds, defaultPortfolio, target =
 
 export function parseRealPortfolioJson(raw, supportedAssets) {
   const parsed = JSON.parse(raw);
-  const items = Array.isArray(parsed) ? parsed : parsed?.profile?.portfolio;
+  const items = Array.isArray(parsed)
+    ? parsed
+    : parsed?.portfolio ?? parsed?.profile?.portfolio;
   if (!Array.isArray(items) || items.length === 0) {
     throw new Error('Paste a JSON array of holdings or generated profile JSON.');
   }

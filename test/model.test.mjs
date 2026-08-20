@@ -268,6 +268,26 @@ test('parses pasted real holdings by symbol or asset id', () => {
   assert.throws(() => parseRealPortfolioJson('[{"symbol":"A0"}]', supportedAssets), /positive quantity and cost/);
 });
 
+test('parses generated real profile JSON', () => {
+  const supportedAssets = portfolio.map(({ id, symbol }) => ({ id, symbol, name: id }));
+  const generatedProfile = {
+    id: 'client-a',
+    name: 'Client A',
+    type: 'real',
+    portfolio: [
+      { id: supportedAssets[0].id, amount: 100, quantity: 2, buyDate: '2026-08-11' },
+    ],
+  };
+
+  assert.deepEqual(parseRealPortfolioJson(JSON.stringify(generatedProfile), supportedAssets), [{
+    ...supportedAssets[0],
+    amount: 100,
+    quantity: 2,
+    buyDate: '2026-08-11',
+    thesis: 'Manually managed real portfolio holding.',
+  }]);
+});
+
 test('uses a profile buy date as the fallback for custom portfolio items', () => {
   const customPortfolio = portfolio.map((item, index) =>
     index === 0 ? { ...item, buyDate: '2026-02-01' } : item);
