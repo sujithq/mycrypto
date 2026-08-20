@@ -1,125 +1,125 @@
 {
-  "updatedAt": "2026-08-20T15:18:37.705Z",
+  "updatedAt": "2026-08-20T16:16:08.122Z",
   "currency": "eur",
   "source": "CoinGecko",
   "assets": {
     "bitcoin": {
-      "price": 61765,
-      "change24hPct": 10.3,
-      "marketCap": 1239952808232,
+      "price": 61981,
+      "change24hPct": 9.9,
+      "marketCap": 1243870858014,
       "rank": 1,
       "image": "https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png?1696501400"
     },
     "ethereum": {
-      "price": 1964.97,
-      "change24hPct": 17.8,
-      "marketCap": 237141950447,
+      "price": 1988.47,
+      "change24hPct": 18.1,
+      "marketCap": 239910637401,
       "rank": 2,
       "image": "https://coin-images.coingecko.com/coins/images/279/large/ethereum.png?1696501628"
     },
     "solana": {
-      "price": 74.38,
-      "change24hPct": 10.3,
-      "marketCap": 43362003173,
+      "price": 74.66,
+      "change24hPct": 8.1,
+      "marketCap": 43523535815,
       "rank": 7,
       "image": "https://coin-images.coingecko.com/coins/images/4128/large/solana.png?1718769756"
     },
     "hyperliquid": {
-      "price": 62.06,
-      "change24hPct": 22.6,
-      "marketCap": 13793606534,
+      "price": 62.53,
+      "change24hPct": 22.5,
+      "marketCap": 13909705719,
       "rank": 10,
       "image": "https://coin-images.coingecko.com/coins/images/50882/large/hyperliquid.jpg?1729431300"
     },
     "chainlink": {
-      "price": 9.09,
-      "change24hPct": 8.8,
-      "marketCap": 6797224013,
+      "price": 9.14,
+      "change24hPct": 9.7,
+      "marketCap": 6838589997,
       "rank": 16,
       "image": "https://coin-images.coingecko.com/coins/images/877/large/Chainlink_Logo_500.png?1760023405"
     },
     "avalanche-2": {
       "price": 6.06,
-      "change24hPct": 10.4,
-      "marketCap": 2615029199,
+      "change24hPct": 10.6,
+      "marketCap": 2615675563,
       "rank": 30,
       "image": "https://coin-images.coingecko.com/coins/images/12559/large/Avalanche_Circle_RedWhite_Trans.png?1696512369"
     },
     "sui": {
-      "price": 0.630355,
-      "change24hPct": 10.8,
-      "marketCap": 2567883904,
+      "price": 0.630828,
+      "change24hPct": 10.4,
+      "marketCap": 2570550815,
       "rank": 31,
       "image": "https://coin-images.coingecko.com/coins/images/26375/large/sui-ocean-square.png?1727791290"
     },
     "uniswap": {
       "price": 3.16,
-      "change24hPct": 8.2,
-      "marketCap": 1972253441,
+      "change24hPct": 8.3,
+      "marketCap": 1968391719,
       "rank": 39,
       "image": "https://coin-images.coingecko.com/coins/images/12504/large/uniswap-logo.png?1720676669"
     },
     "near": {
       "price": 1.48,
-      "change24hPct": 5.4,
-      "marketCap": 1931000124,
+      "change24hPct": 6.1,
+      "marketCap": 1930595553,
       "rank": 40,
       "image": "https://coin-images.coingecko.com/coins/images/10365/large/near.jpg?1696510367"
     },
     "bittensor": {
-      "price": 179.04,
-      "change24hPct": 8.3,
-      "marketCap": 1718657568,
+      "price": 180.22,
+      "change24hPct": 8.1,
+      "marketCap": 1729122698,
       "rank": 43,
       "image": "https://coin-images.coingecko.com/coins/images/28452/large/ARUsPeNQ_400x400.jpeg?1696527447"
     },
     "ondo-finance": {
-      "price": 0.303844,
-      "change24hPct": 7,
-      "marketCap": 1479393176,
+      "price": 0.304407,
+      "change24hPct": 6.5,
+      "marketCap": 1482520653,
       "rank": 48,
       "image": "https://coin-images.coingecko.com/coins/images/26580/large/ONDO.png?1696525656"
     },
     "aave": {
-      "price": 82.98,
-      "change24hPct": 7.8,
-      "marketCap": 1279974321,
+      "price": 82.94,
+      "change24hPct": 6.3,
+      "marketCap": 1279230452,
       "rank": 53,
       "image": "https://coin-images.coingecko.com/coins/images/12645/large/aave-token-round.png?1720472354"
     },
     "render-token": {
       "price": 1.21,
-      "change24hPct": 9.7,
-      "marketCap": 627053893,
+      "change24hPct": 9.6,
+      "marketCap": 626984687,
       "rank": 83,
       "image": "https://coin-images.coingecko.com/coins/images/11636/large/rndr.png?1696511529"
     },
     "arbitrum": {
-      "price": 0.076021,
-      "change24hPct": 13.9,
-      "marketCap": 507812686,
+      "price": 0.076614,
+      "change24hPct": 14.7,
+      "marketCap": 511470794,
       "rank": 92,
       "image": "https://coin-images.coingecko.com/coins/images/16547/large/arb.jpg?1721358242"
     },
     "injective-protocol": {
       "price": 4.06,
-      "change24hPct": 10.7,
-      "marketCap": 405887592,
-      "rank": 104,
+      "change24hPct": 10,
+      "marketCap": 405604843,
+      "rank": 105,
       "image": "https://coin-images.coingecko.com/coins/images/12882/large/Other_200x200.png?1738782212"
     },
     "the-graph": {
-      "price": 0.01254676,
-      "change24hPct": 9.9,
-      "marketCap": 137468246,
+      "price": 0.01258069,
+      "change24hPct": 9.7,
+      "marketCap": 137133724,
       "rank": 188,
       "image": "https://coin-images.coingecko.com/coins/images/13397/large/Graph_Token.png?1696513159"
     },
     "tars-protocol": {
-      "price": 0.00687159,
-      "change24hPct": -9.5,
-      "marketCap": 6149788,
-      "rank": 1346,
+      "price": 0.00690389,
+      "change24hPct": 2.7,
+      "marketCap": 6179596,
+      "rank": 1348,
       "image": "https://coin-images.coingecko.com/coins/images/37538/large/image_6.png?1736608965"
     }
   },
@@ -8135,23 +8135,23 @@
     {
       "date": "2026-08-20",
       "prices": {
-        "bitcoin": 61765,
-        "ethereum": 1964.97,
-        "solana": 74.38,
-        "hyperliquid": 62.06,
-        "chainlink": 9.09,
+        "bitcoin": 61981,
+        "ethereum": 1988.47,
+        "solana": 74.66,
+        "hyperliquid": 62.53,
+        "chainlink": 9.14,
         "avalanche-2": 6.06,
-        "sui": 0.630355,
+        "sui": 0.630828,
         "uniswap": 3.16,
         "near": 1.48,
-        "bittensor": 179.04,
-        "ondo-finance": 0.303844,
-        "aave": 82.98,
+        "bittensor": 180.22,
+        "ondo-finance": 0.304407,
+        "aave": 82.94,
         "render-token": 1.21,
-        "arbitrum": 0.076021,
+        "arbitrum": 0.076614,
         "injective-protocol": 4.06,
-        "the-graph": 0.01254676,
-        "tars-protocol": 0.00687159
+        "the-graph": 0.01258069,
+        "tars-protocol": 0.00690389
       }
     }
   ]
