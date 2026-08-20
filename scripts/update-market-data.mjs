@@ -9,6 +9,7 @@ const portfolioPath = path.join(root, 'data', 'portfolio.json');
 const marketPath = path.join(root, 'data', 'market.json');
 const reportPath = path.join(root, 'data', 'weekly-report.json');
 const API = 'https://api.coingecko.com/api/v3';
+const PUBLIC_HISTORY_DAYS = 365;
 
 const sleep = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
 
@@ -53,7 +54,19 @@ export function getSupportedAssetIds(portfolioConfig) {
 
 export function updateHistory(history, snapshot) {
   const next = history.filter((entry) => entry.date !== snapshot.date);
-  return [...next, snapshot].sort((a, b) => a.date.localeCompare(b.date)).slice(-366);
+  return [...next, snapshot].sort((a, b) => a.date.localeCompare(b.date));
+}
+
+export function getPublicHistoryStartDate(timestamp = Date.now()) {
+  const start = new Date(timestamp);
+  start.setUTCHours(0, 0, 0, 0);
+  start.setUTCDate(start.getUTCDate() - (PUBLIC_HISTORY_DAYS - 1));
+  return utcDate(start.getTime());
+}
+
+export function getBackfillStartDate(startDate, timestamp = Date.now()) {
+  const publicStart = getPublicHistoryStartDate(timestamp);
+  return startDate < publicStart ? publicStart : startDate;
 }
 
 export function combineHistoricalPrices(seriesByAsset, ids) {
@@ -73,9 +86,32 @@ export function combineHistoricalPrices(seriesByAsset, ids) {
     .sort((a, b) => a.date.localeCompare(b.date));
 }
 
-export function getMissingHistoricalAssetIds(history, ids, startDate) {
-  const start = history.find((entry) => entry.date === startDate);
-  return ids.filter((id) => !Number.isFinite(start?.prices?.[id]));
+export function findFirstHistoryGap(history, ids, timestamp = Date.now()) {
+  const end = new Date(timestamp);
+  end.setUTCHours(0, 0, 0, 0);
+  end.setUTCDate(end.getUTCDate() - 1);
+  const endDate = utcDate(end.getTime());
+  const byDate = new Map(history.map((entry) => [entry.date, entry]));
+  const firstDate = [...byDate.keys()]
+    .filter((date) => date <= endDate)
+    .sort()[0];
+  if (!firstDate) return null;
+
+  for (let day = Date.parse(`${firstDate}T00:00:00Z`); day <= end.getTime(); day += 86_400_000) {
+    const date = utcDate(day);
+    const entry = byDate.get(date);
+    if (!entry || ids.some((id) => !Number.isFinite(entry.prices?.[id]))) return date;
+  }
+  return null;
+}
+
+export function getHistoryBackfillPlan(history, ids, timestamp = Date.now()) {
+  const gapDate = findFirstHistoryGap(history, ids, timestamp);
+  const requestedStart = gapDate ?? getPublicHistoryStartDate(timestamp);
+  return {
+    gapDate,
+    startDate: getBackfillStartDate(requestedStart, timestamp),
+  };
 }
 
 export function mergeHistoricalPrices(history, seriesByAsset) {
@@ -96,23 +132,28 @@ export function mergeHistoricalPrices(history, seriesByAsset) {
     .sort((a, b) => a.date.localeCompare(b.date));
 }
 
-async function backfillHistory(history, ids, currency, startDate) {
-  if (!startDate) return history;
-  const missingIds = getMissingHistoricalAssetIds(history, ids, startDate);
-  if (missingIds.length === 0) return history;
-
-  console.log(`Backfilling ${missingIds.length} missing asset histories from ${startDate}…`);
+async function backfillHistory(history, ids, currency, plan, timestamp = Date.now()) {
+  const { gapDate, startDate } = plan;
+  if (gapDate) {
+    console.log(`Found local market-data gap at ${gapDate}.`);
+  } else {
+    console.log(`No local market-data gaps found; refreshing the latest ${PUBLIC_HISTORY_DAYS} UTC dates.`);
+  }
+  if (gapDate && startDate !== gapDate) {
+    console.warn(`The first gap predates CoinGecko's public window; starting at ${startDate} and preserving older cached data.`);
+  }
+  console.log(`Refreshing ${ids.length} asset histories from ${startDate}…`);
   const from = Date.parse(`${startDate}T00:00:00Z`) / 1_000;
-  const to = Date.now() / 1_000;
+  const to = timestamp / 1_000;
   const seriesByAsset = {};
-  for (const [index, id] of missingIds.entries()) {
+  for (const [index, id] of ids.entries()) {
     const url = `${API}/coins/${encodeURIComponent(id)}/market_chart/range?vs_currency=${encodeURIComponent(currency)}&from=${from}&to=${to}`;
     const result = await fetchJson(url);
     if (!Array.isArray(result?.prices)) throw new Error(`CoinGecko returned no historical prices for ${id}.`);
     seriesByAsset[id] = result.prices;
-    if (index < missingIds.length - 1) await sleep(5_000);
+    if (index < ids.length - 1) await sleep(5_000);
   }
-  return mergeHistoricalPrices(history, seriesByAsset).slice(-366);
+  return mergeHistoricalPrices(history, seriesByAsset);
 }
 
 async function main() {
@@ -120,14 +161,12 @@ async function main() {
   const portfolioConfig = JSON.parse(await readFile(portfolioPath, 'utf8'));
   const market = JSON.parse(await readFile(marketPath, 'utf8'));
   const profiles = await loadProfiles(root, portfolioConfig);
-  const configuredProfiles = profiles.map((profile) =>
-    resolveProfilePortfolio(profile, portfolioConfig.defaultPortfolio));
-  const configuredPortfolios = configuredProfiles.length
-    ? configuredProfiles
-    : [portfolioConfig.defaultPortfolio];
   const ids = getSupportedAssetIds(portfolioConfig);
   if (ids.length === 0) throw new Error('The configuration contains no supported assets.');
   const currency = portfolioConfig.currency;
+  const timestamp = Date.now();
+  const existingHistory = Array.isArray(market.history) ? market.history : [];
+  const backfillPlan = getHistoryBackfillPlan(existingHistory, ids, timestamp);
   const url = `${API}/coins/markets?vs_currency=${currency}&ids=${ids.map(encodeURIComponent).join(',')}&price_change_percentage=24h`;
   console.log(`Fetching current quotes for ${ids.length} assets…`);
   const quotes = await fetchJson(url);
@@ -138,8 +177,8 @@ async function main() {
   }
   console.log(`Received complete quotes for ${quotes.length} assets.`);
 
-  const now = new Date().toISOString();
-  const date = utcDate();
+  const now = new Date(timestamp).toISOString();
+  const date = utcDate(timestamp);
   const assets = Object.fromEntries(quotes.map((quote) => [
     quote.id,
     {
@@ -155,12 +194,7 @@ async function main() {
     date,
     prices: Object.fromEntries(quotes.map((quote) => [quote.id, quote.current_price])),
   };
-  const configuredStart = configuredPortfolios.flat()
-    .map(({ buyDate }) => buyDate)
-    .filter(Boolean)
-    .sort()[0];
-  const existingHistory = Array.isArray(market.history) ? market.history : [];
-  const historical = await backfillHistory(existingHistory, ids, currency, configuredStart);
+  const historical = await backfillHistory(existingHistory, ids, currency, backfillPlan, timestamp);
   const history = updateHistory(historical, snapshot);
 
   console.log('Writing current market data…');

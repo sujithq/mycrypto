@@ -39,8 +39,8 @@ Research and identifier references:
 - `data/portfolio.json` defines the research portfolio, configurable asset universe, and trailing chart/report timeframe.
 - Each JSON file in `profiles/` defines one read-only selectable profile. The build validates the files and publishes their index.
 - Managed profiles can be simulations or real portfolios. Simulations use monthly or per-purchase baselines; real portfolios use manually entered quantities and actual cost values.
-- `.github/workflows/update-market-data.yml` runs at 23:55 UTC, fetches the configured portfolio's EUR quotes from CoinGecko in one request, retains up to 366 closes, generates the trailing report, commits the data, and deploys the refreshed site.
-- Each update adds or replaces that day’s UTC snapshot, so history accumulates from scheduled or local runs without separate per-asset requests.
+- `.github/workflows/update-market-data.yml` runs at 23:55 UTC, fetches the configured portfolio's EUR quotes from CoinGecko in one request, generates the trailing report, commits the data, and deploys the refreshed site.
+- Each update adds or replaces that day’s UTC snapshot. Stored history is retained beyond one year so older cached prices remain available even after they leave CoinGecko's public 365-day retrieval window. The chart and report still use the configured 366-day display window.
 - Browser profiles are validated, can include actual buy dates, and are stored only in `localStorage`.
 - The management page can create, rename, edit, and delete browser-local simulations. It can also compose JSON for a file-based simulation or real portfolio without changing published profiles.
 - `manage.html` generates complete profile-file JSON. Real holdings can be entered row by row or pasted as JSON using an asset ID or symbol, quantity, cost, and optional buy date. Assets may appear more than once when their buy dates differ. TARS AI (TAI) is included in the supported asset universe.
@@ -63,6 +63,23 @@ Open <http://localhost:8000>. To fetch live data locally, run
 `npm run update-data`. This uses the same updater as the scheduled workflow;
 see [`docs/local-development.md`](docs/local-development.md) for data refresh,
 history, and managed-default commands.
+
+### Calculate an asset quantity
+
+The repository includes the `market-quantity` agent skill for converting a fiat
+amount into a supported crypto quantity using the latest stored market price:
+
+```bash
+npm run market-quantity -- TAI 250
+npm run market-quantity -- TAI 250 2026-03-15
+```
+
+The command accepts a case-insensitive symbol or CoinGecko ID and returns JSON
+with the price, calculated quantity, quote currency, source, and snapshot time.
+An optional `YYYY-MM-DD` third argument selects that exact historical snapshot
+for simulations; without it, the latest stored quote is used. Dated lookups use
+`data/market.json` first, then query CoinGecko when that asset and date are not
+cached. Online fallback results are returned without modifying the market file.
 
 ## GitHub Pages setup
 

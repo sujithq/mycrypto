@@ -15,7 +15,10 @@ import {
 } from '../src/model.js';
 import {
   combineHistoricalPrices,
-  getMissingHistoricalAssetIds,
+  findFirstHistoryGap,
+  getBackfillStartDate,
+  getHistoryBackfillPlan,
+  getPublicHistoryStartDate,
   getSupportedAssetIds,
   mergeHistoricalPrices,
   updateHistory,
@@ -66,6 +69,25 @@ test('adds the first market snapshot to empty history', () => {
   assert.deepEqual(updateHistory([], snapshot), [snapshot]);
 });
 
+test('preserves cached market history beyond the public API window', () => {
+  const cached = Array.from({ length: 367 }, (_, index) => ({
+    date: new Date(Date.UTC(2025, 0, index + 1)).toISOString().slice(0, 10),
+    prices: prices(index + 1),
+  }));
+  const snapshot = { date: '2026-08-20', prices: prices(400) };
+  const updated = updateHistory(cached, snapshot);
+  assert.equal(updated.length, 368);
+  assert.deepEqual(updated[0], cached[0]);
+  assert.deepEqual(updated.at(-1), snapshot);
+});
+
+test('clamps public API backfills to the latest 365 UTC dates', () => {
+  const now = Date.parse('2026-08-20T08:50:16Z');
+  assert.equal(getPublicHistoryStartDate(now), '2025-08-21');
+  assert.equal(getBackfillStartDate('2025-01-01', now), '2025-08-21');
+  assert.equal(getBackfillStartDate('2026-01-01', now), '2026-01-01');
+});
+
 test('combines complete historical prices into daily snapshots', () => {
   const timestamp = Date.parse('2026-01-01T00:00:00Z');
   assert.deepEqual(combineHistoricalPrices({
@@ -76,12 +98,41 @@ test('combines complete historical prices into daily snapshots', () => {
   ]);
 });
 
-test('selects only assets missing historical data at the portfolio start', () => {
-  assert.deepEqual(
-    getMissingHistoricalAssetIds(history, [...supportedIds, 'supported-only'], '2026-08-11'),
-    ['supported-only'],
+test('finds the first missing calendar date in local history', () => {
+  const now = Date.parse('2026-08-19T12:00:00Z');
+  assert.equal(findFirstHistoryGap(history, [...supportedIds], now), '2026-08-12');
+});
+
+test('finds the first date with a missing asset price', () => {
+  const complete = [11, 12, 13].map((day) => ({
+    date: `2026-08-${day}`,
+    prices: prices(day),
+  }));
+  delete complete[1].prices['asset-4'];
+  assert.equal(
+    findFirstHistoryGap(complete, [...supportedIds], Date.parse('2026-08-14T12:00:00Z')),
+    '2026-08-12',
   );
-  assert.deepEqual(getMissingHistoricalAssetIds(history, [...supportedIds], '2026-08-11'), []);
+});
+
+test('starts at the first gap or the public window when history is complete', () => {
+  const now = Date.parse('2026-08-20T08:50:16Z');
+  const complete = [17, 18, 19].map((day) => ({
+    date: `2026-08-${day}`,
+    prices: prices(day),
+  }));
+  assert.deepEqual(getHistoryBackfillPlan(complete, [...supportedIds], now), {
+    gapDate: null,
+    startDate: '2025-08-21',
+  });
+  assert.deepEqual(getHistoryBackfillPlan(
+    [complete[0], complete[2]],
+    [...supportedIds],
+    now,
+  ), {
+    gapDate: '2026-08-18',
+    startDate: '2026-08-18',
+  });
 });
 
 test('merges downloaded history without replacing existing asset prices', () => {

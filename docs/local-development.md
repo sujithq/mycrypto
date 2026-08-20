@@ -25,9 +25,16 @@ npm run update-data
 The script fetches EUR quotes for the configured default portfolio from
 CoinGecko in one combined request, updates `data/market.json`, and regenerates
 `data/weekly-report.json`. Each run adds or replaces the current UTC snapshot,
-so daily history accumulates over scheduled or local runs.
-When a configured buy date predates the stored history, the updater first
-backfills daily prices from that date for the simulation.
+so daily history accumulates over scheduled or local runs. Existing snapshots
+are retained beyond one year even though the dashboard's chart and report use a
+rolling 366-day display window.
+Before requesting historical prices, the updater scans the stored UTC history
+through yesterday for missing dates and missing supported-asset prices. It
+refreshes every supported asset from the earliest gap through the current run.
+When the cache has no gaps, it refreshes CoinGecko's latest 365-date public
+window instead. Remote requests are clamped to that window while older cached
+prices are preserved; an older uncached price cannot be recovered with the
+public API.
 
 The public CoinGecko API may rate-limit requests. The updater retries a failed
 combined request with backoff.

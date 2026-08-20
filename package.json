@@ -6,6 +6,7 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "test": "node --test",
+    "market-quantity": "node .github/skills/market-quantity/scripts/calculate-market-quantity.mjs",
     "update-data": "node scripts/update-market-data.mjs",
     "check": "npm test && npm run build"
   },
