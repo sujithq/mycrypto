@@ -20,10 +20,7 @@
       </a>
       <div class="header-actions">
         <p class="market-status"><span aria-hidden="true"></span> DATA: <strong id="data-status">LOADING</strong></p>
-        <button class="button button-quiet" id="configure-button" type="button">
-          Configure portfolio
-        </button>
-        <a class="button button-quiet" href="./manage.html">Manage defaults</a>
+        <a class="button button-quiet" href="./manage.html">Manage portfolio</a>
       </div>
     </header>
 
@@ -142,26 +139,6 @@
       <p>MARKET DATA BY <a href="https://www.coingecko.com/" rel="noopener noreferrer">COINGECKO</a> · DAILY SNAPSHOT AT 23:55 UTC</p>
       <p>Educational model only. Crypto assets can lose their entire value. This is not financial advice.</p>
     </footer>
-
-    <dialog id="portfolio-dialog" aria-labelledby="dialog-title">
-      <form id="portfolio-form" method="dialog">
-        <div class="dialog-heading">
-          <div>
-            <p class="eyebrow">LOCAL CONFIGURATION</p>
-            <h2 id="dialog-title">Build your ten</h2>
-          </div>
-          <button class="icon-button" value="cancel" aria-label="Close configuration">×</button>
-        </div>
-        <p class="dialog-copy">Choose ten unique tracked assets, divide exactly €500, and optionally set actual buy dates. Your configuration stays in this browser.</p>
-        <div id="portfolio-fields" class="portfolio-fields"></div>
-        <p class="allocation-total">Allocated <strong id="allocation-total">€500</strong> / €500</p>
-        <p class="form-error" id="form-error" role="alert"></p>
-        <div class="dialog-actions">
-          <button class="button button-quiet" id="reset-button" type="button">Reset research list</button>
-          <button class="button button-primary" value="save" type="submit">Save portfolio</button>
-        </div>
-      </form>
-    </dialog>
 
     <noscript>This dashboard needs JavaScript to calculate portfolio performance.</noscript>
   </body>

@@ -32,13 +32,32 @@
         </div>
       </section>
 
+      <section class="panel" aria-labelledby="portfolio-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">LOCAL PORTFOLIO</p>
+            <h2 id="portfolio-title">Manage your portfolio</h2>
+          </div>
+          <p>Choose a local research portfolio. It is saved only in this browser and does not change the managed defaults.</p>
+        </div>
+        <form id="portfolio-form">
+          <div id="portfolio-fields" class="portfolio-fields"></div>
+          <p class="allocation-total">Allocated <strong id="allocation-total">€500</strong> / €500</p>
+          <p class="form-error" id="form-error" role="alert"></p>
+          <div class="dialog-actions">
+            <button class="button button-quiet" id="reset-button" type="button">Reset to managed defaults</button>
+            <button class="button button-primary" type="submit">Save local portfolio</button>
+          </div>
+        </form>
+      </section>
+
       <section class="panel" aria-labelledby="management-title">
         <div class="section-heading">
           <div>
             <p class="eyebrow">DEFAULT PORTFOLIO</p>
             <h2 id="management-title">Assets, actual buys, timeframe</h2>
           </div>
-          <p>Select ten unique assets, enter actual invested values, optional buy dates, and the chart/report timeframe.</p>
+          <p>Prepare the GitHub-controlled defaults: select ten unique assets, enter actual invested values, optional buy dates, and the chart/report timeframe.</p>
         </div>
 
         <form id="management-form">

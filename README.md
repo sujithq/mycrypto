@@ -40,7 +40,7 @@ Research and identifier references:
 - `.github/workflows/update-market-data.yml` runs at 23:55 UTC, fetches EUR quotes from CoinGecko, retains up to 366 closes, generates the trailing report, commits the data, and deploys the refreshed site.
 - The first update bootstraps 30 days of daily history. Later runs add or replace that day’s UTC snapshot.
 - Browser configuration is validated, can include actual buy dates, is stored only in `localStorage`, and is resettable to the researched model.
-- `manage.html` prepares JSON for the **Manage portfolio defaults** workflow so the default ten assets, actual buy values, optional buy dates, and timeframe can be updated without editing JSON by hand. TARS AI (TAI) is included in the supported asset universe.
+- `manage.html` is the shared management page for local portfolio selection and preparing JSON for the **Manage portfolio defaults** workflow. The default ten assets, actual buy values, optional buy dates, and timeframe can be updated without editing JSON by hand. TARS AI (TAI) is included in the supported asset universe.
 - `.github/workflows/manage-portfolio.yml` validates and commits managed defaults. It gates execution through GitHub permissions/environment protection and checks that `PORTFOLIO_MANAGEMENT_SECRET` is configured without requesting, printing, or passing the secret value as workflow input.
 - `.github/workflows/deploy-pages.yml` validates and deploys every push to `main`.
 

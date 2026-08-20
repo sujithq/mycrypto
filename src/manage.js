@@ -2,6 +2,7 @@ import { isValidPortfolio } from './model.js';
 
 const $ = (selector) => document.querySelector(selector);
 const euro = new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2 });
+const STORAGE_KEY = 'crypto-allocation-desk.portfolio.v1';
 
 let config;
 
@@ -12,18 +13,16 @@ function element(tag, className, text) {
   return node;
 }
 
-function renderFields() {
-  $('#timeframe-days').value = String(config.timeframeDays ?? 30);
-  const fields = $('#management-fields');
+function renderFields(fields, portfolio, amountStep = '0.01', idPrefix = 'asset') {
   fields.replaceChildren();
 
-  config.defaultPortfolio.forEach((item, index) => {
+  portfolio.forEach((item, index) => {
     const row = element('div', 'portfolio-field management-field');
     const label = element('label', '', String(index + 1).padStart(2, '0'));
-    label.htmlFor = `asset-${index}`;
+    label.htmlFor = `${idPrefix}-${index}`;
 
     const select = document.createElement('select');
-    select.id = `asset-${index}`;
+    select.id = `${idPrefix}-${index}`;
     select.name = 'asset';
     select.setAttribute('aria-label', `Asset ${index + 1}`);
     config.supportedAssets.forEach((asset) => {
@@ -39,7 +38,7 @@ function renderFields() {
     amount.type = 'number';
     amount.min = '1';
     amount.max = String(config.totalInvestment);
-    amount.step = '0.01';
+    amount.step = amountStep;
     amount.value = String(item.amount);
     amount.setAttribute('aria-label', `Actual invested value ${index + 1}`);
     amountWrap.append(amount);
@@ -53,26 +52,26 @@ function renderFields() {
     row.append(label, select, amountWrap, buyDate);
     fields.append(row);
   });
-  updateTotal();
 }
 
-function updateTotal() {
-  const total = [...document.querySelectorAll('input[name="amount"]')]
+function updateTotal(fieldsSelector, outputSelector) {
+  const total = [...document.querySelectorAll(`${fieldsSelector} input[name="amount"]`)]
     .map(({ value }) => Number(value))
     .reduce((sum, amount) => sum + (Number.isFinite(amount) ? amount : 0), 0);
-  const output = $('#management-total');
+  const output = $(outputSelector);
   output.textContent = euro.format(total);
   output.classList.toggle('negative', Math.abs(total - config.totalInvestment) >= .01);
 }
 
-function buildPortfolio() {
-  const ids = [...document.querySelectorAll('select[name="asset"]')].map(({ value }) => value);
-  const amounts = [...document.querySelectorAll('input[name="amount"]')].map(({ value }) => Number(value));
-  const buyDates = [...document.querySelectorAll('input[name="buyDate"]')].map(({ value }) => value);
+function buildPortfolio(fieldsSelector, sourcePortfolio) {
+  const fields = $(fieldsSelector);
+  const ids = [...fields.querySelectorAll('select[name="asset"]')].map(({ value }) => value);
+  const amounts = [...fields.querySelectorAll('input[name="amount"]')].map(({ value }) => Number(value));
+  const buyDates = [...fields.querySelectorAll('input[name="buyDate"]')].map(({ value }) => value);
 
   return ids.map((id, index) => {
     const selected = config.supportedAssets.find((asset) => asset.id === id);
-    const existing = config.defaultPortfolio.find((asset) => asset.id === id);
+    const existing = sourcePortfolio.find((asset) => asset.id === id);
     return {
       ...selected,
       amount: amounts[index],
@@ -83,11 +82,46 @@ function buildPortfolio() {
 }
 
 function bindEvents() {
-  $('#management-fields').addEventListener('input', updateTotal);
+  $('#timeframe-days').value = String(config.timeframeDays ?? 30);
+  const managedIds = new Set(config.supportedAssets.map(({ id }) => id));
+  const localPortfolio = loadLocalPortfolio();
+  renderFields($('#portfolio-fields'), localPortfolio, '1', 'local-asset');
+  renderFields($('#management-fields'), config.defaultPortfolio, '0.01', 'managed-asset');
+  updateTotal('#portfolio-fields', '#allocation-total');
+  updateTotal('#management-fields', '#management-total');
+
+  $('#portfolio-fields').addEventListener('input', () => updateTotal('#portfolio-fields', '#allocation-total'));
+  $('#management-fields').addEventListener('input', () => updateTotal('#management-fields', '#management-total'));
+  $('#reset-button').addEventListener('click', () => {
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      $('#form-error').textContent = 'Could not clear the saved portfolio.';
+      return;
+    }
+    renderFields($('#portfolio-fields'), config.defaultPortfolio, '1', 'local-asset');
+    updateTotal('#portfolio-fields', '#allocation-total');
+    $('#form-error').textContent = '';
+  });
+  $('#portfolio-form').addEventListener('submit', (event) => {
+    event.preventDefault();
+    const portfolio = buildPortfolio('#portfolio-fields', localPortfolio);
+    if (!isValidPortfolio(portfolio, managedIds, config.totalInvestment)) {
+      $('#form-error').textContent = 'Choose ten unique assets with positive values totalling the configured investment.';
+      return;
+    }
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(portfolio));
+    } catch {
+      $('#form-error').textContent = 'Could not save this portfolio in browser storage.';
+      return;
+    }
+    $('#form-error').textContent = 'Local portfolio saved.';
+  });
   $('#management-form').addEventListener('submit', (event) => {
     event.preventDefault();
     const timeframeDays = Number($('#timeframe-days').value);
-    const portfolio = buildPortfolio();
+    const portfolio = buildPortfolio('#management-fields', config.defaultPortfolio);
     const validPortfolio = isValidPortfolio(portfolio, new Set(config.supportedAssets.map(({ id }) => id)), config.totalInvestment);
     if (!Number.isInteger(timeframeDays) || timeframeDays < 1 || timeframeDays > 366) {
       $('#management-error').textContent = 'Use a timeframe between 1 and 366 days.';
@@ -102,12 +136,23 @@ function bindEvents() {
   });
 }
 
+function loadLocalPortfolio() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if (isValidPortfolio(saved, new Set(config.supportedAssets.map(({ id }) => id)), config.totalInvestment)) {
+      return saved;
+    }
+  } catch {
+    // Fall back to managed defaults when browser storage is unavailable.
+  }
+  return structuredClone(config.defaultPortfolio);
+}
+
 async function init() {
   try {
     const response = await fetch('./data/portfolio.json', { cache: 'no-store' });
     if (!response.ok) throw new Error('Portfolio configuration could not be loaded.');
     config = await response.json();
-    renderFields();
     bindEvents();
   } catch (error) {
     console.error(error);
