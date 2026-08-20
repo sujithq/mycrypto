@@ -84,7 +84,7 @@ function buildPortfolio(fieldsSelector, sourcePortfolio) {
 function bindEvents() {
   $('#timeframe-days').value = String(config.timeframeDays ?? 30);
   const managedIds = new Set(config.supportedAssets.map(({ id }) => id));
-  const localPortfolio = loadLocalPortfolio();
+  let localPortfolio = loadLocalPortfolio();
   renderFields($('#portfolio-fields'), localPortfolio, '1', 'local-asset');
   renderFields($('#management-fields'), config.defaultPortfolio, '0.01', 'managed-asset');
   updateTotal('#portfolio-fields', '#allocation-total');
@@ -99,9 +99,11 @@ function bindEvents() {
       $('#form-error').textContent = 'Could not clear the saved portfolio.';
       return;
     }
+    localPortfolio = structuredClone(config.defaultPortfolio);
     renderFields($('#portfolio-fields'), config.defaultPortfolio, '1', 'local-asset');
     updateTotal('#portfolio-fields', '#allocation-total');
     $('#form-error').textContent = '';
+    $('#form-status').textContent = '';
   });
   $('#portfolio-form').addEventListener('submit', (event) => {
     event.preventDefault();
@@ -116,7 +118,9 @@ function bindEvents() {
       $('#form-error').textContent = 'Could not save this portfolio in browser storage.';
       return;
     }
-    $('#form-error').textContent = 'Local portfolio saved.';
+    localPortfolio = portfolio;
+    $('#form-error').textContent = '';
+    $('#form-status').textContent = 'Local portfolio saved.';
   });
   $('#management-form').addEventListener('submit', (event) => {
     event.preventDefault();

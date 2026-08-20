@@ -224,6 +224,7 @@ select:focus-visible, input:focus-visible, button:focus-visible, a:focus-visible
 .amount-field input { padding-left: 26px; }
 .allocation-total { margin: 20px 0 5px; color: var(--muted); text-align: right; }
 .form-error { min-height: 1.2em; color: var(--danger); font-size: .75rem; text-align: right; }
+.form-status { min-height: 1.2em; color: var(--acid); font-size: .75rem; text-align: right; }
 .dialog-actions { margin-top: 22px; align-items: center; }
 .manage-hero { min-height: 320px; }
 .timeframe-field { display: grid; max-width: 240px; gap: 10px; margin-bottom: 22px; color: var(--muted); font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; }
