@@ -19,7 +19,7 @@ const shortDate = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'sho
 let config;
 let market;
 let report;
-let automatedReport;
+let profileReports;
 let portfolio;
 let activeProfile;
 let profiles = [];
@@ -188,6 +188,8 @@ function renderTheses() {
 }
 
 function renderReport() {
+  $('#report-profile').textContent = activeProfile.name.toUpperCase();
+  $('#report-title').textContent = `${activeProfile.name} analysis`;
   const start = report.periodStart ? shortDate.format(new Date(`${report.periodStart}T00:00:00Z`)) : '—';
   const end = report.periodEnd ? shortDate.format(new Date(`${report.periodEnd}T00:00:00Z`)) : '—';
   $('#report-period').textContent = `${start.toUpperCase()}—${end.toUpperCase()}`;
@@ -285,13 +287,15 @@ function render() {
   const holdings = isReal
     ? calculateRealHoldings(portfolio, market.assets)
     : calculateHoldings(portfolio, market.history, market.assets);
-  const isDefaultPortfolio = portfolio.every((item, index) =>
-    item.id === config.defaultPortfolio[index]?.id
-    && item.amount === config.defaultPortfolio[index]?.amount
-    && (item.buyDate ?? null) === (config.defaultPortfolio[index]?.buyDate ?? null));
-  report = !isReal && isDefaultPortfolio
-    ? automatedReport
-    : createAnalysisReport(market.history, portfolio, new Date().toISOString(), config.timeframeDays);
+  report = activeProfile.source === 'managed'
+    ? profileReports.reports?.[activeProfile.id]
+    : null;
+  report ??= createAnalysisReport(
+    market.history,
+    portfolio,
+    market.updatedAt ?? new Date().toISOString(),
+    config.timeframeDays,
+  );
   $('#page-kicker').textContent = isReal ? 'REAL PORTFOLIO · MANAGED' : 'MODEL PORTFOLIO · AGGRESSIVE';
   $('#portfolio-brief').textContent = isReal
     ? 'Actual holdings entered manually and marked using the latest available EUR prices.'
@@ -314,11 +318,11 @@ async function init() {
     const responses = await Promise.all([
       fetch('./data/portfolio.json'),
       fetch('./data/market.json', { cache: 'no-store' }),
-      fetch('./data/weekly-report.json', { cache: 'no-store' }),
+      fetch('./data/profile-reports.json', { cache: 'no-store' }),
       fetch('./profiles/index.json', { cache: 'no-store' }),
     ]);
     if (responses.some((response) => !response.ok)) throw new Error('Dashboard data could not be loaded.');
-    [config, market, automatedReport, profiles] = await Promise.all(responses.map((response) => response.json()));
+    [config, market, profileReports, profiles] = await Promise.all(responses.map((response) => response.json()));
     profiles = loadProfiles(profiles);
     const selector = $('#profile-selector');
     selector.replaceChildren(...profiles.map((profile) => {
@@ -343,7 +347,6 @@ async function init() {
       : start
         ? `${activeProfile.name} · simulation from ${start}`
         : activeProfile.name;
-    report = automatedReport;
     $('#data-status').textContent = market.updatedAt
       ? `${shortDate.format(new Date(market.updatedAt)).toUpperCase()} UTC`
       : 'AWAITING UPDATE';

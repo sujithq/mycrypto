@@ -6,6 +6,7 @@ import {
   calculateRealSeries,
   calculateSeries,
   createAnalysisReport,
+  createProfileReports,
   filterHistoryByTimeframe,
   isValidProfile,
   isValidPortfolio,
@@ -18,6 +19,8 @@ import {
   findFirstHistoryGap,
   getBackfillStartDate,
   getHistoryBackfillPlan,
+  getMarketUpdatePlan,
+  getMissingHistoricalAssetIds,
   getPublicHistoryStartDate,
   getSupportedAssetIds,
   mergeHistoricalPrices,
@@ -41,6 +44,20 @@ const history = [
   { date: '2026-08-11', prices: prices(10) },
   { date: '2026-08-18', prices: prices(11) },
 ];
+
+function completeHistoryWindow(timestamp) {
+  const rows = [];
+  const end = new Date(timestamp);
+  end.setUTCHours(0, 0, 0, 0);
+  for (
+    let day = Date.parse(`${getPublicHistoryStartDate(timestamp)}T00:00:00Z`), multiplier = 1;
+    day < end.getTime();
+    day += 86_400_000, multiplier += 1
+  ) {
+    rows.push({ date: new Date(day).toISOString().slice(0, 10), prices: prices(multiplier) });
+  }
+  return rows;
+}
 
 test('selects every supported asset once for market updates', () => {
   assert.deepEqual(getSupportedAssetIds({
@@ -99,40 +116,84 @@ test('combines complete historical prices into daily snapshots', () => {
 });
 
 test('finds the first missing calendar date in local history', () => {
-  const now = Date.parse('2026-08-19T12:00:00Z');
-  assert.equal(findFirstHistoryGap(history, [...supportedIds], now), '2026-08-12');
+  const now = Date.parse('2026-08-20T12:00:00Z');
+  const complete = completeHistoryWindow(now);
+  const missingDate = '2026-08-12';
+  const incomplete = complete.filter(({ date }) => date !== missingDate);
+  assert.equal(findFirstHistoryGap(incomplete, [...supportedIds], now), missingDate);
+  assert.deepEqual(getHistoryBackfillPlan(incomplete, [...supportedIds], now), {
+    gapDate: missingDate,
+    startDate: missingDate,
+    assetIds: [...supportedIds],
+  });
 });
 
-test('finds the first date with a missing asset price', () => {
-  const complete = [11, 12, 13].map((day) => ({
-    date: `2026-08-${day}`,
-    prices: prices(day),
-  }));
-  delete complete[1].prices['asset-4'];
-  assert.equal(
-    findFirstHistoryGap(complete, [...supportedIds], Date.parse('2026-08-14T12:00:00Z')),
+test('fetches only assets with missing prices from the first gap onward', () => {
+  const now = Date.parse('2026-08-20T12:00:00Z');
+  const complete = completeHistoryWindow(now);
+  delete complete.find(({ date }) => date === '2026-08-12').prices['asset-4'];
+  delete complete.find(({ date }) => date === '2026-08-18').prices['asset-7'];
+  assert.deepEqual(getMissingHistoricalAssetIds(
+    complete,
+    [...supportedIds],
     '2026-08-12',
-  );
+    now,
+  ), ['asset-4', 'asset-7']);
+  assert.deepEqual(getHistoryBackfillPlan(complete, [...supportedIds], now), {
+    gapDate: '2026-08-12',
+    startDate: '2026-08-12',
+    assetIds: ['asset-4', 'asset-7'],
+  });
 });
 
-test('starts at the first gap or the public window when history is complete', () => {
-  const now = Date.parse('2026-08-20T08:50:16Z');
-  const complete = [17, 18, 19].map((day) => ({
-    date: `2026-08-${day}`,
-    prices: prices(day),
-  }));
+test('skips history requests when the public window is already complete', () => {
+  const now = Date.parse('2026-08-20T12:00:00Z');
+  const complete = completeHistoryWindow(now);
   assert.deepEqual(getHistoryBackfillPlan(complete, [...supportedIds], now), {
     gapDate: null,
+    startDate: null,
+    assetIds: [],
+  });
+});
+
+test('fills the public history window when the cache is empty', () => {
+  const now = Date.parse('2026-08-20T12:00:00Z');
+  assert.deepEqual(getHistoryBackfillPlan([], [...supportedIds], now), {
+    gapDate: '2025-08-21',
     startDate: '2025-08-21',
+    assetIds: [...supportedIds],
   });
-  assert.deepEqual(getHistoryBackfillPlan(
-    [complete[0], complete[2]],
-    [...supportedIds],
-    now,
-  ), {
-    gapDate: '2026-08-18',
-    startDate: '2026-08-18',
+});
+
+test('reuses a complete current-day market snapshot unless refresh is forced', () => {
+  const now = Date.parse('2026-08-20T12:00:00Z');
+  const ids = [...supportedIds];
+  const current = { date: '2026-08-20', prices: prices(400) };
+  const market = {
+    updatedAt: '2026-08-20T09:37:40.996Z',
+    assets: Object.fromEntries(ids.map((id, index) => [id, { price: index + 1 }])),
+    history: [...completeHistoryWindow(now), current],
+  };
+
+  assert.deepEqual(getMarketUpdatePlan(market, ids, now), {
+    fetchCurrentQuotes: false,
+    history: { gapDate: null, startDate: null, assetIds: [] },
   });
+  assert.equal(getMarketUpdatePlan(market, ids, now, true).fetchCurrentQuotes, true);
+});
+
+test('fetches current quotes when the same-day cache is incomplete', () => {
+  const now = Date.parse('2026-08-20T12:00:00Z');
+  const ids = [...supportedIds];
+  const current = { date: '2026-08-20', prices: prices(400) };
+  const assets = Object.fromEntries(ids.map((id, index) => [id, { price: index + 1 }]));
+  delete assets['asset-4'];
+
+  assert.equal(getMarketUpdatePlan({
+    updatedAt: '2026-08-20T09:37:40.996Z',
+    assets,
+    history: [...completeHistoryWindow(now), current],
+  }, ids, now).fetchCurrentQuotes, true);
 });
 
 test('merges downloaded history without replacing existing asset prices', () => {
@@ -326,6 +387,38 @@ test('creates an allocation-weighted trailing report', () => {
   assert.equal(result.portfolioChangePct, 10);
   assert.equal(result.periodStart, '2026-08-11');
   assert.equal(result.periodEnd, '2026-08-18');
+});
+
+test('creates an identified report for every published profile', () => {
+  const generatedAt = '2026-08-19T00:00:00.000Z';
+  const extraAsset = { id: 'supported-only', symbol: 'ONLY', name: 'Supported only' };
+  const completeHistory = history.map((entry, index) => ({
+    ...entry,
+    prices: { ...entry.prices, [extraAsset.id]: 10 + index },
+  }));
+  const profiles = [
+    { id: 'default', name: 'Default' },
+    {
+      id: 'extra',
+      name: 'Extra',
+      type: 'real',
+      portfolio: [{ id: extraAsset.id, amount: 500, quantity: 50, buyDate: '2026-08-11' }],
+    },
+  ];
+  const result = createProfileReports(completeHistory, profiles, {
+    defaultPortfolio: portfolio,
+    supportedAssets: [...portfolio, extraAsset],
+    timeframeDays: 366,
+  }, generatedAt);
+
+  assert.equal(result.generatedAt, generatedAt);
+  assert.deepEqual(Object.keys(result.reports), ['default', 'extra']);
+  assert.deepEqual(result.reports.extra.profile, {
+    id: 'extra',
+    name: 'Extra',
+    type: 'real',
+  });
+  assert.equal(result.reports.extra.bestPerformer.symbol, 'ONLY');
 });
 
 test('does not publish a partial report when an asset lacks prices', () => {

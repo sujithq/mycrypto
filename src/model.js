@@ -229,7 +229,7 @@ export function createAnalysisReport(history, portfolio, generatedAt = new Date(
     status,
     summary: portfolioChangePct === null
       ? 'No comparable prices were available.'
-      : `The model portfolio moved ${portfolioChangePct >= 0 ? '+' : ''}${portfolioChangePct.toFixed(2)}% over a ${timeframeDays}-day trailing window (${recent.length} closes).`,
+      : `The portfolio moved ${portfolioChangePct >= 0 ? '+' : ''}${portfolioChangePct.toFixed(2)}% over a ${timeframeDays}-day trailing window (${recent.length} closes).`,
     portfolioChangePct: portfolioChangePct === null ? null : Number(portfolioChangePct.toFixed(4)),
     bestPerformer: best ? { symbol: best.symbol, changePct: Number(best.changePct.toFixed(4)) } : null,
     worstPerformer: worst ? { symbol: worst.symbol, changePct: Number(worst.changePct.toFixed(4)) } : null,
@@ -241,5 +241,26 @@ export function createAnalysisReport(history, portfolio, generatedAt = new Date(
         : `Performance is allocation-weighted across the ${timeframeDays}-day trailing window (${recent.length} closes).`,
       'Momentum is descriptive, not predictive; review concentration and downside before acting.',
     ],
+  };
+}
+
+export function createProfileReports(history, profiles, config, generatedAt = new Date().toISOString()) {
+  return {
+    generatedAt,
+    reports: Object.fromEntries(profiles.map((profile) => {
+      const portfolio = resolveProfilePortfolio(
+        profile,
+        config.defaultPortfolio,
+        config.supportedAssets,
+      );
+      return [profile.id, {
+        profile: {
+          id: profile.id,
+          name: profile.name,
+          type: profile.type ?? 'simulated',
+        },
+        ...createAnalysisReport(history, portfolio, generatedAt, config.timeframeDays),
+      }];
+    })),
   };
 }

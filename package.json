@@ -8,6 +8,7 @@
     "test": "node --test",
     "market-quantity": "node .github/skills/market-quantity/scripts/calculate-market-quantity.mjs",
     "update-data": "node scripts/update-market-data.mjs",
+    "update-data:force": "node scripts/update-market-data.mjs --force",
     "check": "npm test && npm run build"
   },
   "repository": {

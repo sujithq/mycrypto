@@ -1,6 +1,6 @@
 # Crypto Allocation Desk
 
-A no-backend GitHub Pages dashboard for a hypothetical, aggressive €500 crypto portfolio. It tracks daily EUR closes, calculates each holding’s evolution, publishes a configurable trailing status report, and lets visitors configure or reset their own allocation locally.
+A no-backend GitHub Pages dashboard for configurable crypto portfolio profiles. It tracks daily EUR closes, calculates each holding’s evolution, publishes a trailing status report for every profile, and lets visitors manage their own allocation locally.
 
 > **Educational use only.** Crypto assets are highly volatile and can lose their entire value. This project does not provide financial advice.
 
@@ -39,7 +39,7 @@ Research and identifier references:
 - `data/portfolio.json` defines the research portfolio, configurable asset universe, and trailing chart/report timeframe.
 - Each JSON file in `profiles/` defines one read-only selectable profile. The build validates the files and publishes their index.
 - Managed profiles can be simulations or real portfolios. Simulations use monthly or per-purchase baselines; real portfolios use manually entered quantities and actual cost values.
-- `.github/workflows/update-market-data.yml` runs at 23:55 UTC, fetches the configured portfolio's EUR quotes from CoinGecko in one request, generates the trailing report, commits the data, and deploys the refreshed site.
+- `.github/workflows/update-market-data.yml` runs at 23:55 UTC, fetches supported EUR quotes from CoinGecko, generates a trailing report for every published profile, commits the data, and deploys the refreshed site.
 - Each update adds or replaces that day’s UTC snapshot. Stored history is retained beyond one year so older cached prices remain available even after they leave CoinGecko's public 365-day retrieval window. The chart and report still use the configured 366-day display window.
 - Browser profiles are validated, can include actual buy dates, and are stored only in `localStorage`.
 - The management page can create, rename, edit, and delete browser-local simulations. It can also compose JSON for a file-based simulation or real portfolio without changing published profiles.

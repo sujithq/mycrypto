@@ -1,0 +1,32 @@
+{
+  "generatedAt": "2026-08-20T09:37:40.996Z",
+  "reports": {
+    "test": {
+      "profile": {
+        "id": "test",
+        "name": "test",
+        "type": "real"
+      },
+      "generatedAt": "2026-08-20T09:37:40.996Z",
+      "periodStart": "2026-03-15",
+      "periodEnd": "2026-08-20",
+      "status": "Risk-off",
+      "summary": "The portfolio moved -31.20% over a 366-day trailing window (159 closes).",
+      "portfolioChangePct": -31.2046,
+      "bestPerformer": {
+        "symbol": "BTC",
+        "changePct": -1.2329
+      },
+      "worstPerformer": {
+        "symbol": "TAI",
+        "changePct": -61.1763
+      },
+      "observations": [
+        "BTC led the portfolio at -1.23%.",
+        "TAI was weakest at -61.18%.",
+        "This early report uses 159 closes; the target 366-day window has 367.",
+        "Momentum is descriptive, not predictive; review concentration and downside before acting."
+      ]
+    }
+  }
+}

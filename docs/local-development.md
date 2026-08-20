@@ -22,19 +22,23 @@ Run the same data updater used by the scheduled workflow:
 npm run update-data
 ```
 
+A normal run reuses a complete snapshot already captured on the same UTC date,
+so running it again makes no CoinGecko requests. Use `npm run
+update-data:force` to refresh current quotes anyway. The scheduled 23:55 UTC
+workflow uses the forced command to ensure it captures a fresh daily close.
+
 The script fetches EUR quotes for the configured default portfolio from
 CoinGecko in one combined request, updates `data/market.json`, and regenerates
-`data/weekly-report.json`. Each run adds or replaces the current UTC snapshot,
-so daily history accumulates over scheduled or local runs. Existing snapshots
-are retained beyond one year even though the dashboard's chart and report use a
-rolling 366-day display window.
+`data/profile-reports.json` with a report for every published profile. Each run
+adds or replaces the current UTC snapshot, so daily history accumulates over
+scheduled or local runs. Existing snapshots are retained beyond one year even
+though the dashboard's chart and reports use a rolling 366-day display window.
 Before requesting historical prices, the updater scans the stored UTC history
-through yesterday for missing dates and missing supported-asset prices. It
-refreshes every supported asset from the earliest gap through the current run.
-When the cache has no gaps, it refreshes CoinGecko's latest 365-date public
-window instead. Remote requests are clamped to that window while older cached
-prices are preserved; an older uncached price cannot be recovered with the
-public API.
+through yesterday for missing dates and missing supported-asset prices. An
+empty cache is filled for CoinGecko's latest 365-date public window. Later runs
+skip historical requests when that window is complete; when a gap exists, only
+assets missing from the affected range are fetched. Older cached prices are
+preserved, and an older uncached price cannot be recovered with the public API.
 
 The public CoinGecko API may rate-limit requests. The updater retries a failed
 combined request with backoff.
