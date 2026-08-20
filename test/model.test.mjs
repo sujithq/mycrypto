@@ -163,19 +163,33 @@ test('uses a profile buy date as the fallback for custom portfolio items', () =>
   assert.equal(isValidProfile(profile, supportedIds, portfolio), true);
 });
 
-test('adds supported asset metadata to sparse profile holdings', () => {
+test('adds configured asset metadata to sparse profile holdings', () => {
   const profile = {
     id: 'test',
     name: 'Test',
     buyDate: '2026-03-01',
-    portfolio: [{ id: portfolio[0].id, amount: 500 }],
+    portfolio: [
+      { id: portfolio[0].id, amount: 250 },
+      { id: 'supported-only', amount: 250, thesis: 'Profile description.' },
+    ],
   };
-  const supportedAssets = [{ id: portfolio[0].id, symbol: 'A0', name: 'Asset 0' }];
-  assert.deepEqual(resolveProfilePortfolio(profile, portfolio, supportedAssets), [{
+  const supportedAssets = [
+    { id: portfolio[0].id, symbol: 'A0', name: 'Asset 0' },
+    { id: 'supported-only', symbol: 'SO', name: 'Supported Only' },
+  ];
+  const resolved = resolveProfilePortfolio(profile, portfolio, supportedAssets);
+  assert.deepEqual(resolved[0], {
     ...supportedAssets[0],
-    amount: 500,
+    ...portfolio[0],
+    amount: 250,
     buyDate: '2026-03-01',
-  }]);
+  });
+  assert.deepEqual(resolved[1], {
+    ...supportedAssets[1],
+    amount: 250,
+    thesis: 'Profile description.',
+    buyDate: '2026-03-01',
+  });
 });
 
 test('validates repeated profile assets using the profile buy-date fallback', () => {

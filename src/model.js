@@ -37,6 +37,7 @@ export function resolveProfilePortfolio(profile, defaultPortfolio, supportedAsse
   const source = profile?.portfolio ?? defaultPortfolio;
   return source.map((item) => ({
     ...supportedAssets.find(({ id }) => id === item.id),
+    ...defaultPortfolio.find(({ id }) => id === item.id),
     ...item,
     ...(profile?.buyDate && (!profile.portfolio || !item.buyDate)
       ? { buyDate: profile.buyDate }
