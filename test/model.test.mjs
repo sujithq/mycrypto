@@ -7,7 +7,7 @@ import {
   filterHistoryByTimeframe,
   isValidPortfolio,
 } from '../src/model.js';
-import { getPortfolioAssetIds, updateHistory } from '../scripts/update-market-data.mjs';
+import { combineHistoricalPrices, getPortfolioAssetIds, updateHistory } from '../scripts/update-market-data.mjs';
 
 const portfolio = Array.from({ length: 10 }, (_, index) => ({
   id: `asset-${index}`,
@@ -28,6 +28,16 @@ test('selects each configured portfolio asset once for market updates', () => {
 test('adds the first market snapshot to empty history', () => {
   const snapshot = { date: '2026-08-20', prices: prices(12) };
   assert.deepEqual(updateHistory([], snapshot), [snapshot]);
+});
+
+test('combines complete historical prices into daily snapshots', () => {
+  const timestamp = Date.parse('2026-01-01T00:00:00Z');
+  assert.deepEqual(combineHistoricalPrices({
+    bitcoin: [[timestamp, 100]],
+    ethereum: [[timestamp, 10]],
+  }, ['bitcoin', 'ethereum']), [
+    { date: '2026-01-01', prices: { bitcoin: 100, ethereum: 10 } },
+  ]);
 });
 
 test('accepts exactly ten unique positive allocations totalling €500', () => {

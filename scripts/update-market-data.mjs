@@ -55,6 +55,43 @@ export function updateHistory(history, snapshot) {
   return [...next, snapshot].sort((a, b) => a.date.localeCompare(b.date)).slice(-366);
 }
 
+export function combineHistoricalPrices(seriesByAsset, ids) {
+  const byDate = new Map();
+  for (const id of ids) {
+    for (const [timestamp, price] of seriesByAsset[id] ?? []) {
+      if (!Number.isFinite(timestamp) || !Number.isFinite(price)) continue;
+      const date = utcDate(timestamp);
+      const prices = byDate.get(date) ?? {};
+      prices[id] = price;
+      byDate.set(date, prices);
+    }
+  }
+  return [...byDate]
+    .filter(([, prices]) => ids.every((id) => Number.isFinite(prices[id])))
+    .map(([date, prices]) => ({ date, prices }))
+    .sort((a, b) => a.date.localeCompare(b.date));
+}
+
+async function backfillHistory(history, ids, currency, startDate) {
+  if (!startDate || history.some((entry) =>
+    entry.date <= startDate && ids.every((id) => Number.isFinite(entry.prices?.[id])))) {
+    return history;
+  }
+
+  console.log(`Backfilling daily prices from ${startDate}…`);
+  const from = Date.parse(`${startDate}T00:00:00Z`) / 1_000;
+  const to = Date.now() / 1_000;
+  const seriesByAsset = {};
+  for (const id of ids) {
+    const url = `${API}/coins/${encodeURIComponent(id)}/market_chart/range?vs_currency=${encodeURIComponent(currency)}&from=${from}&to=${to}`;
+    const result = await fetchJson(url);
+    if (!Array.isArray(result?.prices)) throw new Error(`CoinGecko returned no historical prices for ${id}.`);
+    seriesByAsset[id] = result.prices;
+  }
+  return combineHistoricalPrices(seriesByAsset, ids)
+    .reduce((next, snapshot) => updateHistory(next, snapshot), history);
+}
+
 async function main() {
   console.log('Loading portfolio and existing market data…');
   const portfolioConfig = JSON.parse(await readFile(portfolioPath, 'utf8'));
@@ -89,7 +126,13 @@ async function main() {
     date,
     prices: Object.fromEntries(quotes.map((quote) => [quote.id, quote.current_price])),
   };
-  const history = updateHistory(Array.isArray(market.history) ? market.history : [], snapshot);
+  const configuredStart = portfolioConfig.defaultPortfolio
+    .map(({ buyDate }) => buyDate)
+    .filter(Boolean)
+    .sort()[0];
+  const existingHistory = Array.isArray(market.history) ? market.history : [];
+  const historical = await backfillHistory(existingHistory, ids, currency, configuredStart);
+  const history = updateHistory(historical, snapshot);
 
   console.log('Writing current market data…');
   await writeFile(marketPath, `${JSON.stringify({

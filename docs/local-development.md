@@ -26,6 +26,8 @@ The script fetches EUR quotes for the configured default portfolio from
 CoinGecko in one combined request, updates `data/market.json`, and regenerates
 `data/weekly-report.json`. Each run adds or replaces the current UTC snapshot,
 so daily history accumulates over scheduled or local runs.
+When a configured buy date predates the stored history, the updater first
+backfills daily prices from that date for the simulation.
 
 The public CoinGecko API may rate-limit requests. The updater retries a failed
 combined request with backoff.
