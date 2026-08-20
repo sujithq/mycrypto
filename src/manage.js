@@ -179,7 +179,7 @@ function loadLocalProfile(id) {
   activeLocalId = profile.id;
   $('#local-profile-selector').value = profile.id;
   $('#local-profile-name').value = profile.name;
-  renderFields($('#portfolio-fields'), profile.portfolio, '1', 'local-asset');
+  renderFields($('#portfolio-fields'), profile.portfolio, '0.01', 'local-asset');
   updateTotal('#portfolio-fields', '#allocation-total');
 }
 
@@ -222,14 +222,14 @@ function bindEvents() {
   $('#management-fields').addEventListener('input', () => updateTotal('#management-fields', '#management-total'));
   $('#portfolio-fields').addEventListener('click', ({ target }) => {
     if (!target.matches('.remove-asset')) return;
-    removeAsset('#portfolio-fields', '#allocation-total', 'local-asset', '1', Number(target.dataset.index));
+    removeAsset('#portfolio-fields', '#allocation-total', 'local-asset', '0.01', Number(target.dataset.index));
   });
   $('#management-fields').addEventListener('click', ({ target }) => {
     if (!target.matches('.remove-asset')) return;
     removeAsset('#management-fields', '#management-total', 'managed-asset', '0.01', Number(target.dataset.index));
   });
   $('#add-local-asset-button').addEventListener('click', () =>
-    addAsset('#portfolio-fields', '#allocation-total', 'local-asset', '1'));
+    addAsset('#portfolio-fields', '#allocation-total', 'local-asset', '0.01'));
   $('#add-managed-asset-button').addEventListener('click', () =>
     addAsset('#management-fields', '#management-total', 'managed-asset', '0.01'));
   $('#local-profile-selector').addEventListener('change', ({ target }) => loadLocalProfile(target.value));
