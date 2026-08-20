@@ -278,7 +278,11 @@ function bindEvents() {
     const profileId = $('#managed-profile-id').value.trim();
     const profileName = $('#managed-profile-name').value.trim();
     const profileBuyDate = $('#managed-profile-buy-date').value;
-    const validPortfolio = isValidPortfolio(portfolio, new Set(config.supportedAssets.map(({ id }) => id)), config.totalInvestment);
+    const resolvedPortfolio = resolveProfilePortfolio({
+      ...(profileBuyDate ? { buyDate: profileBuyDate } : {}),
+      portfolio,
+    }, config.defaultPortfolio);
+    const validPortfolio = isValidPortfolio(resolvedPortfolio, new Set(config.supportedAssets.map(({ id }) => id)), config.totalInvestment);
     if (!Number.isInteger(timeframeDays) || timeframeDays < 1 || timeframeDays > 366) {
       $('#management-error').textContent = 'Use a timeframe between 1 and 366 days.';
       return;

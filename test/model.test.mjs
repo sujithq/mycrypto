@@ -90,6 +90,19 @@ test('uses a profile buy date as the fallback for custom portfolio items', () =>
   assert.equal(isValidProfile(profile, supportedIds, portfolio), true);
 });
 
+test('validates repeated profile assets using the profile buy-date fallback', () => {
+  const profile = {
+    id: 'repeat-fallback',
+    name: 'Repeat fallback',
+    buyDate: '2026-08-11',
+    portfolio: [
+      { ...portfolio[0], amount: 250 },
+      { ...portfolio[0], amount: 250, buyDate: '2026-08-18' },
+    ],
+  };
+  assert.equal(isValidProfile(profile, supportedIds, portfolio), true);
+});
+
 test('calculates portfolio evolution from each asset baseline', () => {
   assert.deepEqual(calculateSeries(portfolio, history), [
     { date: '2026-08-11', value: 500 },
