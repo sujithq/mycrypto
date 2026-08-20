@@ -60,6 +60,10 @@ Each profile can define its own assets, allocations, and per-asset buy dates.
 An optional profile buy date acts as the default for custom portfolio items
 without an individual buy date. Profiles without custom portfolio content keep
 the original behavior: their profile buy date applies to every default asset.
+Managed profiles may also use the `real` type. Real holdings record their current
+quantity and actual cost instead of requiring a €500 allocation. They can be
+entered manually or pasted into the management page as a JSON array containing
+`id` or `symbol`, `quantity`, `cost` (or `amount`), and an optional `buyDate`.
 Switching profiles does not modify historical prices. Browser-local profiles can
 be created, edited, and deleted on `manage.html`.
 
