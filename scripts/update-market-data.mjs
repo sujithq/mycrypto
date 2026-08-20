@@ -72,25 +72,47 @@ export function combineHistoricalPrices(seriesByAsset, ids) {
     .sort((a, b) => a.date.localeCompare(b.date));
 }
 
-async function backfillHistory(history, ids, currency, startDate) {
-  if (!startDate || history.some((entry) =>
-    entry.date === startDate && ids.every((id) => Number.isFinite(entry.prices?.[id])))) {
-    return history;
-  }
+export function getMissingHistoricalAssetIds(history, ids, startDate) {
+  const start = history.find((entry) => entry.date === startDate);
+  return ids.filter((id) => !Number.isFinite(start?.prices?.[id]));
+}
 
-  console.log(`Backfilling daily prices from ${startDate}…`);
+export function mergeHistoricalPrices(history, seriesByAsset) {
+  const byDate = new Map(history.map((entry) => [
+    entry.date,
+    { ...entry, prices: { ...entry.prices } },
+  ]));
+  for (const [id, series] of Object.entries(seriesByAsset)) {
+    for (const [timestamp, price] of series) {
+      if (!Number.isFinite(timestamp) || !Number.isFinite(price)) continue;
+      const date = utcDate(timestamp);
+      const entry = byDate.get(date) ?? { date, prices: {} };
+      entry.prices[id] = price;
+      byDate.set(date, entry);
+    }
+  }
+  return [...byDate.values()]
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .slice(-366);
+}
+
+async function backfillHistory(history, ids, currency, startDate) {
+  if (!startDate) return history;
+  const missingIds = getMissingHistoricalAssetIds(history, ids, startDate);
+  if (missingIds.length === 0) return history;
+
+  console.log(`Backfilling ${missingIds.length} missing asset histories from ${startDate}…`);
   const from = Date.parse(`${startDate}T00:00:00Z`) / 1_000;
   const to = Date.now() / 1_000;
   const seriesByAsset = {};
-  for (const [index, id] of ids.entries()) {
+  for (const [index, id] of missingIds.entries()) {
     const url = `${API}/coins/${encodeURIComponent(id)}/market_chart/range?vs_currency=${encodeURIComponent(currency)}&from=${from}&to=${to}`;
     const result = await fetchJson(url);
     if (!Array.isArray(result?.prices)) throw new Error(`CoinGecko returned no historical prices for ${id}.`);
     seriesByAsset[id] = result.prices;
-    if (index < ids.length - 1) await sleep(5_000);
+    if (index < missingIds.length - 1) await sleep(5_000);
   }
-  return combineHistoricalPrices(seriesByAsset, ids)
-    .reduce((next, snapshot) => updateHistory(next, snapshot), history);
+  return mergeHistoricalPrices(history, seriesByAsset);
 }
 
 async function main() {

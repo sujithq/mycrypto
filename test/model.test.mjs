@@ -9,7 +9,13 @@ import {
   isValidPortfolio,
   resolveProfilePortfolio,
 } from '../src/model.js';
-import { combineHistoricalPrices, getSupportedAssetIds, updateHistory } from '../scripts/update-market-data.mjs';
+import {
+  combineHistoricalPrices,
+  getMissingHistoricalAssetIds,
+  getSupportedAssetIds,
+  mergeHistoricalPrices,
+  updateHistory,
+} from '../scripts/update-market-data.mjs';
 
 const portfolio = Array.from({ length: 10 }, (_, index) => ({
   id: `asset-${index}`,
@@ -43,6 +49,26 @@ test('combines complete historical prices into daily snapshots', () => {
   }, ['bitcoin', 'ethereum']), [
     { date: '2026-01-01', prices: { bitcoin: 100, ethereum: 10 } },
   ]);
+});
+
+test('selects only assets missing historical data at the portfolio start', () => {
+  assert.deepEqual(
+    getMissingHistoricalAssetIds(history, [...supportedIds, 'supported-only'], '2026-08-11'),
+    ['supported-only'],
+  );
+  assert.deepEqual(getMissingHistoricalAssetIds(history, [...supportedIds], '2026-08-11'), []);
+});
+
+test('merges downloaded history without replacing existing asset prices', () => {
+  const timestamp = Date.parse('2026-08-11T00:00:00Z');
+  const merged = mergeHistoricalPrices(history, {
+    'supported-only': [[timestamp, 25]],
+  });
+  assert.deepEqual(merged[0], {
+    date: '2026-08-11',
+    prices: { ...prices(10), 'supported-only': 25 },
+  });
+  assert.deepEqual(merged[1], history[1]);
 });
 
 test('accepts positive purchases totalling €500', () => {
