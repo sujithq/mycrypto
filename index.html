@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Track the daily evolution of a configurable €500 crypto portfolio.">
+    <meta name="theme-color" content="#07130f">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+    <title>Crypto Allocation Desk</title>
+    <link rel="stylesheet" href="./src/styles.css">
+    <script type="module" src="./src/app.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to portfolio</a>
+    <header class="site-header">
+      <a class="brand" href="./" aria-label="Crypto Allocation Desk home">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>CRYPTO / ALLOCATION DESK</span>
+      </a>
+      <div class="header-actions">
+        <p class="market-status"><span aria-hidden="true"></span> DATA: <strong id="data-status">LOADING</strong></p>
+        <a class="button button-quiet" href="./manage.html">Manage portfolio</a>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow" id="page-kicker">MODEL PORTFOLIO · AGGRESSIVE</p>
+          <h1 id="page-title">Your portfolio.<br><em>One clear view.</em></h1>
+        </div>
+        <div class="hero-note">
+          <span>Investment brief / 001</span>
+          <p id="portfolio-brief">A hypothetical €500 allocation tracked at the daily UTC close. Built for perspective—not predictions.</p>
+        </div>
+      </section>
+
+      <section class="profile-bar" aria-label="Portfolio profile">
+        <label for="profile-selector">Profile</label>
+        <select id="profile-selector"></select>
+        <span id="profile-description">Select a simulation start date.</span>
+      </section>
+
+      <section class="metrics" aria-label="Portfolio overview">
+        <article>
+          <p>Current value</p>
+          <strong id="current-value">—</strong>
+          <span id="total-return">Waiting for data</span>
+        </article>
+        <article>
+          <p>Invested</p>
+          <strong id="invested-value">€500.00</strong>
+          <span id="tracking-period">Model start —</span>
+        </article>
+        <article>
+          <p>24-hour move</p>
+          <strong id="daily-move">—</strong>
+          <span>Allocation weighted</span>
+        </article>
+        <article>
+          <p>Risk posture</p>
+          <strong class="risk-label">Aggressive</strong>
+          <span>High-volatility allocation</span>
+        </article>
+      </section>
+
+      <section class="dashboard-grid">
+        <article class="panel performance-panel" aria-labelledby="performance-title">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">DAILY CLOSE · EUR</p>
+              <h2 id="performance-title">Portfolio evolution</h2>
+            </div>
+            <div class="chart-legend"><span></span> <span id="chart-legend-label">Model value</span></div>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="portfolio-chart" role="img" aria-label="Portfolio value over time"></canvas>
+            <p id="chart-empty" class="empty-state" hidden>Market history will appear after the data workflow runs.</p>
+          </div>
+          <div class="chart-axis" aria-hidden="true">
+            <span id="chart-start">—</span><span id="chart-end">—</span>
+          </div>
+        </article>
+
+        <article class="panel report-panel" aria-labelledby="report-title">
+          <div class="report-topline">
+            <p class="eyebrow">TRAILING SIGNAL / <span id="report-period">PENDING</span></p>
+            <span class="signal" id="report-signal">—</span>
+          </div>
+          <h2 id="report-title">Status & analysis</h2>
+          <p class="report-summary" id="report-summary">Waiting for the first automated market update.</p>
+          <dl class="report-leaders">
+            <div>
+              <dt>Leading</dt>
+              <dd id="report-best">—</dd>
+            </div>
+            <div>
+              <dt>Lagging</dt>
+              <dd id="report-worst">—</dd>
+            </div>
+          </dl>
+          <ul id="report-observations" class="observations"></ul>
+        </article>
+      </section>
+
+      <section class="holdings-section" aria-labelledby="holdings-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">ALLOCATION / LIVE MARK</p>
+            <h2 id="holdings-title">Portfolio assets</h2>
+          </div>
+          <p>Portfolio allocation · prices in EUR</p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Asset</th>
+                <th scope="col">Allocation</th>
+                <th scope="col">Price</th>
+                <th scope="col">24h</th>
+                <th scope="col">Since start</th>
+                <th scope="col">Value</th>
+              </tr>
+            </thead>
+            <tbody id="holdings-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="thesis-section" aria-labelledby="thesis-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">RESEARCH NOTES</p>
+            <h2 id="thesis-title">Why these assets</h2>
+          </div>
+          <p>A deliberately higher-risk allocation across the selected asset universe.</p>
+        </div>
+        <div class="thesis-grid" id="thesis-grid"></div>
+        <div class="supported-assets" id="supported-assets">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">SUPPORTED UNIVERSE</p>
+              <h3>Other available assets</h3>
+            </div>
+            <p>Tracked assets available when building a custom portfolio.</p>
+          </div>
+          <div class="thesis-grid" id="supported-assets-grid"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>MARKET DATA BY <a href="https://www.coingecko.com/" rel="noopener noreferrer">COINGECKO</a> · DAILY SNAPSHOT AT 23:55 UTC</p>
+      <p>Educational model only. Crypto assets can lose their entire value. This is not financial advice.</p>
+    </footer>
+
+    <noscript>This dashboard needs JavaScript to calculate portfolio performance.</noscript>
+  </body>
+</html>

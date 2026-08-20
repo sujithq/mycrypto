@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Compose local and file-based profiles for Crypto Allocation Desk.">
+    <meta name="theme-color" content="#07130f">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+    <title>Manage portfolio · Crypto Allocation Desk</title>
+    <link rel="stylesheet" href="./src/styles.css">
+    <script type="module" src="./src/manage.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="./" aria-label="Crypto Allocation Desk home">
+        <span class="brand-mark" aria-hidden="true">C</span>
+        <span>CRYPTO / MANAGEMENT</span>
+      </a>
+      <a class="button button-quiet" href="./">Back to dashboard</a>
+    </header>
+
+    <main>
+      <section class="hero manage-hero" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">SECURED DEFAULTS</p>
+          <h1 id="page-title">Set the tracked portfolio.</h1>
+        </div>
+        <div class="hero-note">
+          <span>Management flow</span>
+          <p>Prepare a portfolio update here, then submit it through the GitHub Actions workflow protected by the repository secret.</p>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="portfolio-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">LOCAL PORTFOLIO</p>
+            <h2 id="portfolio-title">Manage your portfolio</h2>
+          </div>
+          <p>Choose a local research portfolio. It is saved only in this browser and does not change published profile files.</p>
+        </div>
+        <form id="portfolio-form">
+          <div class="profile-controls">
+            <label>
+              <span>Local profile</span>
+              <select id="local-profile-selector"></select>
+            </label>
+            <label>
+              <span>Profile name</span>
+              <input id="local-profile-name" maxlength="80" required>
+            </label>
+          </div>
+          <div id="portfolio-fields" class="portfolio-fields"></div>
+          <button class="button button-quiet" id="add-local-asset-button" type="button">Add purchase</button>
+          <p class="allocation-total">Allocated <strong id="allocation-total">€500</strong> / €500</p>
+          <p class="form-error" id="form-error" role="alert"></p>
+          <p class="form-status" id="form-status" role="status"></p>
+          <div class="dialog-actions">
+            <div>
+              <button class="button button-quiet" id="new-profile-button" type="button">New profile</button>
+              <button class="button button-quiet" id="delete-profile-button" type="button">Delete profile</button>
+            </div>
+            <button class="button button-primary" type="submit">Save profile</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel" aria-labelledby="management-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">PROFILE FILE</p>
+            <h2 id="management-title">Compose a portfolio profile</h2>
+          </div>
+          <p>Use an existing read-only profile as a template or create a new one. Generate JSON, save it under <code>profiles/&lt;id&gt;.json</code>, and commit it. The same asset can appear more than once with different buy dates.</p>
+        </div>
+
+        <form id="management-form">
+          <div class="profile-controls">
+            <label>
+              <span>Profile template</span>
+              <select id="managed-profile-selector"></select>
+            </label>
+            <label>
+              <span>Profile ID</span>
+              <input id="managed-profile-id" pattern="[a-z0-9][a-z0-9-]{0,39}" maxlength="40" required>
+            </label>
+            <label>
+              <span>Profile name</span>
+              <input id="managed-profile-name" maxlength="80" required>
+            </label>
+            <label>
+              <span>Portfolio type</span>
+              <select id="managed-profile-type">
+                <option value="simulated">Simulation</option>
+                <option value="real">Real portfolio</option>
+              </select>
+            </label>
+            <label>
+              <span>Default buy date</span>
+              <input id="managed-profile-buy-date" type="date">
+            </label>
+          </div>
+          <div id="management-fields" class="portfolio-fields management-fields"></div>
+          <button class="button button-quiet" id="add-managed-asset-button" type="button">Add purchase</button>
+          <div id="real-portfolio-import" class="workflow-output" hidden>
+            <label for="real-portfolio-json">Paste real holdings as JSON</label>
+            <textarea id="real-portfolio-json" placeholder='[{"symbol":"BTC","quantity":0.1,"cost":5000,"buyDate":"2026-01-01"}]'></textarea>
+            <button class="button button-quiet" id="import-real-portfolio-button" type="button">Import holdings</button>
+          </div>
+          <p class="allocation-total"><span id="management-total-label">Allocated</span> <strong id="management-total">€500</strong></p>
+          <p class="form-error" id="management-error" role="alert"></p>
+          <div class="dialog-actions">
+            <button class="button button-primary" type="submit">Generate profile JSON</button>
+          </div>
+        </form>
+
+        <div class="workflow-output">
+          <p class="eyebrow">PROFILE FILE CONTENT</p>
+          <textarea id="workflow-json" readonly aria-label="Generated portfolio JSON"></textarea>
+          <p>Copy this JSON to <code>profiles/&lt;id&gt;.json</code>, then commit and push the file. Published profiles are selectable but cannot be changed in the app.</p>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

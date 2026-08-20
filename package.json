@@ -1,0 +1,27 @@
+{
+  "name": "mycrypto",
+  "version": "1.0.0",
+  "description": "A GitHub Pages dashboard for tracking a configurable €500 crypto portfolio.",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test",
+    "update-data": "node scripts/update-market-data.mjs",
+    "check": "npm test && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sujithq/mycrypto.git"
+  },
+  "keywords": [
+    "crypto",
+    "portfolio",
+    "github-pages"
+  ],
+  "author": "Sujith Quintelier",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  }
+}

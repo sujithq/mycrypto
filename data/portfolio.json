@@ -1,0 +1,37 @@
+{
+  "currency": "eur",
+  "totalInvestment": 500,
+  "timeframeDays": 366,
+  "defaultProfileId": "2026-01",
+  "defaultPortfolio": [
+    { "id": "bitcoin", "symbol": "BTC", "name": "Bitcoin", "amount": 60, "buyDate": "2026-01-01", "thesis": "Liquid macro anchor intended to moderate the higher-beta satellite positions." },
+    { "id": "ethereum", "symbol": "ETH", "name": "Ethereum", "amount": 115, "buyDate": "2026-01-01", "thesis": "Largest allocation: settlement-layer exposure to DeFi, stablecoins and layer twos." },
+    { "id": "solana", "symbol": "SOL", "name": "Solana", "amount": 70, "buyDate": "2026-01-01", "thesis": "High-throughput layer-one exposure with a broad consumer application ecosystem." },
+    { "id": "hyperliquid", "symbol": "HYPE", "name": "Hyperliquid", "amount": 60, "buyDate": "2026-01-01", "thesis": "Aggressive exposure to on-chain perpetual markets and exchange infrastructure." },
+    { "id": "bittensor", "symbol": "TAO", "name": "Bittensor", "amount": 50, "buyDate": "2026-01-01", "thesis": "High-risk decentralized machine-intelligence network exposure." },
+    { "id": "sui", "symbol": "SUI", "name": "Sui", "amount": 50, "buyDate": "2026-01-01", "thesis": "Aggressive allocation to a growing Move-based layer-one ecosystem." },
+    { "id": "chainlink", "symbol": "LINK", "name": "Chainlink", "amount": 35, "buyDate": "2026-01-01", "thesis": "Oracle and cross-chain infrastructure used across multiple networks." },
+    { "id": "arbitrum", "symbol": "ARB", "name": "Arbitrum", "amount": 25, "buyDate": "2026-01-01", "thesis": "Ethereum scaling exposure through a widely used optimistic rollup ecosystem." },
+    { "id": "render-token", "symbol": "RENDER", "name": "Render", "amount": 20, "buyDate": "2026-01-01", "thesis": "Distributed GPU compute exposure for rendering and AI workloads." },
+    { "id": "injective-protocol", "symbol": "INJ", "name": "Injective", "amount": 15, "buyDate": "2026-01-01", "thesis": "Higher-beta exposure to purpose-built on-chain financial markets." }
+  ],
+  "supportedAssets": [
+    { "id": "bitcoin", "symbol": "BTC", "name": "Bitcoin", "thesis": "Liquid macro anchor intended to moderate the higher-beta satellite positions." },
+    { "id": "ethereum", "symbol": "ETH", "name": "Ethereum", "thesis": "Largest allocation: settlement-layer exposure to DeFi, stablecoins and layer twos." },
+    { "id": "solana", "symbol": "SOL", "name": "Solana", "thesis": "High-throughput layer-one exposure with a broad consumer application ecosystem." },
+    { "id": "hyperliquid", "symbol": "HYPE", "name": "Hyperliquid", "thesis": "Aggressive exposure to on-chain perpetual markets and exchange infrastructure." },
+    { "id": "chainlink", "symbol": "LINK", "name": "Chainlink", "thesis": "Oracle and cross-chain infrastructure used across multiple networks." },
+    { "id": "aave", "symbol": "AAVE", "name": "Aave", "thesis": "Decentralized lending exposure through an established multi-network liquidity protocol." },
+    { "id": "sui", "symbol": "SUI", "name": "Sui", "thesis": "Aggressive allocation to a growing Move-based layer-one ecosystem." },
+    { "id": "bittensor", "symbol": "TAO", "name": "Bittensor", "thesis": "High-risk decentralized machine-intelligence network exposure." },
+    { "id": "render-token", "symbol": "RENDER", "name": "Render", "thesis": "Distributed GPU compute exposure for rendering and AI workloads." },
+    { "id": "ondo-finance", "symbol": "ONDO", "name": "Ondo", "thesis": "Tokenized real-world asset exposure focused on bringing institutional financial products on-chain." },
+    { "id": "injective-protocol", "symbol": "INJ", "name": "Injective", "thesis": "Higher-beta exposure to purpose-built on-chain financial markets." },
+    { "id": "avalanche-2", "symbol": "AVAX", "name": "Avalanche", "thesis": "Layer-one exposure centered on customizable networks and institutional blockchain deployments." },
+    { "id": "near", "symbol": "NEAR", "name": "NEAR Protocol", "thesis": "Layer-one exposure emphasizing chain abstraction and developer-friendly decentralized applications." },
+    { "id": "the-graph", "symbol": "GRT", "name": "The Graph", "thesis": "Decentralized indexing infrastructure that helps applications query blockchain data." },
+    { "id": "uniswap", "symbol": "UNI", "name": "Uniswap", "thesis": "Decentralized exchange infrastructure exposure through a widely used automated market maker." },
+    { "id": "arbitrum", "symbol": "ARB", "name": "Arbitrum", "thesis": "Ethereum scaling exposure through a widely used optimistic rollup ecosystem." },
+    { "id": "tars-protocol", "symbol": "TAI", "name": "TARS AI", "thesis": "High-risk exposure to AI-focused applications and infrastructure within the Solana ecosystem." }
+  ]
+}
