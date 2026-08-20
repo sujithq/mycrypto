@@ -59,15 +59,5 @@ Each profile applies its own buy date or portfolio to the shared market history,
 so switching profiles does not modify historical prices. Browser-local profiles
 can be created, edited, and deleted on `manage.html`.
 
-The managed workflow payload creates or updates a single profile:
-
-```json
-{
-  "timeframeDays": 366,
-  "profile": {
-    "id": "2026-09",
-    "name": "September 2026",
-    "portfolio": []
-  }
-}
-```
+The management page generates the complete managed workflow payload. Submitting
+it creates or updates one profile while preserving every other profile.

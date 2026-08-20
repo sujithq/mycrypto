@@ -40,7 +40,7 @@ Research and identifier references:
 - Managed profiles provide monthly simulation baselines from January 2026. The dashboard profile selector switches between them without changing or deleting shared market history.
 - `.github/workflows/update-market-data.yml` runs at 23:55 UTC, fetches the configured portfolio's EUR quotes from CoinGecko in one request, retains up to 366 closes, generates the trailing report, commits the data, and deploys the refreshed site.
 - Each update adds or replaces that day’s UTC snapshot, so history accumulates from scheduled or local runs without separate per-asset requests.
-- Browser configuration is validated, can include actual buy dates, is stored only in `localStorage`, and is resettable to the researched model.
+- Browser profiles are validated, can include actual buy dates, and are stored only in `localStorage`.
 - The management page can create, rename, edit, and delete browser-local profiles. It also generates workflow JSON that creates or updates one managed profile while preserving the others.
 - `manage.html` is the shared management page for local portfolio selection and preparing JSON for the **Manage portfolio defaults** workflow. The default ten assets, actual buy values, optional buy dates, and timeframe can be updated without editing JSON by hand. TARS AI (TAI) is included in the supported asset universe.
 - `.github/workflows/manage-portfolio.yml` validates and commits managed defaults. It gates execution through GitHub permissions/environment protection and checks that `PORTFOLIO_MANAGEMENT_SECRET` is configured without requesting, printing, or passing the secret value as workflow input.

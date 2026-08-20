@@ -78,6 +78,8 @@ test('uses optional buy dates as each asset baseline', () => {
   assert.deepEqual(series, [
     { date: '2026-08-18', value: 545 },
   ]);
+  const report = createAnalysisReport(history, datedPortfolio, '2026-08-19T00:00:00.000Z');
+  assert.equal(report.periodStart, '2026-08-18');
 });
 
 test('filters history by trailing timeframe', () => {

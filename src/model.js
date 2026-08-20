@@ -86,7 +86,9 @@ export function calculateHoldings(portfolio, history, assets) {
 }
 
 export function createAnalysisReport(history, portfolio, generatedAt = new Date().toISOString(), timeframeDays = 7) {
-  const recent = filterHistoryByTimeframe(history, timeframeDays);
+  const latestBuyDate = portfolio.map(({ buyDate }) => buyDate).filter(Boolean).sort().at(-1);
+  const recent = filterHistoryByTimeframe(history, timeframeDays)
+    .filter((entry) => !latestBuyDate || entry.date >= latestBuyDate);
   if (recent.length < 2) {
     return {
       generatedAt,
