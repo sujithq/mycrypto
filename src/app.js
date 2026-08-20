@@ -1,9 +1,11 @@
 import {
+  calculateAssetSeries,
   calculateHoldings,
   calculateRealHoldings,
   calculateRealSeries,
   calculateSeries,
   createAnalysisReport,
+  filterSeriesByRange,
   isValidPortfolio,
   normalizePortfolioInvestments,
   resolveProfilePortfolio,
@@ -15,7 +17,17 @@ const ACTIVE_PROFILE_KEY = 'crypto-allocation-desk.active-profile.v2';
 const $ = (selector) => document.querySelector(selector);
 const euro = new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2 });
 const price = new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 6 });
+const quantity = new Intl.NumberFormat('en-IE', { maximumSignificantDigits: 8 });
 const shortDate = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', timeZone: 'UTC' });
+const detailDate = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' });
+const RANGE_LABELS = {
+  '1d': '1 day',
+  '1w': '1 week',
+  '1m': '1 month',
+  '1y': '1 year',
+  ytd: 'Year to date',
+  all: 'Since purchase',
+};
 
 let config;
 let market;
@@ -25,6 +37,11 @@ let portfolio;
 let activeProfile;
 let profiles = [];
 let chartSeries = [];
+let holdings = [];
+let activeAssetIndex = null;
+let lastAssetIndex = null;
+let assetSeries = [];
+let assetRange = 'all';
 
 function setTrend(element, value, suffix = '%') {
   element.classList.remove('positive', 'negative');
@@ -132,7 +149,7 @@ function renderMetrics(holdings, series) {
 function renderHoldings(holdings) {
   const body = $('#holdings-body');
   body.replaceChildren();
-  for (const item of holdings) {
+  holdings.forEach((item, index) => {
     const row = document.createElement('tr');
     const assetCell = document.createElement('td');
     const assetWrap = element('div', 'asset-cell');
@@ -140,7 +157,12 @@ function renderHoldings(holdings) {
     const labels = document.createElement('span');
     labels.append(element('span', 'asset-name', item.name), element('span', 'asset-symbol', item.symbol));
     assetWrap.append(labels);
-    assetCell.append(assetWrap);
+    const assetLink = element('button', 'asset-link');
+    assetLink.type = 'button';
+    assetLink.dataset.assetIndex = String(index);
+    assetLink.setAttribute('aria-label', `View ${item.name} evolution${item.buyDate ? ` from ${item.buyDate}` : ''}`);
+    assetLink.append(assetWrap);
+    assetCell.append(assetLink);
 
     const allocationCell = document.createElement('td');
     allocationCell.append(`${euro.format(item.investedAmount)} `);
@@ -159,7 +181,7 @@ function renderHoldings(holdings) {
     const valueCell = element('td', '', Number.isFinite(item.value) ? euro.format(item.value) : '—');
     row.append(assetCell, allocationCell, priceCell, dayCell, returnCell, valueCell);
     body.append(row);
-  }
+  });
 }
 
 function renderTheses() {
@@ -205,14 +227,19 @@ function renderReport() {
   list.replaceChildren(...report.observations.map((observation) => element('li', '', observation)));
 }
 
-function drawChart() {
-  const canvas = $('#portfolio-chart');
-  const empty = $('#chart-empty');
-  empty.hidden = chartSeries.length > 1;
-  canvas.hidden = chartSeries.length <= 1;
-  if (chartSeries.length <= 1) return;
+function drawValueChart({ canvas, empty, series, startOutput, endOutput, seriesLabel, dateFormat = shortDate }) {
+  empty.hidden = series.length > 1;
+  canvas.hidden = series.length <= 1;
+  startOutput.textContent = series[0]
+    ? dateFormat.format(new Date(`${series[0].date}T00:00:00Z`)).toUpperCase()
+    : '—';
+  endOutput.textContent = series.at(-1)
+    ? dateFormat.format(new Date(`${series.at(-1).date}T00:00:00Z`)).toUpperCase()
+    : '—';
+  if (series.length <= 1) return;
 
   const rect = canvas.getBoundingClientRect();
+  if (rect.width <= 0 || rect.height <= 0) return;
   const scale = window.devicePixelRatio || 1;
   canvas.width = Math.round(rect.width * scale);
   canvas.height = Math.round(rect.height * scale);
@@ -222,14 +249,19 @@ function drawChart() {
   const width = rect.width;
   const height = rect.height;
   const padding = { top: 20, right: 10, bottom: 24, left: 52 };
-  const values = chartSeries.map(({ value }) => value);
+  const values = series.map(({ value }) => value);
   let min = Math.min(...values);
   let max = Math.max(...values);
-  const spread = Math.max(max - min, 10);
+  const spread = Math.max(max - min, Math.abs(max) * .05, 1);
   min -= spread * .16;
   max += spread * .16;
-  const x = (index) => padding.left + index / (chartSeries.length - 1) * (width - padding.left - padding.right);
+  const x = (index) => padding.left + index / (series.length - 1) * (width - padding.left - padding.right);
   const y = (value) => padding.top + (max - value) / (max - min) * (height - padding.top - padding.bottom);
+  const axisValue = new Intl.NumberFormat('en-IE', {
+    style: 'currency',
+    currency: 'EUR',
+    maximumFractionDigits: max < 10 ? 2 : 0,
+  });
 
   context.font = '10px ui-monospace, monospace';
   context.textAlign = 'right';
@@ -244,40 +276,161 @@ function drawChart() {
     context.lineTo(width - padding.right, chartY);
     context.stroke();
     context.fillStyle = '#8aa096';
-    context.fillText(`€${label.toFixed(0)}`, padding.left - 10, chartY);
+    context.fillText(axisValue.format(label), padding.left - 10, chartY);
   }
 
   const gradient = context.createLinearGradient(0, padding.top, 0, height);
   gradient.addColorStop(0, 'rgba(185, 242, 39, .18)');
   gradient.addColorStop(1, 'rgba(185, 242, 39, 0)');
   context.beginPath();
-  chartSeries.forEach((point, index) => {
+  series.forEach((point, index) => {
     if (index === 0) context.moveTo(x(index), y(point.value));
     else context.lineTo(x(index), y(point.value));
   });
-  context.lineTo(x(chartSeries.length - 1), height - padding.bottom);
+  context.lineTo(x(series.length - 1), height - padding.bottom);
   context.lineTo(x(0), height - padding.bottom);
   context.closePath();
   context.fillStyle = gradient;
   context.fill();
 
   context.beginPath();
-  chartSeries.forEach((point, index) => {
+  series.forEach((point, index) => {
     if (index === 0) context.moveTo(x(index), y(point.value));
     else context.lineTo(x(index), y(point.value));
   });
   context.strokeStyle = '#b9f227';
   context.lineWidth = 2;
   context.stroke();
-  const last = chartSeries.at(-1);
+  const last = series.at(-1);
   context.beginPath();
-  context.arc(x(chartSeries.length - 1), y(last.value), 4, 0, Math.PI * 2);
+  context.arc(x(series.length - 1), y(last.value), 4, 0, Math.PI * 2);
   context.fillStyle = '#b9f227';
   context.fill();
 
-  $('#chart-start').textContent = shortDate.format(new Date(`${chartSeries[0].date}T00:00:00Z`)).toUpperCase();
-  $('#chart-end').textContent = shortDate.format(new Date(`${last.date}T00:00:00Z`)).toUpperCase();
-  canvas.setAttribute('aria-label', `Portfolio value from ${euro.format(chartSeries[0].value)} on ${chartSeries[0].date} to ${euro.format(last.value)} on ${last.date}.`);
+  canvas.setAttribute('aria-label', `${seriesLabel} from ${euro.format(series[0].value)} on ${series[0].date} to ${euro.format(last.value)} on ${last.date}.`);
+}
+
+function drawChart() {
+  drawValueChart({
+    canvas: $('#portfolio-chart'),
+    empty: $('#chart-empty'),
+    series: chartSeries,
+    startOutput: $('#chart-start'),
+    endOutput: $('#chart-end'),
+    seriesLabel: 'Portfolio value',
+  });
+}
+
+function renderAssetRange() {
+  const visibleSeries = filterSeriesByRange(assetSeries, assetRange);
+  document.querySelectorAll('#asset-range-control [data-range]').forEach((button) => {
+    button.setAttribute('aria-pressed', String(button.dataset.range === assetRange));
+  });
+  $('#asset-range-label').textContent = RANGE_LABELS[assetRange];
+  const first = visibleSeries[0]?.value;
+  const last = visibleSeries.at(-1)?.value;
+  const rangeReturn = Number.isFinite(first) && first > 0 && Number.isFinite(last)
+    ? ((last - first) / first) * 100
+    : null;
+  setTrend($('#asset-range-return'), rangeReturn);
+  drawValueChart({
+    canvas: $('#asset-chart'),
+    empty: $('#asset-chart-empty'),
+    series: visibleSeries,
+    startOutput: $('#asset-chart-start'),
+    endOutput: $('#asset-chart-end'),
+    seriesLabel: `${holdings[activeAssetIndex]?.name ?? 'Asset'} position value`,
+    dateFormat: detailDate,
+  });
+}
+
+function showAssetDetail(index) {
+  const item = holdings[index];
+  const portfolioItem = portfolio[index];
+  if (!item || !portfolioItem) return false;
+  activeAssetIndex = index;
+  lastAssetIndex = index;
+  assetRange = 'all';
+  assetSeries = calculateAssetSeries(portfolioItem, market.history, activeProfile.type === 'real');
+  const firstDate = portfolioItem.buyDate ?? assetSeries[0]?.date;
+  const lastDate = assetSeries.at(-1)?.date;
+
+  $('#asset-detail-kicker').textContent = `${item.symbol} · ${activeProfile.name}`.toUpperCase();
+  $('#asset-detail-title').textContent = `${item.name} evolution`;
+  $('#asset-detail-mark').textContent = item.symbol.slice(0, 4);
+  $('#asset-detail-period').textContent = firstDate
+    ? `Daily EUR closes from ${detailDate.format(new Date(`${firstDate}T00:00:00Z`))}${lastDate ? ` through ${detailDate.format(new Date(`${lastDate}T00:00:00Z`))}` : ''}.`
+    : 'Waiting for the first daily close.';
+  $('#asset-current-value').textContent = Number.isFinite(item.value) ? euro.format(item.value) : '—';
+  $('#asset-current-date').textContent = lastDate
+    ? `Close ${detailDate.format(new Date(`${lastDate}T00:00:00Z`))}`
+    : 'Latest daily close unavailable';
+  setTrend($('#asset-total-return'), item.returnPct);
+  $('#asset-buy-date').textContent = firstDate
+    ? `Purchased ${detailDate.format(new Date(`${firstDate}T00:00:00Z`))}`
+    : 'Purchase date unavailable';
+  $('#asset-invested-value').textContent = euro.format(item.investedAmount);
+  $('#asset-quantity').textContent = Number.isFinite(Number(item.quantity))
+    ? `${quantity.format(Number(item.quantity))} ${item.symbol}`
+    : `Baseline ${Number.isFinite(item.startPrice) ? price.format(item.startPrice) : '—'}`;
+  $('#asset-current-price').textContent = Number.isFinite(item.price) ? price.format(item.price) : '—';
+  setTrend($('#asset-daily-move'), item.change24hPct);
+  document.querySelectorAll('[data-portfolio-view]').forEach((section) => { section.hidden = true; });
+  $('#asset-detail').hidden = false;
+  $('#asset-back').focus({ preventScroll: true });
+  document.title = `${item.symbol} evolution · Crypto Allocation Desk`;
+  requestAnimationFrame(renderAssetRange);
+  return true;
+}
+
+function showPortfolioView(restoreScroll) {
+  activeAssetIndex = null;
+  assetSeries = [];
+  $('#asset-detail').hidden = true;
+  document.querySelectorAll('[data-portfolio-view]').forEach((section) => { section.hidden = false; });
+  document.title = 'Crypto Allocation Desk';
+  requestAnimationFrame(() => {
+    drawChart();
+    if (Number.isFinite(restoreScroll)) window.scrollTo(0, restoreScroll);
+    if (Number.isInteger(lastAssetIndex)) {
+      $(`[data-asset-index="${lastAssetIndex}"]`)?.focus({ preventScroll: true });
+    }
+  });
+}
+
+function syncViewFromLocation(restorePortfolioScroll = false) {
+  const url = new URL(window.location.href);
+  const rawIndex = url.searchParams.get('asset');
+  const index = /^\d+$/.test(rawIndex ?? '') ? Number(rawIndex) : null;
+  if (index !== null && showAssetDetail(index)) {
+    window.scrollTo(0, 0);
+    return;
+  }
+  if (rawIndex !== null) {
+    url.searchParams.delete('asset');
+    history.replaceState(history.state, '', url);
+  }
+  showPortfolioView(restorePortfolioScroll ? history.state?.portfolioScrollY : undefined);
+}
+
+function openAssetDetail(index) {
+  history.replaceState({ ...history.state, portfolioScrollY: window.scrollY }, '', window.location.href);
+  const url = new URL(window.location.href);
+  url.searchParams.set('asset', String(index));
+  history.pushState({ assetDetail: true }, '', url);
+  showAssetDetail(index);
+  window.scrollTo(0, 0);
+}
+
+function closeAssetDetail() {
+  if (history.state?.assetDetail) {
+    history.back();
+    return;
+  }
+  const url = new URL(window.location.href);
+  url.searchParams.delete('asset');
+  history.replaceState(history.state, '', url);
+  showPortfolioView();
 }
 
 function render() {
@@ -286,7 +439,7 @@ function render() {
   chartSeries = isReal
     ? calculateRealSeries(portfolio, market.history, config.timeframeDays)
     : calculateSeries(portfolio, market.history, config.timeframeDays);
-  const holdings = isReal
+  holdings = isReal
     ? calculateRealHoldings(portfolio, market.assets)
     : calculateHoldings(portfolio, market.history, market.assets);
   report = activeProfile.source === 'managed'
@@ -311,8 +464,26 @@ function render() {
 }
 
 function bindEvents() {
-  window.addEventListener('resize', drawChart);
+  window.addEventListener('resize', () => {
+    if (activeAssetIndex === null) drawChart();
+    else renderAssetRange();
+  });
+  window.addEventListener('popstate', () => syncViewFromLocation(true));
   $('#profile-selector').addEventListener('change', ({ target }) => selectProfile(target.value));
+  $('#holdings-body').addEventListener('click', ({ target }) => {
+    const trigger = target.closest('[data-asset-index]');
+    if (trigger) openAssetDetail(Number(trigger.dataset.assetIndex));
+  });
+  $('#asset-back').addEventListener('click', closeAssetDetail);
+  $('#asset-range-control').addEventListener('click', ({ target }) => {
+    const trigger = target.closest('[data-range]');
+    if (!trigger) return;
+    assetRange = trigger.dataset.range;
+    renderAssetRange();
+  });
+  document.addEventListener('keydown', ({ key }) => {
+    if (key === 'Escape' && activeAssetIndex !== null) closeAssetDetail();
+  });
 }
 
 async function init() {
@@ -354,6 +525,7 @@ async function init() {
       : 'AWAITING UPDATE';
     bindEvents();
     render();
+    syncViewFromLocation();
   } catch (error) {
     console.error(error);
     $('#data-status').textContent = 'UNAVAILABLE';

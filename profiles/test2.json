@@ -1,0 +1,98 @@
+{
+  "id": "test2",
+  "name": "test2",
+  "type": "real",
+  "buyDate": "2025-08-21",
+  "portfolio": [
+    {
+      "id": "bitcoin",
+      "symbol": "BTC",
+      "name": "Bitcoin",
+      "thesis": "Liquid macro anchor intended to moderate the higher-beta satellite positions.",
+      "investedAmount": 50,
+      "quantity": 0.0005082722426876882,
+      "buyDate": "2025-08-21"
+    },
+    {
+      "id": "ethereum",
+      "symbol": "ETH",
+      "name": "Ethereum",
+      "thesis": "Largest allocation: settlement-layer exposure to DeFi, stablecoins and layer twos.",
+      "investedAmount": 50,
+      "quantity": 0.013395398025347885,
+      "buyDate": "2025-08-21"
+    },
+    {
+      "id": "tars-protocol",
+      "symbol": "TAI",
+      "name": "TARS AI",
+      "thesis": "High-throughput layer-one exposure with a broad consumer application ecosystem.",
+      "investedAmount": 50,
+      "quantity": 909.4081784866308,
+      "buyDate": "2025-08-21"
+    },
+    {
+      "id": "hyperliquid",
+      "symbol": "HYPE",
+      "name": "Hyperliquid",
+      "thesis": "Aggressive exposure to on-chain perpetual markets and exchange infrastructure.",
+      "investedAmount": 50,
+      "quantity": 1.3545336184157797,
+      "buyDate": "2025-08-21"
+    },
+    {
+      "id": "bittensor",
+      "symbol": "TAO",
+      "name": "Bittensor",
+      "thesis": "High-risk decentralized machine-intelligence network exposure.",
+      "investedAmount": 50,
+      "quantity": 0.16428797107584708,
+      "buyDate": "2025-08-21"
+    },
+    {
+      "id": "sui",
+      "symbol": "SUI",
+      "name": "Sui",
+      "thesis": "Aggressive allocation to a growing Move-based layer-one ecosystem.",
+      "investedAmount": 50,
+      "quantity": 16.322946298303002,
+      "buyDate": "2025-08-21"
+    },
+    {
+      "id": "chainlink",
+      "symbol": "LINK",
+      "name": "Chainlink",
+      "thesis": "Oracle and cross-chain infrastructure used across multiple networks.",
+      "investedAmount": 50,
+      "quantity": 2.1979529585956445,
+      "buyDate": "2025-08-21"
+    },
+    {
+      "id": "arbitrum",
+      "symbol": "ARB",
+      "name": "Arbitrum",
+      "thesis": "Ethereum scaling exposure through a widely used optimistic rollup ecosystem.",
+      "investedAmount": 50,
+      "quantity": 113.26609511198264,
+      "buyDate": "2025-08-21"
+    },
+    {
+      "id": "render-token",
+      "symbol": "RENDER",
+      "name": "Render",
+      "thesis": "Distributed GPU compute exposure for rendering and AI workloads.",
+      "investedAmount": 50,
+      "quantity": 15.765024199759537,
+      "buyDate": "2025-08-21"
+    },
+    {
+      "id": "injective-protocol",
+      "symbol": "INJ",
+      "name": "Injective",
+      "thesis": "Higher-beta exposure to purpose-built on-chain financial markets.",
+      "investedAmount": 50,
+      "quantity": 4.160490763554714,
+      "buyDate": "2025-08-21"
+    }
+  ]
+}

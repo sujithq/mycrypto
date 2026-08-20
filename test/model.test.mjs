@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
+  calculateAssetSeries,
   calculateHoldings,
   calculateRealHoldings,
   calculateRealSeries,
@@ -8,6 +9,7 @@ import {
   createAnalysisReport,
   createProfileReports,
   filterHistoryByTimeframe,
+  filterSeriesByRange,
   isValidProfile,
   isValidPortfolio,
   isValidRealPortfolio,
@@ -44,6 +46,39 @@ const history = [
   { date: '2026-08-11', prices: prices(10) },
   { date: '2026-08-18', prices: prices(11) },
 ];
+
+test('calculates one asset evolution from its purchase date', () => {
+  const assetHistory = [
+    { date: '2026-08-10', prices: { 'asset-0': 8 } },
+    { date: '2026-08-11', prices: { 'asset-0': 10 } },
+    { date: '2026-08-12', prices: { 'asset-0': 12 } },
+  ];
+  const asset = { ...portfolio[0], buyDate: '2026-08-11' };
+  assert.deepEqual(calculateAssetSeries(asset, assetHistory), [
+    { date: '2026-08-11', value: 50 },
+    { date: '2026-08-12', value: 60 },
+  ]);
+  assert.deepEqual(calculateAssetSeries({ ...asset, quantity: 5 }, assetHistory, true), [
+    { date: '2026-08-11', value: 50 },
+    { date: '2026-08-12', value: 60 },
+  ]);
+});
+
+test('filters asset evolution by trailing and year-to-date ranges', () => {
+  const series = [
+    { date: '2025-12-31', value: 40 },
+    { date: '2026-01-01', value: 42 },
+    { date: '2026-07-20', value: 46 },
+    { date: '2026-08-13', value: 48 },
+    { date: '2026-08-19', value: 49 },
+    { date: '2026-08-20', value: 50 },
+  ];
+  assert.deepEqual(filterSeriesByRange(series, '1d'), series.slice(-2));
+  assert.deepEqual(filterSeriesByRange(series, '1w'), series.slice(-3));
+  assert.deepEqual(filterSeriesByRange(series, '1m'), series.slice(-4));
+  assert.deepEqual(filterSeriesByRange(series, 'ytd'), series.slice(1));
+  assert.equal(filterSeriesByRange(series, 'all'), series);
+});
 
 function completeHistoryWindow(timestamp) {
   const rows = [];

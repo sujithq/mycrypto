@@ -27,6 +27,33 @@
         "This early report uses 8 closes; the target 366-day window has 367.",
         "Momentum is descriptive, not predictive; review concentration and downside before acting."
       ]
+    },
+    "test2": {
+      "profile": {
+        "id": "test2",
+        "name": "test2",
+        "type": "real"
+      },
+      "generatedAt": "2026-08-20T13:25:58.934Z",
+      "periodStart": "2025-08-21",
+      "periodEnd": "2026-08-20",
+      "status": "Risk-off",
+      "summary": "The portfolio moved -49.82% over a 366-day trailing window (365 closes).",
+      "portfolioChangePct": -49.8159,
+      "bestPerformer": {
+        "symbol": "HYPE",
+        "changePct": 66.716
+      },
+      "worstPerformer": {
+        "symbol": "TAI",
+        "changePct": -87.1927
+      },
+      "observations": [
+        "HYPE led the portfolio at +66.72%.",
+        "TAI was weakest at -87.19%.",
+        "This early report uses 365 closes; the target 366-day window has 367.",
+        "Momentum is descriptive, not predictive; review concentration and downside before acting."
+      ]
     }
   }
 }

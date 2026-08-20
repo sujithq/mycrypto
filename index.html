@@ -25,7 +25,70 @@
     </header>
 
     <main id="main">
-      <section class="hero" aria-labelledby="page-title">
+      <section id="asset-detail" class="asset-detail" aria-labelledby="asset-detail-title" hidden>
+        <button class="button button-quiet asset-back" id="asset-back" type="button">Back to portfolio</button>
+        <header class="asset-detail-header">
+          <div>
+            <p class="eyebrow" id="asset-detail-kicker">ASSET EVOLUTION</p>
+            <h1 id="asset-detail-title">Asset evolution</h1>
+            <p class="asset-detail-period" id="asset-detail-period">Daily EUR closes since purchase.</p>
+          </div>
+          <span class="asset-detail-mark" id="asset-detail-mark" aria-hidden="true">—</span>
+        </header>
+
+        <section class="asset-metrics" aria-label="Asset overview">
+          <article>
+            <p>Current value</p>
+            <strong id="asset-current-value">—</strong>
+            <span id="asset-current-date">Latest daily close</span>
+          </article>
+          <article>
+            <p>Since purchase</p>
+            <strong id="asset-total-return">—</strong>
+            <span id="asset-buy-date">Purchase date —</span>
+          </article>
+          <article>
+            <p>Invested</p>
+            <strong id="asset-invested-value">—</strong>
+            <span id="asset-quantity">Position quantity —</span>
+          </article>
+          <article>
+            <p>Current price</p>
+            <strong id="asset-current-price">—</strong>
+            <span id="asset-daily-move">24-hour move —</span>
+          </article>
+        </section>
+
+        <article class="asset-chart-panel" aria-labelledby="asset-chart-title">
+          <div class="asset-chart-heading">
+            <div>
+              <p class="eyebrow">DAILY CLOSE · POSITION VALUE · EUR</p>
+              <h2 id="asset-chart-title">Evolution since purchase</h2>
+            </div>
+            <div class="range-control" id="asset-range-control" role="group" aria-label="Chart range">
+              <button type="button" data-range="1d" aria-label="One day">1D</button>
+              <button type="button" data-range="1w" aria-label="One week">1W</button>
+              <button type="button" data-range="1m" aria-label="One month">1M</button>
+              <button type="button" data-range="1y" aria-label="One year">1Y</button>
+              <button type="button" data-range="ytd" aria-label="Year to date">YTD</button>
+              <button type="button" data-range="all" aria-label="Since purchase" aria-pressed="true">Since buy</button>
+            </div>
+          </div>
+          <div class="asset-chart-summary">
+            <span id="asset-range-label">Since purchase</span>
+            <strong id="asset-range-return">—</strong>
+          </div>
+          <div class="chart-wrap asset-chart-wrap">
+            <canvas id="asset-chart" role="img" aria-label="Asset position value over time"></canvas>
+            <p id="asset-chart-empty" class="empty-state" hidden>More daily closes are needed for this range.</p>
+          </div>
+          <div class="chart-axis" aria-hidden="true">
+            <span id="asset-chart-start">—</span><span id="asset-chart-end">—</span>
+          </div>
+        </article>
+      </section>
+
+      <section class="hero" data-portfolio-view aria-labelledby="page-title">
         <div>
           <p class="eyebrow" id="page-kicker">MODEL PORTFOLIO · AGGRESSIVE</p>
           <h1 id="page-title">Your portfolio.<br><em>One clear view.</em></h1>
@@ -36,13 +99,13 @@
         </div>
       </section>
 
-      <section class="profile-bar" aria-label="Portfolio profile">
+      <section class="profile-bar" data-portfolio-view aria-label="Portfolio profile">
         <label for="profile-selector">Profile</label>
         <select id="profile-selector"></select>
         <span id="profile-description">Select a simulation start date.</span>
       </section>
 
-      <section class="metrics" aria-label="Portfolio overview">
+      <section class="metrics" data-portfolio-view aria-label="Portfolio overview">
         <article>
           <p>Current value</p>
           <strong id="current-value">—</strong>
@@ -65,7 +128,7 @@
         </article>
       </section>
 
-      <section class="dashboard-grid">
+      <section class="dashboard-grid" data-portfolio-view>
         <article class="panel performance-panel" aria-labelledby="performance-title">
           <div class="panel-heading">
             <div>
@@ -104,7 +167,7 @@
         </article>
       </section>
 
-      <section class="holdings-section" aria-labelledby="holdings-title">
+      <section class="holdings-section" data-portfolio-view aria-labelledby="holdings-title">
         <div class="section-heading">
           <div>
             <p class="eyebrow">ALLOCATION / LIVE MARK</p>
@@ -129,7 +192,7 @@
         </div>
       </section>
 
-      <section class="thesis-section" aria-labelledby="thesis-title">
+      <section class="thesis-section" data-portfolio-view aria-labelledby="thesis-title">
         <div class="section-heading">
           <div>
             <p class="eyebrow">RESEARCH NOTES</p>

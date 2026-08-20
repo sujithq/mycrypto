@@ -135,6 +135,39 @@ export function calculateSeries(portfolio, history, timeframeDays) {
   });
 }
 
+export function calculateAssetSeries(asset, history, isReal = false) {
+  const baselinePrice = getBaselinePrices([asset], history)[0];
+  if (!isReal && (!Number.isFinite(baselinePrice) || baselinePrice <= 0)) return [];
+
+  return history.flatMap((entry) => {
+    const marketPrice = entry.prices?.[asset.id];
+    if ((asset.buyDate && entry.date < asset.buyDate)
+      || !Number.isFinite(marketPrice)
+      || marketPrice <= 0) return [];
+    const value = isReal
+      ? Number(asset.quantity) * marketPrice
+      : Number(asset.investedAmount) * (marketPrice / baselinePrice);
+    return Number.isFinite(value)
+      ? [{ date: entry.date, value: Math.round(value * 100) / 100 }]
+      : [];
+  });
+}
+
+export function filterSeriesByRange(series, range) {
+  if (range === 'all' || series.length === 0) return series;
+  const endDate = series.at(-1)?.date;
+  if (!endDate) return series;
+  const start = new Date(`${endDate}T00:00:00Z`);
+  if (range === '1d') start.setUTCDate(start.getUTCDate() - 1);
+  else if (range === '1w') start.setUTCDate(start.getUTCDate() - 7);
+  else if (range === '1m') start.setUTCMonth(start.getUTCMonth() - 1);
+  else if (range === '1y') start.setUTCFullYear(start.getUTCFullYear() - 1);
+  else if (range === 'ytd') start.setUTCMonth(0, 1);
+  else return series;
+  const startDate = start.toISOString().slice(0, 10);
+  return series.filter(({ date }) => date >= startDate);
+}
+
 export function calculateHoldings(portfolio, history, assets) {
   const baseline = getBaselinePrices(portfolio, history);
   return portfolio.map((item, index) => {
