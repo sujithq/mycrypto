@@ -10,16 +10,27 @@ import {
   normalizePortfolioInvestments,
   resolveProfilePortfolio,
 } from './model.js';
+import {
+  canUseLiveMarketSnapshot,
+  createLiveMarketSnapshot,
+  isLiveMarketRefreshDue,
+  mergeLiveMarketSnapshot,
+  normalizeLiveMarketSettings,
+} from './live-market.js';
 
 const LEGACY_STORAGE_KEY = 'crypto-allocation-desk.portfolio.v1';
 const PROFILES_STORAGE_KEY = 'crypto-allocation-desk.profiles.v2';
 const ACTIVE_PROFILE_KEY = 'crypto-allocation-desk.active-profile.v2';
+const LIVE_MARKET_SETTINGS_KEY = 'crypto-allocation-desk.live-market-settings.v1';
+const LIVE_MARKET_CACHE_KEY = 'crypto-allocation-desk.live-market-cache.v1';
+const LIVE_MARKET_API = 'https://api.coingecko.com/api/v3/coins/markets';
 const $ = (selector) => document.querySelector(selector);
 const euro = new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2 });
 const price = new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 6 });
 const quantity = new Intl.NumberFormat('en-IE', { maximumSignificantDigits: 8 });
 const shortDate = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', timeZone: 'UTC' });
 const detailDate = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' });
+const shortTime = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' });
 const RANGE_LABELS = {
   '1d': '1 day',
   '1w': '1 week',
@@ -31,6 +42,7 @@ const RANGE_LABELS = {
 
 let config;
 let market;
+let publishedMarket;
 let report;
 let profileReports;
 let portfolio;
@@ -42,6 +54,11 @@ let activeAssetIndex = null;
 let lastAssetIndex = null;
 let assetSeries = [];
 let assetRange = 'all';
+let liveMarketSettings = normalizeLiveMarketSettings();
+let liveMarketSnapshot = null;
+let liveMarketTimer = null;
+let liveMarketRefreshing = false;
+let liveMarketRefreshFailed = false;
 
 function setTrend(element, value, suffix = '%') {
   element.classList.remove('positive', 'negative');
@@ -58,6 +75,64 @@ function element(tag, className, text) {
   if (className) node.className = className;
   if (text !== undefined) node.textContent = text;
   return node;
+}
+
+function readStoredJson(key) {
+  try {
+    return JSON.parse(localStorage.getItem(key));
+  } catch {
+    return null;
+  }
+}
+
+function writeStoredJson(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    // Live updates still work for this page when storage access is denied.
+  }
+}
+
+function supportedAssetIds() {
+  return config.supportedAssets.map(({ id }) => id);
+}
+
+function hasActiveLiveMarket() {
+  return liveMarketSettings.enabled
+    && liveMarketSnapshot
+    && market.updatedAt === liveMarketSnapshot.updatedAt;
+}
+
+function renderMarketStatus() {
+  const enabled = $('#live-market-enabled');
+  const interval = $('#live-market-interval');
+  enabled.checked = liveMarketSettings.enabled;
+  interval.value = String(liveMarketSettings.intervalMinutes);
+  interval.disabled = !liveMarketSettings.enabled;
+
+  const publishedAt = Date.parse(publishedMarket?.updatedAt);
+  const liveAt = Date.parse(liveMarketSnapshot?.updatedAt);
+  if (!liveMarketSettings.enabled) {
+    $('#live-market-status').textContent = 'Scheduled snapshot';
+  } else if (liveMarketRefreshing) {
+    $('#live-market-status').textContent = hasActiveLiveMarket()
+      ? `Live ${shortTime.format(liveAt)} UTC · refreshing`
+      : 'Fetching live prices';
+  } else if (hasActiveLiveMarket()) {
+    $('#live-market-status').textContent = liveMarketRefreshFailed
+      ? `Cached ${shortTime.format(liveAt)} UTC · retry pending`
+      : `Live ${shortTime.format(liveAt)} UTC`;
+  } else {
+    $('#live-market-status').textContent = liveMarketRefreshFailed
+      ? 'Live prices unavailable · retry pending'
+      : 'Waiting for live prices';
+  }
+
+  $('#data-status').textContent = hasActiveLiveMarket()
+    ? `LIVE ${shortTime.format(liveAt)} UTC`
+    : Number.isFinite(publishedAt)
+      ? `${shortDate.format(publishedAt).toUpperCase()} UTC`
+      : 'AWAITING UPDATE';
 }
 
 function normalizeSavedPortfolio(saved) {
@@ -344,13 +419,10 @@ function renderAssetRange() {
   });
 }
 
-function showAssetDetail(index) {
+function renderAssetDetail(index) {
   const item = holdings[index];
   const portfolioItem = portfolio[index];
   if (!item || !portfolioItem) return false;
-  activeAssetIndex = index;
-  lastAssetIndex = index;
-  assetRange = 'all';
   assetSeries = calculateAssetSeries(portfolioItem, market.history, activeProfile.type === 'real');
   const firstDate = portfolioItem.buyDate ?? assetSeries[0]?.date;
   const lastDate = assetSeries.at(-1)?.date;
@@ -359,12 +431,14 @@ function showAssetDetail(index) {
   $('#asset-detail-title').textContent = `${item.name} evolution`;
   $('#asset-detail-mark').textContent = item.symbol.slice(0, 4);
   $('#asset-detail-period').textContent = firstDate
-    ? `Daily EUR closes from ${detailDate.format(new Date(`${firstDate}T00:00:00Z`))}${lastDate ? ` through ${detailDate.format(new Date(`${lastDate}T00:00:00Z`))}` : ''}.`
-    : 'Waiting for the first daily close.';
+    ? `EUR history from ${detailDate.format(new Date(`${firstDate}T00:00:00Z`))}${lastDate ? ` through ${detailDate.format(new Date(`${lastDate}T00:00:00Z`))}` : ''}.`
+    : 'Waiting for the first market point.';
   $('#asset-current-value').textContent = Number.isFinite(item.value) ? euro.format(item.value) : '—';
-  $('#asset-current-date').textContent = lastDate
-    ? `Close ${detailDate.format(new Date(`${lastDate}T00:00:00Z`))}`
-    : 'Latest daily close unavailable';
+  $('#asset-current-date').textContent = hasActiveLiveMarket()
+    ? `Live ${shortTime.format(Date.parse(liveMarketSnapshot.updatedAt))} UTC`
+    : lastDate
+      ? `Snapshot ${detailDate.format(new Date(`${lastDate}T00:00:00Z`))}`
+      : 'Latest market point unavailable';
   setTrend($('#asset-total-return'), item.returnPct);
   $('#asset-buy-date').textContent = firstDate
     ? `Purchased ${detailDate.format(new Date(`${firstDate}T00:00:00Z`))}`
@@ -375,11 +449,20 @@ function showAssetDetail(index) {
     : `Baseline ${Number.isFinite(item.startPrice) ? price.format(item.startPrice) : '—'}`;
   $('#asset-current-price').textContent = Number.isFinite(item.price) ? price.format(item.price) : '—';
   setTrend($('#asset-daily-move'), item.change24hPct);
+  requestAnimationFrame(renderAssetRange);
+  return true;
+}
+
+function showAssetDetail(index) {
+  if (!holdings[index] || !portfolio[index]) return false;
+  activeAssetIndex = index;
+  lastAssetIndex = index;
+  assetRange = 'all';
+  renderAssetDetail(index);
   document.querySelectorAll('[data-portfolio-view]').forEach((section) => { section.hidden = true; });
   $('#asset-detail').hidden = false;
   $('#asset-back').focus({ preventScroll: true });
-  document.title = `${item.symbol} evolution · Crypto Allocation Desk`;
-  requestAnimationFrame(renderAssetRange);
+  document.title = `${holdings[index].symbol} evolution · Crypto Allocation Desk`;
   return true;
 }
 
@@ -433,6 +516,100 @@ function closeAssetDetail() {
   showPortfolioView();
 }
 
+function renderMarketChange() {
+  render();
+  if (activeAssetIndex !== null) renderAssetDetail(activeAssetIndex);
+  renderMarketStatus();
+}
+
+function clearLiveMarketTimer() {
+  if (liveMarketTimer !== null) window.clearTimeout(liveMarketTimer);
+  liveMarketTimer = null;
+}
+
+function scheduleLiveMarketRefresh(delay) {
+  clearLiveMarketTimer();
+  if (!liveMarketSettings.enabled || document.hidden) return;
+  const interval = liveMarketSettings.intervalMinutes * 60_000;
+  const updatedAt = Date.parse(liveMarketSnapshot?.updatedAt);
+  const remaining = Number.isFinite(updatedAt) ? Math.max(0, interval - (Date.now() - updatedAt)) : 0;
+  liveMarketTimer = window.setTimeout(refreshLiveMarket, delay ?? remaining);
+}
+
+async function refreshLiveMarket() {
+  if (!liveMarketSettings.enabled || liveMarketRefreshing || document.hidden) {
+    scheduleLiveMarketRefresh();
+    return;
+  }
+  if (!isLiveMarketRefreshDue(liveMarketSnapshot, liveMarketSettings.intervalMinutes)) {
+    scheduleLiveMarketRefresh();
+    return;
+  }
+
+  liveMarketRefreshing = true;
+  liveMarketRefreshFailed = false;
+  renderMarketStatus();
+  let failed = false;
+  try {
+    const ids = supportedAssetIds();
+    const query = new URLSearchParams({
+      vs_currency: config.currency,
+      ids: ids.join(','),
+      price_change_percentage: '24h',
+    });
+    const response = await fetch(`${LIVE_MARKET_API}?${query}`, {
+      cache: 'no-store',
+      headers: { accept: 'application/json' },
+      signal: AbortSignal.timeout(20_000),
+    });
+    if (!response.ok) throw new Error(`Live market request failed (${response.status}).`);
+    const snapshot = createLiveMarketSnapshot(
+      await response.json(),
+      ids,
+      config.currency,
+      new Date().toISOString(),
+    );
+    liveMarketSnapshot = snapshot;
+    writeStoredJson(LIVE_MARKET_CACHE_KEY, snapshot);
+    if (liveMarketSettings.enabled) {
+      market = mergeLiveMarketSnapshot(publishedMarket, snapshot);
+      renderMarketChange();
+    }
+  } catch (error) {
+    failed = true;
+    liveMarketRefreshFailed = true;
+    console.error(error);
+  } finally {
+    liveMarketRefreshing = false;
+    renderMarketStatus();
+    scheduleLiveMarketRefresh(failed ? liveMarketSettings.intervalMinutes * 60_000 : undefined);
+  }
+}
+
+function applyLiveMarketSettings(settings) {
+  liveMarketSettings = normalizeLiveMarketSettings(settings);
+  writeStoredJson(LIVE_MARKET_SETTINGS_KEY, liveMarketSettings);
+  clearLiveMarketTimer();
+  liveMarketRefreshFailed = false;
+  if (liveMarketSettings.enabled
+    && canUseLiveMarketSnapshot(liveMarketSnapshot, publishedMarket, supportedAssetIds())) {
+    market = mergeLiveMarketSnapshot(publishedMarket, liveMarketSnapshot);
+  } else {
+    market = publishedMarket;
+  }
+  renderMarketChange();
+  scheduleLiveMarketRefresh();
+}
+
+function initializeLiveMarket() {
+  liveMarketSettings = normalizeLiveMarketSettings(readStoredJson(LIVE_MARKET_SETTINGS_KEY));
+  const cached = readStoredJson(LIVE_MARKET_CACHE_KEY);
+  liveMarketSnapshot = canUseLiveMarketSnapshot(cached, publishedMarket, supportedAssetIds()) ? cached : null;
+  market = liveMarketSettings.enabled && liveMarketSnapshot
+    ? mergeLiveMarketSnapshot(publishedMarket, liveMarketSnapshot)
+    : publishedMarket;
+}
+
 function render() {
   $('#holdings-title').textContent = `${portfolio.length} portfolio ${portfolio.length === 1 ? 'asset' : 'assets'}`;
   const isReal = activeProfile.type === 'real';
@@ -442,7 +619,7 @@ function render() {
   holdings = isReal
     ? calculateRealHoldings(portfolio, market.assets)
     : calculateHoldings(portfolio, market.history, market.assets);
-  report = activeProfile.source === 'managed'
+  report = activeProfile.source === 'managed' && !hasActiveLiveMarket()
     ? profileReports.reports?.[activeProfile.id]
     : null;
   report ??= createAnalysisReport(
@@ -454,7 +631,7 @@ function render() {
   $('#page-kicker').textContent = isReal ? 'REAL PORTFOLIO · MANAGED' : 'MODEL PORTFOLIO · AGGRESSIVE';
   $('#portfolio-brief').textContent = isReal
     ? 'Actual holdings entered manually and marked using the latest available EUR prices.'
-    : 'A hypothetical €500 allocation tracked at the daily UTC close. Built for perspective—not predictions.';
+    : 'A hypothetical €500 allocation tracked against UTC history and the latest EUR prices. Built for perspective—not predictions.';
   $('#chart-legend-label').textContent = isReal ? 'Market value' : 'Model value';
   renderMetrics(holdings, chartSeries);
   renderHoldings(holdings);
@@ -470,6 +647,12 @@ function bindEvents() {
   });
   window.addEventListener('popstate', () => syncViewFromLocation(true));
   $('#profile-selector').addEventListener('change', ({ target }) => selectProfile(target.value));
+  $('#live-market-enabled').addEventListener('change', ({ target }) => {
+    applyLiveMarketSettings({ ...liveMarketSettings, enabled: target.checked });
+  });
+  $('#live-market-interval').addEventListener('change', ({ target }) => {
+    applyLiveMarketSettings({ ...liveMarketSettings, intervalMinutes: target.value });
+  });
   $('#holdings-body').addEventListener('click', ({ target }) => {
     const trigger = target.closest('[data-asset-index]');
     if (trigger) openAssetDetail(Number(trigger.dataset.assetIndex));
@@ -484,6 +667,11 @@ function bindEvents() {
   document.addEventListener('keydown', ({ key }) => {
     if (key === 'Escape' && activeAssetIndex !== null) closeAssetDetail();
   });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) clearLiveMarketTimer();
+    else scheduleLiveMarketRefresh();
+  });
+  window.addEventListener('online', () => scheduleLiveMarketRefresh(0));
 }
 
 async function init() {
@@ -495,7 +683,8 @@ async function init() {
       fetch('./profiles/index.json', { cache: 'no-store' }),
     ]);
     if (responses.some((response) => !response.ok)) throw new Error('Dashboard data could not be loaded.');
-    [config, market, profileReports, profiles] = await Promise.all(responses.map((response) => response.json()));
+    [config, publishedMarket, profileReports, profiles] = await Promise.all(responses.map((response) => response.json()));
+    initializeLiveMarket();
     profiles = loadProfiles(profiles);
     const selector = $('#profile-selector');
     selector.replaceChildren(...profiles.map((profile) => {
@@ -520,12 +709,11 @@ async function init() {
       : start
         ? `${activeProfile.name} · simulation from ${start}`
         : activeProfile.name;
-    $('#data-status').textContent = market.updatedAt
-      ? `${shortDate.format(new Date(market.updatedAt)).toUpperCase()} UTC`
-      : 'AWAITING UPDATE';
     bindEvents();
     render();
+    renderMarketStatus();
     syncViewFromLocation();
+    scheduleLiveMarketRefresh();
   } catch (error) {
     console.error(error);
     $('#data-status').textContent = 'UNAVAILABLE';

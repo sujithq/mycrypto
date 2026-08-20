@@ -41,13 +41,15 @@ Research and identifier references:
 - Managed profiles can be simulations or real portfolios. Simulations use monthly or per-purchase baselines; real portfolios use manually entered quantities and invested amounts.
 - `.github/workflows/update-market-data.yml` runs hourly, fetches supported EUR quotes from CoinGecko, generates a trailing report for every published profile, commits changed data, and deploys the refreshed site.
 - Each update adds or replaces that day’s UTC snapshot. Stored history is retained beyond one year so older cached prices remain available even after they leave CoinGecko's public 365-day retrieval window. The chart and report still use the configured 366-day display window.
+- The dashboard can opt into browser-only live prices every 1, 5, 15, 30, or 60 minutes. Settings and the latest complete quote set stay in `localStorage`; they do not change repository data or trigger a deployment.
 - Browser profiles are validated, can include actual buy dates, and are stored only in `localStorage`.
 - The management page can create, rename, edit, and delete browser-local simulations. It can also compose JSON for a file-based simulation or real portfolio without changing published profiles.
 - `manage.html` generates complete profile-file JSON. Real holdings can be entered row by row or pasted as JSON using an asset ID or symbol, `quantity`, `investedAmount`, and an optional `buyDate`. Legacy `amount`, `cost`, and `actualCost` fields are accepted on import. Assets may appear more than once when their buy dates differ. TARS AI (TAI) is included in the supported asset universe.
 - `.github/workflows/deploy-pages.yml` validates and deploys every push to `main`.
 
-Crypto markets never close. The stored point for the current UTC date is the
-latest quote captured that day; each market update replaces it.
+Crypto markets never close. The repository keeps the latest automated quote
+captured for each UTC date. Optional live prices temporarily replace today's
+point in the browser only.
 
 ## Local development
 

@@ -45,6 +45,19 @@ combined request with backoff.
 Do not commit local data changes unless they are intended to update the
 repository's published snapshot.
 
+## Use live browser prices
+
+The dashboard's **Live prices** switch fetches all supported EUR quotes while
+the page is open and visible. Refresh intervals are 1, 5, 15, 30, or 60
+minutes, with 5 minutes as the default. The setting and latest complete quote
+set are stored in `localStorage`, so a fresh cache is restored immediately on
+reload without another request.
+
+Live quotes replace the current UTC date's point only in browser memory. They
+do not write `data/market.json`, run a workflow, or deploy the site. Turning
+the switch off immediately restores the repository snapshot. A failed request
+keeps the last good browser cache and retries after the selected interval.
+
 ## Add a published profile
 
 The combined management page at `manage.html` lets you edit a local browser

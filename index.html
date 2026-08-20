@@ -6,7 +6,7 @@
     <meta name="description" content="Track the daily evolution of a configurable €500 crypto portfolio.">
     <meta name="theme-color" content="#07130f">
     <meta name="referrer" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://api.coingecko.com; object-src 'none'; base-uri 'self'; form-action 'self'">
     <title>Crypto Allocation Desk</title>
     <link rel="stylesheet" href="./src/styles.css">
     <script type="module" src="./src/app.js"></script>
@@ -31,7 +31,7 @@
           <div>
             <p class="eyebrow" id="asset-detail-kicker">ASSET EVOLUTION</p>
             <h1 id="asset-detail-title">Asset evolution</h1>
-            <p class="asset-detail-period" id="asset-detail-period">Daily EUR closes since purchase.</p>
+            <p class="asset-detail-period" id="asset-detail-period">EUR history since purchase.</p>
           </div>
           <span class="asset-detail-mark" id="asset-detail-mark" aria-hidden="true">—</span>
         </header>
@@ -62,7 +62,7 @@
         <article class="asset-chart-panel" aria-labelledby="asset-chart-title">
           <div class="asset-chart-heading">
             <div>
-              <p class="eyebrow">DAILY CLOSE · POSITION VALUE · EUR</p>
+              <p class="eyebrow">POSITION VALUE · EUR</p>
               <h2 id="asset-chart-title">Evolution since purchase</h2>
             </div>
             <div class="range-control" id="asset-range-control" role="group" aria-label="Chart range">
@@ -95,7 +95,7 @@
         </div>
         <div class="hero-note">
           <span>Investment brief / 001</span>
-          <p id="portfolio-brief">A hypothetical €500 allocation tracked at the daily UTC close. Built for perspective—not predictions.</p>
+          <p id="portfolio-brief">A hypothetical €500 allocation tracked against UTC history and the latest EUR prices. Built for perspective—not predictions.</p>
         </div>
       </section>
 
@@ -103,6 +103,27 @@
         <label for="profile-selector">Profile</label>
         <select id="profile-selector"></select>
         <span id="profile-description">Select a simulation start date.</span>
+      </section>
+
+      <section class="live-market-bar" data-portfolio-view aria-label="Live market data">
+        <div class="live-market-setting">
+          <label class="live-market-toggle" for="live-market-enabled">
+            <input id="live-market-enabled" type="checkbox" role="switch" aria-describedby="live-market-status">
+            <span class="live-market-track" aria-hidden="true"></span>
+            <strong>Live prices</strong>
+          </label>
+          <span id="live-market-status" role="status" aria-live="polite">Scheduled snapshot</span>
+        </div>
+        <label class="live-market-interval" for="live-market-interval">
+          <span>Refresh</span>
+          <select id="live-market-interval" disabled>
+            <option value="1">1 min</option>
+            <option value="5" selected>5 min</option>
+            <option value="15">15 min</option>
+            <option value="30">30 min</option>
+            <option value="60">60 min</option>
+          </select>
+        </label>
       </section>
 
       <section class="metrics" data-portfolio-view aria-label="Portfolio overview">
@@ -132,7 +153,7 @@
         <article class="panel performance-panel" aria-labelledby="performance-title">
           <div class="panel-heading">
             <div>
-              <p class="eyebrow">DAILY CLOSE · EUR</p>
+              <p class="eyebrow">PORTFOLIO VALUE · EUR</p>
               <h2 id="performance-title">Portfolio evolution</h2>
             </div>
             <div class="chart-legend"><span class="chart-legend-swatch" aria-hidden="true"></span> <span id="chart-legend-label">Model value</span></div>
@@ -170,7 +191,7 @@
       <section class="holdings-section" data-portfolio-view aria-labelledby="holdings-title">
         <div class="section-heading">
           <div>
-            <p class="eyebrow">ALLOCATION / LIVE MARK</p>
+            <p class="eyebrow">ALLOCATION / LATEST MARK</p>
             <h2 id="holdings-title">Portfolio assets</h2>
           </div>
           <p>Portfolio allocation · prices in EUR</p>
@@ -215,7 +236,7 @@
     </main>
 
     <footer>
-      <p>MARKET DATA BY <a href="https://www.coingecko.com/" rel="noopener noreferrer">COINGECKO</a> · DAILY SNAPSHOT AT 23:55 UTC</p>
+      <p>MARKET DATA BY <a href="https://www.coingecko.com/" rel="noopener noreferrer">COINGECKO</a> · REPOSITORY SNAPSHOT / OPTIONAL LIVE PRICES</p>
       <p>Educational model only. Crypto assets can lose their entire value. This is not financial advice.</p>
     </footer>
 
