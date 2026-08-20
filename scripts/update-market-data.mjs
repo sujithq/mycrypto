@@ -92,8 +92,7 @@ export function mergeHistoricalPrices(history, seriesByAsset) {
     }
   }
   return [...byDate.values()]
-    .sort((a, b) => a.date.localeCompare(b.date))
-    .slice(-366);
+    .sort((a, b) => a.date.localeCompare(b.date));
 }
 
 async function backfillHistory(history, ids, currency, startDate) {
@@ -112,7 +111,7 @@ async function backfillHistory(history, ids, currency, startDate) {
     seriesByAsset[id] = result.prices;
     if (index < missingIds.length - 1) await sleep(5_000);
   }
-  return mergeHistoricalPrices(history, seriesByAsset);
+  return mergeHistoricalPrices(history, seriesByAsset).slice(-366);
 }
 
 async function main() {
