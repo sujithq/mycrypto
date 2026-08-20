@@ -7,6 +7,7 @@ import {
   filterHistoryByTimeframe,
   isValidPortfolio,
 } from '../src/model.js';
+import { getPortfolioAssetIds } from '../scripts/update-market-data.mjs';
 
 const portfolio = Array.from({ length: 10 }, (_, index) => ({
   id: `asset-${index}`,
@@ -19,6 +20,10 @@ const history = [
   { date: '2026-08-11', prices: prices(10) },
   { date: '2026-08-18', prices: prices(11) },
 ];
+
+test('selects each configured portfolio asset once for market updates', () => {
+  assert.deepEqual(getPortfolioAssetIds([...portfolio, portfolio[0]]), [...supportedIds]);
+});
 
 test('accepts exactly ten unique positive allocations totalling €500', () => {
   assert.equal(isValidPortfolio(portfolio, supportedIds), true);

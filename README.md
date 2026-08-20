@@ -37,8 +37,8 @@ Research and identifier references:
 ## How it works
 
 - `data/portfolio.json` defines the research portfolio, configurable asset universe, optional buy dates, and trailing chart/report timeframe.
-- `.github/workflows/update-market-data.yml` runs at 23:55 UTC, fetches EUR quotes from CoinGecko, retains up to 366 closes, generates the trailing report, commits the data, and deploys the refreshed site.
-- The first update bootstraps 30 days of daily history. Later runs add or replace that day’s UTC snapshot.
+- `.github/workflows/update-market-data.yml` runs at 23:55 UTC, fetches the configured portfolio's EUR quotes from CoinGecko in one request, retains up to 366 closes, generates the trailing report, commits the data, and deploys the refreshed site.
+- Each update adds or replaces that day’s UTC snapshot, so history accumulates from scheduled or local runs without separate per-asset requests.
 - Browser configuration is validated, can include actual buy dates, is stored only in `localStorage`, and is resettable to the researched model.
 - `manage.html` is the shared management page for local portfolio selection and preparing JSON for the **Manage portfolio defaults** workflow. The default ten assets, actual buy values, optional buy dates, and timeframe can be updated without editing JSON by hand. TARS AI (TAI) is included in the supported asset universe.
 - `.github/workflows/manage-portfolio.yml` validates and commits managed defaults. It gates execution through GitHub permissions/environment protection and checks that `PORTFOLIO_MANAGEMENT_SECRET` is configured without requesting, printing, or passing the secret value as workflow input.
@@ -60,7 +60,7 @@ python3 -m http.server 8000
 Open <http://localhost:8000>. To fetch live data locally, run
 `npm run update-data`. This uses the same updater as the scheduled workflow;
 see [`docs/local-development.md`](docs/local-development.md) for data refresh,
-bootstrap, and managed-default commands.
+history, and managed-default commands.
 
 ## GitHub Pages setup
 

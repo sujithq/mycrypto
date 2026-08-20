@@ -46,29 +46,16 @@ function utcDate(timestamp = Date.now()) {
   return new Date(timestamp).toISOString().slice(0, 10);
 }
 
-async function bootstrapHistory(ids, currency) {
-  const byDate = new Map();
-  for (const [index, id] of ids.entries()) {
-    console.log(`Fetching history for ${id} (${index + 1}/${ids.length})…`);
-    const url = `${API}/coins/${encodeURIComponent(id)}/market_chart?vs_currency=${currency}&days=30&interval=daily`;
-    const chart = await fetchJson(url);
-    for (const [timestamp, price] of chart.prices ?? []) {
-      const date = utcDate(timestamp);
-      if (!byDate.has(date)) byDate.set(date, {});
-      byDate.get(date)[id] = price;
-    }
-    if (index < ids.length - 1) await sleep(4_500);
-  }
-  return [...byDate]
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([date, prices]) => ({ date, prices }));
+export function getPortfolioAssetIds(portfolio) {
+  return [...new Set(portfolio.map(({ id }) => id))];
 }
 
 async function main() {
   console.log('Loading portfolio and existing market data…');
   const portfolioConfig = JSON.parse(await readFile(portfolioPath, 'utf8'));
   const market = JSON.parse(await readFile(marketPath, 'utf8'));
-  const ids = portfolioConfig.supportedAssets.map(({ id }) => id);
+  const ids = getPortfolioAssetIds(portfolioConfig.defaultPortfolio);
+  if (ids.length === 0) throw new Error('The configured portfolio contains no assets.');
   const currency = portfolioConfig.currency;
   const url = `${API}/coins/markets?vs_currency=${currency}&ids=${ids.map(encodeURIComponent).join(',')}&price_change_percentage=24h`;
   console.log(`Fetching current quotes for ${ids.length} assets…`);
@@ -93,11 +80,7 @@ async function main() {
     },
   ]));
 
-  let history = Array.isArray(market.history) ? market.history : [];
-  if (history.length === 0 && process.env.SKIP_BOOTSTRAP !== 'true') {
-    console.log('Bootstrapping 30 days of daily market history…');
-    history = await bootstrapHistory(ids, currency);
-  }
+  const history = Array.isArray(market.history) ? market.history : [];
 
   const snapshot = {
     date,

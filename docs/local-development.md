@@ -22,18 +22,13 @@ Run the same data updater used by the scheduled workflow:
 npm run update-data
 ```
 
-The script fetches EUR quotes from CoinGecko, updates `data/market.json`, and
-regenerates `data/weekly-report.json`. When no history exists, it bootstraps
-the available daily history before adding the current UTC snapshot.
+The script fetches EUR quotes for the configured default portfolio from
+CoinGecko in one combined request, updates `data/market.json`, and regenerates
+`data/weekly-report.json`. Each run adds or replaces the current UTC snapshot,
+so daily history accumulates over scheduled or local runs.
 
-To update only the current snapshot and skip bootstrapping:
-
-```bash
-SKIP_BOOTSTRAP=true npm run update-data
-```
-
-The public CoinGecko API may rate-limit repeated requests. The updater retries
-failed requests and waits between asset requests during history bootstrapping.
+The public CoinGecko API may rate-limit requests. The updater retries a failed
+combined request with backoff.
 Do not commit local data changes unless they are intended to update the
 repository's published snapshot.
 
