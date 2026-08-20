@@ -2,7 +2,8 @@ name: Update market data
 
 on:
   schedule:
-    - cron: "55 23 * * *"
+    # GitHub cron uses UTC; an hourly cadence covers every Brussels-local hour year-round.
+    - cron: "55 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -27,11 +28,11 @@ jobs:
           cache: npm
       - name: Install
         run: npm ci
-      - name: Capture UTC close and generate analysis
+      - name: Refresh market data and generate analysis
         run: npm run update-data:force
       - name: Validate generated data
         run: npm run check
-      - name: Commit daily snapshot
+      - name: Commit market-data refresh
         run: |
           if git diff --quiet -- data/; then
             echo "No market-data changes to commit."
@@ -40,7 +41,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/market.json data/profile-reports.json
-          git commit -m "data: capture daily crypto close"
+          git commit -m "data: refresh crypto market data"
           git push
       - name: Configure Pages
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
