@@ -168,7 +168,7 @@ h2 { margin-bottom: 0; font-size: clamp(1.7rem, 3vw, 2.6rem); font-weight: 520; 
   gap: 24px;
 }
 .chart-legend { margin-top: 6px; color: var(--muted); font-size: .7rem; }
-.chart-legend span { display: inline-block; width: 18px; height: 2px; margin: 0 8px 3px 0; background: var(--acid); }
+.chart-legend-swatch { display: inline-block; width: 18px; height: 2px; margin: 0 8px 3px 0; background: var(--acid); }
 .chart-wrap { position: relative; height: 310px; margin-top: 36px; }
 #portfolio-chart { width: 100%; height: 100%; }
 .chart-axis { display: flex; justify-content: space-between; color: var(--dim); font: .6rem ui-monospace, monospace; }
