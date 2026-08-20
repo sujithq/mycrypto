@@ -87,7 +87,7 @@ export function mergeHistoricalPrices(history, seriesByAsset) {
       if (!Number.isFinite(timestamp) || !Number.isFinite(price)) continue;
       const date = utcDate(timestamp);
       const entry = byDate.get(date) ?? { date, prices: {} };
-      entry.prices[id] = price;
+      if (!Number.isFinite(entry.prices[id])) entry.prices[id] = price;
       byDate.set(date, entry);
     }
   }

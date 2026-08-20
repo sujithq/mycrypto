@@ -62,6 +62,7 @@ test('selects only assets missing historical data at the portfolio start', () =>
 test('merges downloaded history without replacing existing asset prices', () => {
   const timestamp = Date.parse('2026-08-11T00:00:00Z');
   const merged = mergeHistoricalPrices(history, {
+    'asset-0': [[timestamp, 999]],
     'supported-only': [[timestamp, 25]],
   });
   assert.deepEqual(merged[0], {
