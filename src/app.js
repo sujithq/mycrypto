@@ -60,7 +60,7 @@ function loadProfiles(fileProfiles) {
   const managed = fileProfiles.map((profile) => ({
     ...profile,
     source: 'managed',
-    portfolio: resolveProfilePortfolio(profile, config.defaultPortfolio),
+    portfolio: resolveProfilePortfolio(profile, config.defaultPortfolio, config.supportedAssets),
   }));
   try {
     const local = JSON.parse(localStorage.getItem(PROFILES_STORAGE_KEY));

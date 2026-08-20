@@ -33,9 +33,10 @@ export function isValidRealPortfolio(portfolio, supportedIds) {
     && new Set(purchases).size === purchases.length;
 }
 
-export function resolveProfilePortfolio(profile, defaultPortfolio) {
+export function resolveProfilePortfolio(profile, defaultPortfolio, supportedAssets = []) {
   const source = profile?.portfolio ?? defaultPortfolio;
   return source.map((item) => ({
+    ...supportedAssets.find(({ id }) => id === item.id),
     ...item,
     ...(profile?.buyDate && (!profile.portfolio || !item.buyDate)
       ? { buyDate: profile.buyDate }
