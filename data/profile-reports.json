@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-21T03:37:31.522Z",
+  "generatedAt": "2026-08-21T04:24:38.702Z",
   "reports": {
     "test": {
       "profile": {
@@ -7,23 +7,23 @@
         "name": "test",
         "type": "real"
       },
-      "generatedAt": "2026-08-21T03:37:31.522Z",
+      "generatedAt": "2026-08-21T04:24:38.702Z",
       "periodStart": "2026-08-13",
       "periodEnd": "2026-08-21",
       "status": "Strong momentum",
-      "summary": "The portfolio moved +16.56% over a 366-day trailing window (9 closes).",
-      "portfolioChangePct": 16.5626,
+      "summary": "The portfolio moved +16.65% over a 366-day trailing window (9 closes).",
+      "portfolioChangePct": 16.6451,
       "bestPerformer": {
         "symbol": "HYPE",
-        "changePct": 27.334
+        "changePct": 27.8072
       },
       "worstPerformer": {
         "symbol": "INJ",
-        "changePct": 1.7297
+        "changePct": 0.7324
       },
       "observations": [
-        "HYPE led the portfolio at +27.33%.",
-        "INJ was weakest at +1.73%.",
+        "HYPE led the portfolio at +27.81%.",
+        "INJ was weakest at +0.73%.",
         "This early report uses 9 closes; the target 366-day window has 367.",
         "Momentum is descriptive, not predictive; review concentration and downside before acting."
       ]
@@ -34,23 +34,23 @@
         "name": "test2",
         "type": "real"
       },
-      "generatedAt": "2026-08-21T03:37:31.522Z",
+      "generatedAt": "2026-08-21T04:24:38.702Z",
       "periodStart": "2025-08-21",
       "periodEnd": "2026-08-21",
       "status": "Risk-off",
-      "summary": "The portfolio moved -48.76% over a 366-day trailing window (366 closes).",
-      "portfolioChangePct": -48.7607,
+      "summary": "The portfolio moved -48.74% over a 366-day trailing window (366 closes).",
+      "portfolioChangePct": -48.7367,
       "bestPerformer": {
         "symbol": "HYPE",
-        "changePct": 67.6642
+        "changePct": 68.2873
       },
       "worstPerformer": {
         "symbol": "TAI",
-        "changePct": -87.2676
+        "changePct": -86.9674
       },
       "observations": [
-        "HYPE led the portfolio at +67.66%.",
-        "TAI was weakest at -87.27%.",
+        "HYPE led the portfolio at +68.29%.",
+        "TAI was weakest at -86.97%.",
         "This early report uses 366 closes; the target 366-day window has 367.",
         "Momentum is descriptive, not predictive; review concentration and downside before acting."
       ]
