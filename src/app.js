@@ -33,7 +33,25 @@ const LIVE_MARKET_API = 'https://api.coingecko.com/api/v3/coins/markets';
 const INTRADAY_MARKET_API = 'https://api.coingecko.com/api/v3/coins';
 const $ = (selector) => document.querySelector(selector);
 const euro = new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2 });
-const price = new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 6 });
+const standardPrice = new Intl.NumberFormat('en-IE', {
+  style: 'currency',
+  currency: 'EUR',
+  minimumFractionDigits: 6,
+  maximumFractionDigits: 6,
+});
+const precisePrice = new Intl.NumberFormat('en-IE', {
+  style: 'currency',
+  currency: 'EUR',
+  minimumFractionDigits: 6,
+  maximumFractionDigits: 12,
+});
+const price = {
+  format(value) {
+    return value !== 0 && Math.abs(value) < 0.0000005
+      ? precisePrice.format(value)
+      : standardPrice.format(value);
+  },
+};
 const compactPrice = new Intl.NumberFormat('en-IE', {
   style: 'currency',
   currency: 'EUR',
