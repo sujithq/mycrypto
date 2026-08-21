@@ -289,8 +289,9 @@ td:first-child { padding-left: 0; text-align: left; }
 .asset-chart-summary { min-height: 36px; margin-top: 28px; display: flex; align-items: baseline; gap: 14px; color: var(--muted); font-size: .72rem; }
 .asset-chart-summary strong { font: 600 1rem ui-monospace, monospace; }
 .asset-chart-wrap { height: 430px; margin-top: 12px; }
-#asset-chart { width: 100%; height: 100%; }
+#asset-chart, #asset-price-chart { width: 100%; height: 100%; }
 .asset-chart-panel .chart-axis { padding-inline: 3px; }
+.asset-price-chart-panel { margin-top: 64px; padding-top: 54px; border-top: 1px solid var(--line); }
 
 .thesis-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 1px; background: var(--line); }
 .thesis-card { min-height: 190px; padding: 22px; background: var(--bg); }

@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   calculateIntradayAssetSeries,
+  calculateIntradayPriceSeries,
   canUseLiveMarketSnapshot,
   canUseIntradayMarketSnapshot,
   createIntradayMarketSnapshot,
@@ -92,6 +93,9 @@ test('normalizes intraday prices and calculates real and simulated position valu
     buyDate: '2026-08-20',
   }), [
     { timestamp: Date.parse('2026-08-20T12:00:00.000Z'), value: 61 },
+  ]);
+  assert.deepEqual(calculateIntradayPriceSeries(snapshot, { buyDate: '2026-08-20' }), [
+    { timestamp: Date.parse('2026-08-20T12:00:00.000Z'), value: 61_000 },
   ]);
   assert.throws(() => createIntradayMarketSnapshot({ prices: [[Date.now(), 60_000]] }, 'bitcoin', 'eur'));
   assert.throws(() => createIntradayMarketSnapshot({ prices: {} }, 'bitcoin', 'eur'));

@@ -79,6 +79,14 @@ export function calculateIntradayAssetSeries(snapshot, holding) {
   ));
 }
 
+export function calculateIntradayPriceSeries(snapshot, holding) {
+  return snapshot.prices.flatMap(({ timestamp, price }) => (
+    holding?.buyDate && new Date(timestamp).toISOString().slice(0, 10) < holding.buyDate
+      ? []
+      : [{ timestamp, value: price }]
+  ));
+}
+
 export function canUseLiveMarketSnapshot(snapshot, publishedMarket, ids) {
   const snapshotTime = Date.parse(snapshot?.updatedAt);
   const publishedTime = Date.parse(publishedMarket?.updatedAt);

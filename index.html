@@ -62,9 +62,9 @@
           <div class="asset-chart-heading">
             <div>
               <p class="eyebrow">POSITION VALUE · EUR</p>
-              <h2 id="asset-chart-title">Evolution since purchase</h2>
+              <h2 id="asset-chart-title">Position value evolution</h2>
             </div>
-            <div class="range-control" id="asset-range-control" role="group" aria-label="Chart range">
+            <div class="range-control" id="asset-range-control" role="group" aria-label="Asset charts range">
               <button type="button" data-range="1d" aria-label="One day">1D</button>
               <button type="button" data-range="1w" aria-label="One week">1W</button>
               <button type="button" data-range="1m" aria-label="One month">1M</button>
@@ -83,6 +83,26 @@
           </div>
           <div class="chart-axis" aria-hidden="true">
             <span id="asset-chart-start">—</span><span id="asset-chart-end">—</span>
+          </div>
+        </article>
+
+        <article class="asset-chart-panel asset-price-chart-panel" aria-labelledby="asset-price-chart-title">
+          <div class="asset-chart-heading">
+            <div>
+              <p class="eyebrow">UNIT PRICE · EUR</p>
+              <h2 id="asset-price-chart-title">Asset unit price</h2>
+            </div>
+          </div>
+          <div class="asset-chart-summary">
+            <span id="asset-price-range-label">Since purchase</span>
+            <strong id="asset-price-range-return">—</strong>
+          </div>
+          <div class="chart-wrap asset-chart-wrap">
+            <canvas id="asset-price-chart" role="img" aria-label="Asset unit price over time"></canvas>
+            <p id="asset-price-chart-empty" class="empty-state" role="status" aria-live="polite" hidden>More daily prices are needed for this range.</p>
+          </div>
+          <div class="chart-axis" aria-hidden="true">
+            <span id="asset-price-chart-start">—</span><span id="asset-price-chart-end">—</span>
           </div>
         </article>
       </section>

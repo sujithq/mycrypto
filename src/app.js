@@ -1,4 +1,5 @@
 import {
+  calculateAssetPriceSeries,
   calculateAssetSeries,
   calculateHoldings,
   calculateRealHoldings,
@@ -12,6 +13,7 @@ import {
 } from './model.js';
 import {
   calculateIntradayAssetSeries,
+  calculateIntradayPriceSeries,
   canUseIntradayMarketSnapshot,
   canUseLiveMarketSnapshot,
   createIntradayMarketSnapshot,
@@ -32,6 +34,12 @@ const INTRADAY_MARKET_API = 'https://api.coingecko.com/api/v3/coins';
 const $ = (selector) => document.querySelector(selector);
 const euro = new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2 });
 const price = new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 6 });
+const compactPrice = new Intl.NumberFormat('en-IE', {
+  style: 'currency',
+  currency: 'EUR',
+  notation: 'compact',
+  maximumSignificantDigits: 4,
+});
 const quantity = new Intl.NumberFormat('en-IE', { maximumSignificantDigits: 8 });
 const shortDate = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', timeZone: 'UTC' });
 const detailDate = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' });
@@ -66,6 +74,7 @@ let holdings = [];
 let activeAssetIndex = null;
 let lastAssetIndex = null;
 let assetSeries = [];
+let assetPriceSeries = [];
 let assetRange = 'all';
 let liveMarketSettings = normalizeLiveMarketSettings();
 let liveMarketSnapshot = null;
@@ -338,7 +347,19 @@ function formatChartPointDate(point, dateFormat) {
   return Number.isFinite(date.getTime()) ? dateFormat.format(date).toUpperCase() : '—';
 }
 
-function drawValueChart({ canvas, empty, series, startOutput, endOutput, seriesLabel, dateFormat = shortDate }) {
+function drawValueChart({
+  canvas,
+  empty,
+  series,
+  startOutput,
+  endOutput,
+  seriesLabel,
+  dateFormat = shortDate,
+  valueFormat = euro,
+  axisFormat,
+  lineColor = '#b9f227',
+  gradientStart = 'rgba(185, 242, 39, .18)',
+}) {
   empty.hidden = series.length > 1;
   canvas.hidden = series.length <= 1;
   startOutput.textContent = series[0] ? formatChartPointDate(series[0], dateFormat) : '—';
@@ -364,7 +385,7 @@ function drawValueChart({ canvas, empty, series, startOutput, endOutput, seriesL
   max += spread * .16;
   const x = (index) => padding.left + index / (series.length - 1) * (width - padding.left - padding.right);
   const y = (value) => padding.top + (max - value) / (max - min) * (height - padding.top - padding.bottom);
-  const axisValue = new Intl.NumberFormat('en-IE', {
+  const axisValue = axisFormat ?? new Intl.NumberFormat('en-IE', {
     style: 'currency',
     currency: 'EUR',
     maximumFractionDigits: max < 10 ? 2 : 0,
@@ -387,8 +408,8 @@ function drawValueChart({ canvas, empty, series, startOutput, endOutput, seriesL
   }
 
   const gradient = context.createLinearGradient(0, padding.top, 0, height);
-  gradient.addColorStop(0, 'rgba(185, 242, 39, .18)');
-  gradient.addColorStop(1, 'rgba(185, 242, 39, 0)');
+  gradient.addColorStop(0, gradientStart);
+  gradient.addColorStop(1, 'rgba(7, 19, 15, 0)');
   context.beginPath();
   series.forEach((point, index) => {
     if (index === 0) context.moveTo(x(index), y(point.value));
@@ -405,16 +426,16 @@ function drawValueChart({ canvas, empty, series, startOutput, endOutput, seriesL
     if (index === 0) context.moveTo(x(index), y(point.value));
     else context.lineTo(x(index), y(point.value));
   });
-  context.strokeStyle = '#b9f227';
+  context.strokeStyle = lineColor;
   context.lineWidth = 2;
   context.stroke();
   const last = series.at(-1);
   context.beginPath();
   context.arc(x(series.length - 1), y(last.value), 4, 0, Math.PI * 2);
-  context.fillStyle = '#b9f227';
+  context.fillStyle = lineColor;
   context.fill();
 
-  canvas.setAttribute('aria-label', `${seriesLabel} from ${euro.format(series[0].value)} on ${formatChartPointDate(series[0], dateFormat)} UTC to ${euro.format(last.value)} on ${formatChartPointDate(last, dateFormat)} UTC.`);
+  canvas.setAttribute('aria-label', `${seriesLabel} from ${valueFormat.format(series[0].value)} on ${formatChartPointDate(series[0], dateFormat)} UTC to ${valueFormat.format(last.value)} on ${formatChartPointDate(last, dateFormat)} UTC.`);
 }
 
 function drawChart() {
@@ -440,11 +461,17 @@ function renderAssetRange() {
       ? calculateIntradayAssetSeries(intradaySnapshot, intradayPosition)
       : []
     : filterSeriesByRange(assetSeries, assetRange);
+  const visiblePriceSeries = isIntraday
+    ? intradaySnapshot
+      ? calculateIntradayPriceSeries(intradaySnapshot, { buyDate: item?.buyDate })
+      : []
+    : filterSeriesByRange(assetPriceSeries, assetRange);
   document.querySelectorAll('#asset-range-control [data-range]').forEach((button) => {
     button.setAttribute('aria-pressed', String(button.dataset.range === assetRange));
   });
   let rangeLabel = RANGE_LABELS[assetRange];
   const empty = $('#asset-chart-empty');
+  const priceEmpty = $('#asset-price-chart-empty');
   if (isIntraday && item) {
     const isRefreshing = intradayMarketRefreshingIds.has(item.id);
     const failed = intradayMarketFailedIds.has(item.id);
@@ -456,17 +483,27 @@ function renderAssetRange() {
       : failed
         ? 'Intraday prices are temporarily unavailable.'
         : 'Intraday prices are not available yet.';
+    priceEmpty.textContent = empty.textContent;
   } else {
     empty.textContent = 'More daily closes are needed for this range.';
+    priceEmpty.textContent = 'More daily prices are needed for this range.';
   }
-  $('#asset-chart-title').textContent = isIntraday && item ? `${item.name} intraday` : 'Evolution since purchase';
+  $('#asset-chart-title').textContent = isIntraday ? 'Position value intraday' : 'Position value evolution';
+  $('#asset-price-chart-title').textContent = `${item?.name ?? 'Asset'} unit price`;
   $('#asset-range-label').textContent = rangeLabel;
+  $('#asset-price-range-label').textContent = rangeLabel;
   const first = visibleSeries[0]?.value;
   const last = visibleSeries.at(-1)?.value;
   const rangeReturn = Number.isFinite(first) && first > 0 && Number.isFinite(last)
     ? ((last - first) / first) * 100
     : null;
   setTrend($('#asset-range-return'), rangeReturn);
+  const firstPrice = visiblePriceSeries[0]?.value;
+  const lastPrice = visiblePriceSeries.at(-1)?.value;
+  const priceRangeReturn = Number.isFinite(firstPrice) && firstPrice > 0 && Number.isFinite(lastPrice)
+    ? ((lastPrice - firstPrice) / firstPrice) * 100
+    : null;
+  setTrend($('#asset-price-range-return'), priceRangeReturn);
   drawValueChart({
     canvas: $('#asset-chart'),
     empty,
@@ -476,6 +513,19 @@ function renderAssetRange() {
     seriesLabel: `${holdings[activeAssetIndex]?.name ?? 'Asset'} position value`,
     dateFormat: isIntraday ? intradayDate : detailDate,
   });
+  drawValueChart({
+    canvas: $('#asset-price-chart'),
+    empty: priceEmpty,
+    series: visiblePriceSeries,
+    startOutput: $('#asset-price-chart-start'),
+    endOutput: $('#asset-price-chart-end'),
+    seriesLabel: `${item?.name ?? 'Asset'} unit price`,
+    dateFormat: isIntraday ? intradayDate : detailDate,
+    valueFormat: price,
+    axisFormat: compactPrice,
+    lineColor: '#77e7c1',
+    gradientStart: 'rgba(119, 231, 193, .16)',
+  });
 }
 
 function renderAssetDetail(index) {
@@ -483,6 +533,7 @@ function renderAssetDetail(index) {
   const portfolioItem = portfolio[index];
   if (!item || !portfolioItem) return false;
   assetSeries = calculateAssetSeries(portfolioItem, market.history, activeProfile.type === 'real');
+  assetPriceSeries = calculateAssetPriceSeries(portfolioItem, market.history);
   const firstDate = portfolioItem.buyDate ?? assetSeries[0]?.date;
   const lastDate = assetSeries.at(-1)?.date;
 
@@ -529,6 +580,7 @@ function showAssetDetail(index) {
 function showPortfolioView(restoreScroll) {
   activeAssetIndex = null;
   assetSeries = [];
+  assetPriceSeries = [];
   clearIntradayMarketTimer();
   $('#asset-detail').hidden = true;
   document.querySelectorAll('[data-portfolio-view]').forEach((section) => { section.hidden = false; });

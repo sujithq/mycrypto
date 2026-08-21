@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
+  calculateAssetPriceSeries,
   calculateAssetSeries,
   calculateHoldings,
   calculateRealHoldings,
@@ -61,6 +62,10 @@ test('calculates one asset evolution from its purchase date', () => {
   assert.deepEqual(calculateAssetSeries({ ...asset, quantity: 5 }, assetHistory, true), [
     { date: '2026-08-11', value: 50 },
     { date: '2026-08-12', value: 60 },
+  ]);
+  assert.deepEqual(calculateAssetPriceSeries(asset, assetHistory), [
+    { date: '2026-08-11', value: 10 },
+    { date: '2026-08-12', value: 12 },
   ]);
 });
 

@@ -153,6 +153,17 @@ export function calculateAssetSeries(asset, history, isReal = false) {
   });
 }
 
+export function calculateAssetPriceSeries(asset, history) {
+  return history.flatMap((entry) => {
+    const marketPrice = entry.prices?.[asset.id];
+    return (!asset.buyDate || entry.date >= asset.buyDate)
+      && Number.isFinite(marketPrice)
+      && marketPrice > 0
+      ? [{ date: entry.date, value: marketPrice }]
+      : [];
+  });
+}
+
 export function filterSeriesByRange(series, range) {
   if (range === 'all' || series.length === 0) return series;
   const endDate = series.at(-1)?.date;
