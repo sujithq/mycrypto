@@ -173,6 +173,9 @@ export function filterSeriesByRange(series, range) {
   else if (range === '1w') start.setUTCDate(start.getUTCDate() - 7);
   else if (range === '1m') start.setUTCMonth(start.getUTCMonth() - 1);
   else if (range === '1y') start.setUTCFullYear(start.getUTCFullYear() - 1);
+  else if (range === '3y') start.setUTCFullYear(start.getUTCFullYear() - 3);
+  else if (range === '5y') start.setUTCFullYear(start.getUTCFullYear() - 5);
+  else if (range === '10y') start.setUTCFullYear(start.getUTCFullYear() - 10);
   else if (range === 'ytd') start.setUTCMonth(0, 1);
   else return series;
   const startDate = start.toISOString().slice(0, 10);

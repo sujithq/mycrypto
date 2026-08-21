@@ -71,6 +71,14 @@ test('calculates one asset evolution from its purchase date', () => {
 
 test('filters asset evolution by trailing and year-to-date ranges', () => {
   const series = [
+    { date: '2016-08-19', value: 10 },
+    { date: '2016-08-20', value: 20 },
+    { date: '2021-08-19', value: 30 },
+    { date: '2021-08-20', value: 32 },
+    { date: '2023-08-19', value: 34 },
+    { date: '2023-08-20', value: 36 },
+    { date: '2025-08-19', value: 38 },
+    { date: '2025-08-20', value: 39 },
     { date: '2025-12-31', value: 40 },
     { date: '2026-01-01', value: 42 },
     { date: '2026-07-20', value: 46 },
@@ -81,7 +89,11 @@ test('filters asset evolution by trailing and year-to-date ranges', () => {
   assert.deepEqual(filterSeriesByRange(series, '1d'), series.slice(-2));
   assert.deepEqual(filterSeriesByRange(series, '1w'), series.slice(-3));
   assert.deepEqual(filterSeriesByRange(series, '1m'), series.slice(-4));
-  assert.deepEqual(filterSeriesByRange(series, 'ytd'), series.slice(1));
+  assert.deepEqual(filterSeriesByRange(series, '1y'), series.slice(7));
+  assert.deepEqual(filterSeriesByRange(series, '3y'), series.slice(5));
+  assert.deepEqual(filterSeriesByRange(series, '5y'), series.slice(3));
+  assert.deepEqual(filterSeriesByRange(series, '10y'), series.slice(1));
+  assert.deepEqual(filterSeriesByRange(series, 'ytd'), series.slice(9));
   assert.equal(filterSeriesByRange(series, 'all'), series);
 });
 

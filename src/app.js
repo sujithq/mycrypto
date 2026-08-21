@@ -57,6 +57,9 @@ const RANGE_LABELS = {
   '1w': '1 week',
   '1m': '1 month',
   '1y': '1 year',
+  '3y': '3 years',
+  '5y': '5 years',
+  '10y': '10 years',
   ytd: 'Year to date',
   all: 'Since purchase',
 };
