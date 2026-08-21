@@ -89,6 +89,22 @@ for simulations; without it, the latest stored quote is used. Dated lookups use
 `data/market.json` first, then query CoinGecko when that asset and date are not
 cached. Online fallback results are returned without modifying the market file.
 
+### Resolve a supported asset entry
+
+The `supported-asset-entry` agent skill returns a `supportedAssets` JSON object
+from a case-insensitive symbol or CoinGecko ID. It preserves an existing local
+entry, or verifies canonical metadata with CoinGecko before producing a new
+entry with a concise thesis.
+
+```bash
+npm run supported-asset-entry -- BTC
+npm run supported-asset-entry -- dogwifcoin
+```
+
+The command exposes the local or CoinGecko source and supporting context. When
+a symbol belongs to multiple assets, it returns the canonical ID choices
+instead of guessing.
+
 ## GitHub Pages setup
 
 1. In **Settings → Pages**, choose **GitHub Actions** as the source.

@@ -32,6 +32,16 @@
     { "id": "the-graph", "symbol": "GRT", "name": "The Graph", "thesis": "Decentralized indexing infrastructure that helps applications query blockchain data." },
     { "id": "uniswap", "symbol": "UNI", "name": "Uniswap", "thesis": "Decentralized exchange infrastructure exposure through a widely used automated market maker." },
     { "id": "arbitrum", "symbol": "ARB", "name": "Arbitrum", "thesis": "Ethereum scaling exposure through a widely used optimistic rollup ecosystem." },
-    { "id": "tars-protocol", "symbol": "TAI", "name": "TARS AI", "thesis": "High-risk exposure to AI-focused applications and infrastructure within the Solana ecosystem." }
+    { "id": "tars-protocol", "symbol": "TAI", "name": "TARS AI", "thesis": "High-risk exposure to AI-focused applications and infrastructure within the Solana ecosystem." },
+    { "id": "dogwifcoin", "symbol": "WIF", "name": "dogwifhat", "thesis": "Speculative exposure to a community-driven Solana meme token whose value depends heavily on attention and liquidity, with no underlying utility and extreme volatility." },
+    { "id": "pudgy-penguins", "symbol": "PENGU", "name": "Pudgy Penguins", "thesis": "Speculative exposure to the Pudgy Penguins consumer brand and its multichain meme community, with token demand dependent on brand engagement and market liquidity." },
+    { "id": "pepe", "symbol": "PEPE", "name": "Pepe", "thesis": "Ethereum-based meme-token exposure supported by broad cultural recognition and liquidity, while remaining highly speculative and sentiment-driven." },
+    { "id": "floki", "symbol": "FLOKI", "name": "FLOKI", "thesis": "High-beta exposure to a multichain meme ecosystem spanning gaming, DeFi, NFTs and education, with execution and token-demand risk across its products." },
+    { "id": "popcat", "symbol": "POPCAT", "name": "Popcat", "thesis": "Purely speculative Solana meme-token exposure centered on a cat meme, with demand driven by attention and limited fundamental utility." },
+    { "id": "mog-coin", "symbol": "MOG", "name": "Mog Coin", "thesis": "Speculative Ethereum and Base meme-token exposure driven primarily by community-created culture and viral attention, with substantial liquidity and longevity risk." },
+    { "id": "based-brett", "symbol": "BRETT", "name": "Brett", "thesis": "Speculative meme-token exposure to the Base ecosystem and Boy's Club branding, with value highly dependent on community attention and Base-chain activity." },
+    { "id": "bonk", "symbol": "BONK", "name": "Bonk", "thesis": "Community-distributed Solana meme-token exposure with broad ecosystem integrations, balanced against sentiment-driven demand and high volatility." },
+    { "id": "shiba-inu", "symbol": "SHIB", "name": "Shiba Inu", "thesis": "Ethereum meme-token exposure with an expanding utility ecosystem, while retaining significant execution, concentration, and sentiment risk." },
+    { "id": "dogecoin", "symbol": "DOGE", "name": "Dogecoin", "thesis": "Established proof-of-work meme-coin exposure with broad liquidity and community recognition, while remaining highly sensitive to sentiment and speculative cycles." }
   ]
 }

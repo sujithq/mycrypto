@@ -8,6 +8,7 @@
     "build:manage": "node scripts/build.mjs --include-management",
     "test": "node --test",
     "market-quantity": "node .github/skills/market-quantity/scripts/calculate-market-quantity.mjs",
+    "supported-asset-entry": "node .github/skills/supported-asset-entry/scripts/resolve-supported-asset.mjs",
     "update-data": "node scripts/update-market-data.mjs",
     "update-data:force": "node scripts/update-market-data.mjs --force",
     "check": "npm test && npm run build"

@@ -1,0 +1,98 @@
+{
+  "id": "top10",
+  "name": "Top 10 Crypto Lottery",
+  "type": "real",
+  "buyDate": "2026-08-13",
+  "portfolio": [
+    {
+      "id": "dogwifcoin",
+      "symbol": "WIF",
+      "name": "dogwifhat",
+      "thesis": "High-risk Solana meme-coin comeback bet with strong trading activity relative to its reduced market capitalization.",
+      "investedAmount": 50,
+      "quantity": 417.15828770873145,
+      "buyDate": "2026-08-13"
+    },
+    {
+      "id": "pudgy-penguins",
+      "symbol": "PENGU",
+      "name": "Pudgy Penguins",
+      "thesis": "Speculative exposure to a highly recognizable crypto-native consumer brand with strong token liquidity and community activity.",
+      "investedAmount": 50,
+      "quantity": 9296.393185371939,
+      "buyDate": "2026-08-13"
+    },
+    {
+      "id": "pepe",
+      "symbol": "PEPE",
+      "name": "Pepe",
+      "thesis": "Large and liquid meme-coin position with strong cultural recognition and a higher probability of remaining relevant during future speculative cycles.",
+      "investedAmount": 50,
+      "quantity": 21459367.294469643,
+      "buyDate": "2026-08-13"
+    },
+    {
+      "id": "floki",
+      "symbol": "FLOKI",
+      "name": "FLOKI",
+      "thesis": "High-beta meme exposure combining a strong community with a broader ecosystem of gaming, DeFi and token-related products.",
+      "investedAmount": 50,
+      "quantity": 2831257.078142695,
+      "buyDate": "2026-08-13"
+    },
+    {
+      "id": "popcat",
+      "symbol": "POPCAT",
+      "name": "Popcat",
+      "thesis": "Small-market-cap Solana meme coin offering very high potential upside if attention and speculative demand return, with correspondingly high failure risk.",
+      "investedAmount": 50,
+      "quantity": 1366.3901366308155,
+      "buyDate": "2026-08-13"
+    },
+    {
+      "id": "mog-coin",
+      "symbol": "MOG",
+      "name": "Mog Coin",
+      "thesis": "Small-cap meme-coin lottery position with meaningful remaining liquidity and potentially large upside if meme-market momentum returns.",
+      "investedAmount": 50,
+      "quantity": 581548583.304948,
+      "buyDate": "2026-08-13"
+    },
+    {
+      "id": "based-brett",
+      "symbol": "BRETT",
+      "name": "Brett",
+      "thesis": "Extreme-risk small-cap meme position with substantial theoretical recovery potential but a significant chance of fading into irrelevance.",
+      "investedAmount": 50,
+      "quantity": 14688.515343623129,
+      "buyDate": "2026-08-13"
+    },
+    {
+      "id": "bonk",
+      "symbol": "BONK",
+      "name": "Bonk",
+      "thesis": "Established Solana meme coin with strong liquidity and ecosystem recognition, balanced against elevated governance and project-specific risk.",
+      "investedAmount": 50,
+      "quantity": 25380710.659898475,
+      "buyDate": "2026-08-13"
+    },
+    {
+      "id": "shiba-inu",
+      "symbol": "SHIB",
+      "name": "Shiba Inu",
+      "thesis": "More established meme-coin exposure with a large community and ecosystem, offering lower theoretical upside but stronger survival odds than smaller meme coins.",
+      "investedAmount": 50,
+      "quantity": 12820512.82051282,
+      "buyDate": "2026-08-13"
+    },
+    {
+      "id": "dogecoin",
+      "symbol": "DOGE",
+      "name": "Dogecoin",
+      "thesis": "The most established meme-coin position in the basket, providing greater liquidity and staying power while moderating some of the extreme small-cap risk.",
+      "investedAmount": 50,
+      "quantity": 816.5798370106645,
+      "buyDate": "2026-08-13"
+    }
+  ]
+}
