@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-21T23:06:45.775Z",
+  "generatedAt": "2026-08-22T00:02:45.588Z",
   "reports": {
     "test": {
       "profile": {
@@ -7,24 +7,24 @@
         "name": "test",
         "type": "real"
       },
-      "generatedAt": "2026-08-21T23:06:45.775Z",
+      "generatedAt": "2026-08-22T00:02:45.588Z",
       "periodStart": "2026-08-13",
-      "periodEnd": "2026-08-21",
+      "periodEnd": "2026-08-22",
       "status": "Strong momentum",
-      "summary": "The portfolio moved +21.89% over a 366-day trailing window (9 closes).",
-      "portfolioChangePct": 21.8896,
+      "summary": "The portfolio moved +21.31% over a 366-day trailing window (10 closes).",
+      "portfolioChangePct": 21.3081,
       "bestPerformer": {
         "symbol": "LINK",
-        "changePct": 38.6552
+        "changePct": 36.3931
       },
       "worstPerformer": {
         "symbol": "TAI",
-        "changePct": -7.3123
+        "changePct": -5.2548
       },
       "observations": [
-        "LINK led the portfolio at +38.66%.",
-        "TAI was weakest at -7.31%.",
-        "This early report uses 9 closes; the target 366-day window has 367.",
+        "LINK led the portfolio at +36.39%.",
+        "TAI was weakest at -5.25%.",
+        "This early report uses 10 closes; the target 366-day window has 367.",
         "Momentum is descriptive, not predictive; review concentration and downside before acting."
       ]
     },
@@ -34,24 +34,24 @@
         "name": "test2",
         "type": "real"
       },
-      "generatedAt": "2026-08-21T23:06:45.775Z",
+      "generatedAt": "2026-08-22T00:02:45.588Z",
       "periodStart": "2025-08-21",
-      "periodEnd": "2026-08-21",
+      "periodEnd": "2026-08-22",
       "status": "Risk-off",
-      "summary": "The portfolio moved -45.63% over a 366-day trailing window (366 closes).",
-      "portfolioChangePct": -45.6311,
+      "summary": "The portfolio moved -45.97% over a 366-day trailing window (367 closes).",
+      "portfolioChangePct": -45.9671,
       "bestPerformer": {
         "symbol": "HYPE",
-        "changePct": 76.4686
+        "changePct": 75.1412
       },
       "worstPerformer": {
         "symbol": "TAI",
-        "changePct": -90.4266
+        "changePct": -90.2141
       },
       "observations": [
-        "HYPE led the portfolio at +76.47%.",
-        "TAI was weakest at -90.43%.",
-        "This early report uses 366 closes; the target 366-day window has 367.",
+        "HYPE led the portfolio at +75.14%.",
+        "TAI was weakest at -90.21%.",
+        "Performance is allocation-weighted across the 366-day trailing window (367 closes).",
         "Momentum is descriptive, not predictive; review concentration and downside before acting."
       ]
     },
@@ -61,24 +61,24 @@
         "name": "Top 10 Crypto Lottery",
         "type": "real"
       },
-      "generatedAt": "2026-08-21T23:06:45.775Z",
+      "generatedAt": "2026-08-22T00:02:45.588Z",
       "periodStart": "2026-08-13",
-      "periodEnd": "2026-08-21",
+      "periodEnd": "2026-08-22",
       "status": "Strong momentum",
-      "summary": "The portfolio moved +37.92% over a 366-day trailing window (9 closes).",
-      "portfolioChangePct": 37.9225,
+      "summary": "The portfolio moved +37.58% over a 366-day trailing window (10 closes).",
+      "portfolioChangePct": 37.5788,
       "bestPerformer": {
         "symbol": "PEPE",
-        "changePct": 52.1497
+        "changePct": 52.5807
       },
       "worstPerformer": {
-        "symbol": "MOG",
-        "changePct": 24.9311
+        "symbol": "POPCAT",
+        "changePct": 26.1468
       },
       "observations": [
-        "PEPE led the portfolio at +52.15%.",
-        "MOG was weakest at +24.93%.",
-        "This early report uses 9 closes; the target 366-day window has 367.",
+        "PEPE led the portfolio at +52.58%.",
+        "POPCAT was weakest at +26.15%.",
+        "This early report uses 10 closes; the target 366-day window has 367.",
         "Momentum is descriptive, not predictive; review concentration and downside before acting."
       ]
     }
