@@ -136,14 +136,15 @@ export function calculateSeries(portfolio, history, timeframeDays) {
 }
 
 export function calculateAssetSeries(asset, history) {
-  const positionStartPrice = Number(asset.startPrice);
-  const baselinePrice = Number.isFinite(positionStartPrice) && positionStartPrice > 0
-    ? positionStartPrice
-    : getBaselinePrices([asset], history)[0];
   const quantity = Number(asset.quantity);
-  const units = Number.isFinite(quantity) && quantity > 0
-    ? quantity
-    : Number(asset.investedAmount) / baselinePrice;
+  let units = quantity;
+  if (!Number.isFinite(units) || units <= 0) {
+    const positionStartPrice = Number(asset.startPrice);
+    const baselinePrice = Number.isFinite(positionStartPrice) && positionStartPrice > 0
+      ? positionStartPrice
+      : getBaselinePrices([asset], history)[0];
+    units = Number(asset.investedAmount) / baselinePrice;
+  }
   if (!Number.isFinite(units) || units <= 0) return [];
 
   return history.flatMap((entry) => {
