@@ -135,18 +135,24 @@ export function calculateSeries(portfolio, history, timeframeDays) {
   });
 }
 
-export function calculateAssetSeries(asset, history, isReal = false) {
-  const baselinePrice = getBaselinePrices([asset], history)[0];
-  if (!isReal && (!Number.isFinite(baselinePrice) || baselinePrice <= 0)) return [];
+export function calculateAssetSeries(asset, history) {
+  const quantity = Number(asset.quantity);
+  let units = quantity;
+  if (!Number.isFinite(units) || units <= 0) {
+    const positionStartPrice = Number(asset.startPrice);
+    const baselinePrice = Number.isFinite(positionStartPrice) && positionStartPrice > 0
+      ? positionStartPrice
+      : getBaselinePrices([asset], history)[0];
+    units = Number(asset.investedAmount) / baselinePrice;
+  }
+  if (!Number.isFinite(units) || units <= 0) return [];
 
   return history.flatMap((entry) => {
     const marketPrice = entry.prices?.[asset.id];
     if ((asset.buyDate && entry.date < asset.buyDate)
       || !Number.isFinite(marketPrice)
       || marketPrice <= 0) return [];
-    const value = isReal
-      ? Number(asset.quantity) * marketPrice
-      : Number(asset.investedAmount) * (marketPrice / baselinePrice);
+    const value = units * marketPrice;
     return Number.isFinite(value)
       ? [{ date: entry.date, value: Math.round(value * 100) / 100 }]
       : [];

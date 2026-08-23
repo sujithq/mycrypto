@@ -553,7 +553,7 @@ function renderAssetDetail(index) {
   const item = holdings[index];
   const portfolioItem = portfolio[index];
   if (!item || !portfolioItem) return false;
-  assetSeries = calculateAssetSeries(portfolioItem, market.history, activeProfile.type === 'real');
+  assetSeries = calculateAssetSeries(item, market.history);
   assetPriceSeries = calculateAssetPriceSeries(portfolioItem, market.history);
   const firstDate = portfolioItem.buyDate ?? assetSeries[0]?.date;
   const lastDate = assetSeries.at(-1)?.date;

@@ -59,7 +59,7 @@ test('calculates one asset evolution from its purchase date', () => {
     { date: '2026-08-11', value: 50 },
     { date: '2026-08-12', value: 60 },
   ]);
-  assert.deepEqual(calculateAssetSeries({ ...asset, quantity: 5 }, assetHistory, true), [
+  assert.deepEqual(calculateAssetSeries({ ...asset, quantity: 5 }, assetHistory), [
     { date: '2026-08-11', value: 50 },
     { date: '2026-08-12', value: 60 },
   ]);
@@ -67,6 +67,15 @@ test('calculates one asset evolution from its purchase date', () => {
     { date: '2026-08-11', value: 10 },
     { date: '2026-08-12', value: 12 },
   ]);
+});
+
+test('calculates asset evolution from position quantity instead of portfolio value', () => {
+  const asset = { ...portfolio[0], quantity: 2, investedAmount: 500, buyDate: '2026-08-11' };
+  assert.deepEqual(calculateAssetSeries(asset, history), [
+    { date: '2026-08-11', value: 20 },
+    { date: '2026-08-18', value: 22 },
+  ]);
+  assert.notDeepEqual(calculateAssetSeries(asset, history), calculateSeries([asset], history));
 });
 
 test('filters asset evolution by trailing and year-to-date ranges', () => {
