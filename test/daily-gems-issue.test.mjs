@@ -1,7 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
+  buildConsolidatedDailyGemsAdoptionPackage,
   buildDailyGemsAdoptionPackage,
+  generateConsolidatedDailyGemsIssue,
   generateDailyGemsIssue,
 } from '../scripts/generate-daily-gems-issue.mjs';
 
@@ -128,6 +130,33 @@ const resolvedNewCoin = {
     description: 'A test network.',
   },
 };
+
+function rankingForMode(mode) {
+  const result = structuredClone(ranking());
+  const includesUsd = mode !== 'EUR';
+  result.tradingVenue = {
+    ...result.tradingVenue,
+    quoteCurrencyMode: mode,
+    quoteCurrencies: mode === 'MIXED' ? ['EUR', 'USD'] : [mode],
+    quoteCurrency: mode === 'MIXED' ? null : mode,
+    usdPerEur: includesUsd ? 1.2 : null,
+    exchangeRateSource: includesUsd
+      ? 'https://api.coingecko.com/api/v3/exchange_rates'
+      : null,
+  };
+  result.assets = result.assets.map((asset, index) => {
+    const quoteCurrency = mode === 'USD' || (mode === 'MIXED' && index === 0)
+      ? 'USD'
+      : 'EUR';
+    return {
+      ...asset,
+      tradingPair: `${asset.symbol}/${quoteCurrency}`,
+      tradingQuoteCurrency: quoteCurrency,
+      quoteOrderAmount: quoteCurrency === 'USD' ? 60 : 50,
+    };
+  });
+  return result;
+}
 
 test('builds a complete adoption package for a valid real profile', () => {
   const result = buildDailyGemsAdoptionPackage(
@@ -257,6 +286,55 @@ test('publishes mixed EUR and USD quote orders with the EUR 50 USD cap', () => {
   assert.match(result.issueBody, /active direct EUR or USD market/);
   assert.match(result.issueBody, /EUR\/USD conversion: 1.2 USD per EUR/);
   assert.match(result.issueBody, /NEW\/USD \(active, EEA\) \| USD 60/);
+});
+
+test('builds one compact issue for EUR, USD, and mixed profile options', () => {
+  const result = buildConsolidatedDailyGemsAdoptionPackage(
+    ['EUR', 'USD', 'MIXED'].map(rankingForMode),
+    portfolioConfig,
+    [resolvedNewCoin],
+    { expectedAssetCount: 2 },
+  );
+
+  assert.equal(result.schemaVersion, 4);
+  assert.equal(result.issueTitle, '[Daily Gems] 2026-08-24 - EUR, USD, and MIXED profile options');
+  assert.deepEqual(result.profilePaths, [
+    'profiles/gems-eur-2026-08-24.json',
+    'profiles/gems-usd-2026-08-24.json',
+    'profiles/gems-mixed-2026-08-24.json',
+  ]);
+  assert.equal(result.supportedAssetsToAdd.length, 1);
+  assert.equal(result.modePackages[1].profile.portfolio[0].quoteOrderAmount, 60);
+  assert.equal(result.validation.oneDailyIssue, true);
+  assert.equal(result.validation.sharedMarketSnapshot, true);
+  assert.equal(result.issueBody.match(/<!-- daily-gems:2026-08-24 -->/g).length, 1);
+  assert.match(result.issueBody, /## EUR-only option/);
+  assert.match(result.issueBody, /## USD-only option/);
+  assert.match(result.issueBody, /## MIXED \(EUR preferred\) option/);
+  assert.ok(result.issueBody.length < 65_536);
+});
+
+test('generates consolidated rankings and resolves missing assets once', async () => {
+  const resolvedIds = [];
+  const progress = [];
+  let requestedModes;
+  const result = await generateConsolidatedDailyGemsIssue(portfolioConfig, {
+    limit: 2,
+    getRankings: async (_portfolioConfig, modes) => {
+      requestedModes = modes;
+      return modes.map(rankingForMode);
+    },
+    resolveByIds: async (ids) => {
+      resolvedIds.push(...ids);
+      return [resolvedNewCoin];
+    },
+    onProgress: (message) => progress.push(message),
+  });
+
+  assert.deepEqual(requestedModes, ['EUR', 'USD', 'MIXED']);
+  assert.deepEqual(resolvedIds, ['new-coin']);
+  assert.equal(result.modePackages.length, 3);
+  assert.match(progress.at(-1), /Consolidated three validated profiles into one/);
 });
 
 test('rejects a USD order whose EUR allocation exceeds 50', () => {

@@ -144,25 +144,31 @@ not a price forecast.
 
 The **Propose daily crypto gems** workflow runs every day at 07:15 UTC. It
 creates one `[Daily Gems]` issue per UTC date, or updates that issue when the
-workflow is rerun. Scheduled and manual runs default to EUR; manual runs can
-select USD or MIXED from the `quote_mode` input. The repository remains
-unchanged.
+workflow is rerun. Every run evaluates EUR-only, USD-only, and EUR-preferred
+mixed execution from one shared live snapshot, then consolidates the three
+profile options into that single issue. The repository remains unchanged.
 
 Each issue is a complete adoption package containing:
 
 - The live ranking inputs, scores, quantities, Revolut X EEA EUR/USD-pair
 	evidence, quote amounts, and exclusion summary.
 - Insertion-ready `supportedAssets` objects for every new CoinGecko asset.
-- A complete `type: "real"` profile and its target `profiles/` path.
-- A machine-readable manifest and the commands needed to refresh and validate
-	the repository.
+- Three complete `type: "real"` profile alternatives with mode-qualified
+	`profiles/` paths.
+- A compact machine-readable option summary and the commands needed to refresh
+	and validate the repository.
 
 Generate the same issue body locally with:
 
 ```bash
 npm run daily-gems-issue -- --output daily-gems-issue.md --summary-output daily-gems-summary.json
+npm run daily-gems-issue -- --quote-mode all --output daily-gems-all.md --summary-output daily-gems-all-summary.json
 npm run daily-gems-issue -- --quote-mode mixed --output daily-gems-issue.md --summary-output daily-gems-summary.json
 ```
+
+Omitting `--quote-mode` still generates the standalone EUR-default package.
+Use `all` to match the workflow and produce one issue body containing EUR,
+USD, and mixed alternatives.
 
 Generated quantities are reference fills based on CoinGecko spot prices. Pair
 availability and order limits can change, so reconfirm every Revolut X EEA EUR

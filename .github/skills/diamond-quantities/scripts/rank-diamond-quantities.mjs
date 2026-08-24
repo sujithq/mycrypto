@@ -671,6 +671,74 @@ export async function getDiamondQuantities(portfolioConfig, options = {}) {
   };
 }
 
+export async function getDiamondQuantitiesForQuoteModes(
+  portfolioConfig,
+  quoteCurrencyModesInput,
+  options = {},
+) {
+  if (!Array.isArray(quoteCurrencyModesInput) || quoteCurrencyModesInput.length === 0) {
+    throw new Error('Quote currency modes must contain at least one mode.');
+  }
+  const quoteCurrencyModes = [...new Set(
+    quoteCurrencyModesInput.map((mode) => normalizeQuoteCurrencyMode(mode)),
+  )];
+  const {
+    attempts,
+    candidateLimit = DEFAULT_CANDIDATE_LIMIT,
+    fetchImpl,
+    sleepImpl,
+    tradingRegion = REVOLUT_X_REGION,
+    usdPerEur: usdPerEurInput,
+    ...rankingOptions
+  } = options;
+  const currency = String(portfolioConfig.currency ?? 'eur').toUpperCase();
+  const requestedQuoteCurrencies = new Set(
+    quoteCurrencyModes.flatMap((mode) => quoteCurrenciesForMode(mode)),
+  );
+  const venueMode = requestedQuoteCurrencies.size > 1
+    ? 'MIXED'
+    : quoteCurrencyModes[0];
+  const [marketRows, tradingVenue] = await Promise.all([
+    fetchLatestDiamondMarkets(
+      currency,
+      candidateLimit,
+      { attempts, fetchImpl, sleepImpl },
+    ),
+    fetchRevolutXTradingVenue(venueMode, {
+      region: tradingRegion,
+      attempts,
+      fetchImpl,
+      sleepImpl,
+    }),
+  ]);
+  const exchangeRate = requestedQuoteCurrencies.has('USD')
+    ? (usdPerEurInput === undefined
+        ? await fetchEurUsdRate({ attempts, fetchImpl, sleepImpl })
+        : { usdPerEur: positiveNumber(usdPerEurInput, 'USD per EUR exchange rate'), source: 'provided' })
+    : { usdPerEur: null, source: null };
+  const observedAt = rankingOptions.observedAt ?? new Date();
+
+  return quoteCurrencyModes.map((quoteCurrencyMode) => {
+    const quoteCurrencies = quoteCurrenciesForMode(quoteCurrencyMode);
+    return {
+      ...rankDiamondQuantities(marketRows, portfolioConfig, {
+        ...rankingOptions,
+        observedAt,
+        quoteCurrencyMode,
+        usdPerEur: exchangeRate.usdPerEur,
+        exchangeRateSource: exchangeRate.source,
+        tradingVenue: {
+          ...tradingVenue,
+          quoteCurrencyMode,
+          quoteCurrencies,
+          quoteCurrency: quoteCurrencies.length === 1 ? quoteCurrencies[0] : null,
+        },
+      }),
+      requestedCandidateLimit: Number(candidateLimit),
+    };
+  });
+}
+
 async function main([investedAmount, limit, candidateLimit, quoteCurrencyMode]) {
   const portfolioConfig = JSON.parse(await readFile(
     path.join(repositoryRoot, 'data', 'portfolio.json'),

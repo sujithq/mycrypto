@@ -122,13 +122,14 @@ the repository, committing it, and pushing with an authorized Git identity.
 The scheduled **Propose daily crypto gems** workflow creates or updates one
 issue per UTC date. It has read-only access to repository contents and write
 access to issues; it never updates `data/` or `profiles/` directly. Scheduled
-and manual runs default to EUR, while manual dispatches can select USD or MIXED
-with the `quote_mode` input.
+and manual runs evaluate EUR, USD, and MIXED from one shared snapshot and
+publish the three profile alternatives in one issue.
 
 To inspect the generated adoption package locally without creating an issue:
 
 ```bash
 npm run daily-gems-issue -- --output daily-gems-issue.md --summary-output daily-gems-summary.json
+npm run daily-gems-issue -- --quote-mode all --output daily-gems-all.md --summary-output daily-gems-all-summary.json
 npm run daily-gems-issue -- --quote-mode usd --output daily-gems-usd.md --summary-output daily-gems-usd-summary.json
 npm run daily-gems-issue -- --quote-mode mixed --output daily-gems-mixed.md --summary-output daily-gems-mixed-summary.json
 ```
@@ -140,6 +141,10 @@ have a verified Revolut currency identity and order limits that accept the
 proposed quote amount. USD orders use CoinGecko's live EUR/USD rate and cannot
 exceed a EUR 50 equivalent. Quantities are CoinGecko reference fills, not
 evidence of completed trades.
+
+Use `all` to match the workflow. It creates one body with three mode-qualified
+profile paths, one deduplicated registry-addition set, and one daily issue
+marker for the publisher.
 Reconfirm each pair immediately before trading, replace reference quantities
 with actual fills before saving the profile, append only the missing registry
 entries to `data/portfolio.json`, then run:

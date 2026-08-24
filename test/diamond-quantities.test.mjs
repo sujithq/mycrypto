@@ -3,6 +3,7 @@ import test from 'node:test';
 import {
   fetchRevolutXTradingVenue,
   getDiamondQuantities,
+  getDiamondQuantitiesForQuoteModes,
   rankDiamondQuantities,
 } from '../.github/skills/diamond-quantities/scripts/rank-diamond-quantities.mjs';
 
@@ -153,6 +154,80 @@ test('uses a live EUR/USD rate for USD quote mode', async () => {
   assert.equal(result.assets[0].tradingQuoteCurrency, 'USD');
   assert.equal(result.assets[0].quoteOrderAmount, 60);
   assert.equal(result.assets[0].investedAmount, 50);
+});
+
+test('ranks EUR, USD, and mixed modes from one live snapshot', async () => {
+  const requestedUrls = [];
+  const rankings = await getDiamondQuantitiesForQuoteModes(
+    portfolioConfig,
+    ['EUR', 'USD', 'MIXED'],
+    {
+      observedAt: '2026-08-24T12:00:00.000Z',
+      candidateLimit: 1,
+      sleepImpl: async () => {},
+      fetchImpl: async (url) => {
+        const requestedUrl = new URL(url);
+        requestedUrls.push(requestedUrl);
+        let body = [marketRow({ id: 'dual-asset', symbol: 'dual', name: 'Dual Asset' })];
+        if (requestedUrl.pathname.endsWith('/exchange_rates')) {
+          body = { rates: { eur: { value: 100 }, usd: { value: 120 } } };
+        }
+        else if (requestedUrl.pathname.endsWith('/pairs')) {
+          body = {
+            'DUAL/EUR': {
+              base: 'DUAL',
+              quote: 'EUR',
+              status: 'active',
+              min_order_size_quote: '0.1',
+              max_order_size_quote: '1000000',
+            },
+            'DUAL/USD': {
+              base: 'DUAL',
+              quote: 'USD',
+              status: 'active',
+              min_order_size_quote: '0.1',
+              max_order_size_quote: '1000000',
+            },
+          };
+        }
+        else if (requestedUrl.pathname.endsWith('/currencies')) {
+          body = {
+            DUAL: { symbol: 'DUAL', name: 'Dual Asset', status: 'active' },
+          };
+        }
+        return { ok: true, json: async () => body };
+      },
+    },
+  );
+
+  assert.deepEqual(
+    rankings.map(({ tradingVenue }) => tradingVenue.quoteCurrencyMode),
+    ['EUR', 'USD', 'MIXED'],
+  );
+  assert.deepEqual(
+    rankings.map(({ assets }) => assets[0].tradingPair),
+    ['DUAL/EUR', 'DUAL/USD', 'DUAL/EUR'],
+  );
+  assert.deepEqual(
+    rankings.map(({ observedAt }) => observedAt),
+    Array(3).fill('2026-08-24T12:00:00.000Z'),
+  );
+  assert.equal(
+    requestedUrls.filter(({ pathname }) => pathname.endsWith('/coins/markets')).length,
+    1,
+  );
+  assert.equal(
+    requestedUrls.filter(({ pathname }) => pathname.endsWith('/pairs')).length,
+    1,
+  );
+  assert.equal(
+    requestedUrls.filter(({ pathname }) => pathname.endsWith('/currencies')).length,
+    1,
+  );
+  assert.equal(
+    requestedUrls.filter(({ pathname }) => pathname.endsWith('/exchange_rates')).length,
+    1,
+  );
 });
 
 test('normalizes active Revolut X EUR pair configuration', async () => {
