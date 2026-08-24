@@ -135,6 +135,7 @@ test('builds a complete adoption package for a valid real profile', () => {
 
 test('resolves only candidates missing from the local registry', async () => {
   const resolvedIds = [];
+  const progress = [];
   const result = await generateDailyGemsIssue(portfolioConfig, {
     limit: 2,
     metadataDelayMs: 0,
@@ -143,9 +144,17 @@ test('resolves only candidates missing from the local registry', async () => {
       resolvedIds.push(id);
       return resolvedNewCoin;
     },
+    onProgress: (message) => progress.push(message),
   });
 
   assert.deepEqual(resolvedIds, ['new-coin']);
+  assert.deepEqual(progress, [
+    'Screening up to 1000 CoinGecko candidates for 2 positions.',
+    'Selected 2 assets from 600 eligible candidates.',
+    'Verifying CoinGecko metadata for 1 unregistered asset.',
+    'Verifying new-coin (1/1).',
+    'Validated 2 holdings for profiles/gems-2026-08-24.json.',
+  ]);
   assert.equal(result.issueTitle, '[Daily Gems] 2026-08-24 - Proposed EUR 100 real profile');
 });
 

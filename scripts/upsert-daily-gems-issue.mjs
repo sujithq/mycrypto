@@ -46,6 +46,7 @@ export async function upsertDailyGemsIssue({
 }, {
   apiUrl = 'https://api.github.com',
   fetchImpl = globalThis.fetch,
+  onProgress = () => {},
 } = {}) {
   const { owner, repository } = repositoryParts(repositoryInput);
   if (!token) throw new Error('GITHUB_TOKEN is required.');
@@ -57,6 +58,7 @@ export async function upsertDailyGemsIssue({
   if (!issueBody.includes(marker)) {
     throw new Error(`Issue body is missing its daily marker: ${marker}`);
   }
+  onProgress(`Checking ${owner}/${repository} for the ${date} daily issue.`);
   const issues = await githubRequest(
     `/repos/${owner}/${repository}/issues?state=all&sort=created&direction=desc&per_page=100`,
     { token, apiUrl, fetchImpl },
@@ -66,6 +68,7 @@ export async function upsertDailyGemsIssue({
   const existing = issues.find((issue) => !issue.pull_request
     && (issue.body?.includes(marker) || issue.title === issueTitle));
   if (existing) {
+    onProgress(`Updating existing issue #${existing.number}.`);
     const issue = await githubRequest(
       `/repos/${owner}/${repository}/issues/${existing.number}`,
       {
@@ -83,6 +86,7 @@ export async function upsertDailyGemsIssue({
     };
   }
 
+  onProgress(`Creating a new issue with labels: ${ISSUE_LABELS.join(', ')}.`);
   const issue = await githubRequest(`/repos/${owner}/${repository}/issues`, {
     token,
     apiUrl,
@@ -120,6 +124,8 @@ function parseArguments(args) {
 
 async function main(args) {
   const { bodyPath, summaryPath } = parseArguments(args);
+  const progress = (message) => console.error(`[daily-gems] ${message}`);
+  progress('Loading generated issue body and publication summary.');
   const [issueBody, summaryText] = await Promise.all([
     readFile(path.resolve(bodyPath), 'utf8'),
     readFile(path.resolve(summaryPath), 'utf8'),
@@ -133,8 +139,10 @@ async function main(args) {
     date: summary.date,
   }, {
     apiUrl: process.env.GITHUB_API_URL || undefined,
+    onProgress: progress,
   });
   console.log(JSON.stringify(result));
+  progress(`Issue ${result.action}: #${result.number} ${result.url}`);
   if (process.env.GITHUB_STEP_SUMMARY) {
     const { appendFile } = await import('node:fs/promises');
     await appendFile(

@@ -19,6 +19,7 @@ function jsonResponse(value, status = 200) {
 
 test('updates the existing issue identified by its daily marker', async () => {
   const requests = [];
+  const progress = [];
   const result = await upsertDailyGemsIssue(input, {
     fetchImpl: async (url, options) => {
       requests.push({ url: new URL(url), options });
@@ -34,6 +35,7 @@ test('updates the existing issue identified by its daily marker', async () => {
         html_url: 'https://github.com/sujithq/mycrypto/issues/42',
       });
     },
+    onProgress: (message) => progress.push(message),
   });
 
   assert.deepEqual(result, {
@@ -47,6 +49,10 @@ test('updates the existing issue identified by its daily marker', async () => {
     title: input.issueTitle,
     body: input.issueBody,
   });
+  assert.deepEqual(progress, [
+    'Checking sujithq/mycrypto for the 2026-08-24 daily issue.',
+    'Updating existing issue #42.',
+  ]);
 });
 
 test('creates a labeled issue when the UTC date has no existing issue', async () => {

@@ -291,7 +291,9 @@ export async function generateDailyGemsIssue(portfolioConfig, {
   getRanking = getDiamondQuantities,
   resolveById = resolveSupportedAssetById,
   sleepImpl = sleep,
+  onProgress = () => {},
 } = {}) {
+  onProgress(`Screening up to ${candidateLimit} CoinGecko candidates for ${limit} positions.`);
   const ranking = await getRanking(portfolioConfig, {
     investedAmount,
     limit,
@@ -301,18 +303,23 @@ export async function generateDailyGemsIssue(portfolioConfig, {
     throw new Error(`Expected ${limit} ranked assets but received ${ranking.assets.length}.`);
   }
 
+  onProgress(`Selected ${ranking.assets.length} assets from ${ranking.eligibleCount} eligible candidates.`);
   const supportedIds = new Set((portfolioConfig.supportedAssets ?? []).map(({ id }) => id));
   const missingIds = ranking.assets.map(({ id }) => id).filter((id) => !supportedIds.has(id));
+  onProgress(`Verifying CoinGecko metadata for ${missingIds.length} unregistered ${missingIds.length === 1 ? 'asset' : 'assets'}.`);
   const resolvedAssets = [];
   for (const [index, id] of missingIds.entries()) {
+    onProgress(`Verifying ${id} (${index + 1}/${missingIds.length}).`);
     resolvedAssets.push(await resolveById(id));
     if (metadataDelayMs > 0 && index < missingIds.length - 1) {
       await sleepImpl(metadataDelayMs);
     }
   }
-  return buildDailyGemsAdoptionPackage(ranking, portfolioConfig, resolvedAssets, {
+  const result = buildDailyGemsAdoptionPackage(ranking, portfolioConfig, resolvedAssets, {
     expectedAssetCount: Number(limit),
   });
+  onProgress(`Validated ${result.profile.portfolio.length} holdings for ${result.profilePath}.`);
+  return result;
 }
 
 function parseArguments(args) {
@@ -334,20 +341,32 @@ function parseArguments(args) {
 
 async function main(args) {
   const { output, summaryOutput, ...generationOptions } = parseArguments(args);
+  const progress = (message) => console.error(`[daily-gems] ${message}`);
+  progress('Loading portfolio configuration.');
   const portfolioConfig = JSON.parse(await readFile(
     path.join(root, 'data', 'portfolio.json'),
     'utf8',
   ));
-  const result = await generateDailyGemsIssue(portfolioConfig, generationOptions);
-  if (output) await writeFile(path.resolve(output), result.issueBody);
+  const result = await generateDailyGemsIssue(portfolioConfig, {
+    ...generationOptions,
+    onProgress: progress,
+  });
+  if (output) {
+    const outputPath = path.resolve(output);
+    await writeFile(outputPath, result.issueBody);
+    progress(`Wrote ${Buffer.byteLength(result.issueBody)}-byte issue body to ${outputPath}.`);
+  }
   else console.log(result.issueBody);
   if (summaryOutput) {
-    await writeFile(path.resolve(summaryOutput), `${JSON.stringify({
+    const summaryPath = path.resolve(summaryOutput);
+    await writeFile(summaryPath, `${JSON.stringify({
       issueTitle: result.issueTitle,
       date: result.date,
       profilePath: result.profilePath,
     }, null, 2)}\n`);
+    progress(`Wrote publication summary to ${summaryPath}.`);
   }
+  progress('Daily gems adoption package is ready.');
 }
 
 const isDirectRun = process.argv[1]

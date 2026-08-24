@@ -15,6 +15,9 @@ concurrency:
   group: repository-data-writer
   cancel-in-progress: false
 
+env:
+  NPM_CONFIG_LOGLEVEL: verbose
+
 jobs:
   update:
     runs-on: ubuntu-26.04-arm #ubuntu-latest

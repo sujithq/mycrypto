@@ -13,6 +13,9 @@ concurrency:
   group: daily-gems-issue
   cancel-in-progress: false
 
+env:
+  NPM_CONFIG_LOGLEVEL: verbose
+
 jobs:
   propose:
     runs-on: ubuntu-latest
