@@ -1,0 +1,98 @@
+{
+  "id": "gems-2026-08-24",
+  "name": "Crypto Gems - 2026-08-24",
+  "type": "real",
+  "buyDate": "2026-08-24",
+  "portfolio": [
+    {
+      "id": "the-index",
+      "symbol": "INDEX",
+      "name": "The Index",
+      "thesis": "Speculative exposure to The Index, that passed the workflow's lower-market-cap, liquidity, and momentum screens, with material volatility, liquidity, token-supply, and project-execution risk.",
+      "investedAmount": 50,
+      "quantity": 3415.8442890195693,
+      "buyDate": "2026-08-24"
+    },
+    {
+      "id": "neiro-3",
+      "symbol": "NEIRO",
+      "name": "Neiro",
+      "thesis": "Speculative exposure to Neiro, that passed the workflow's lower-market-cap, liquidity, and momentum screens, with material volatility, liquidity, token-supply, and project-execution risk.",
+      "investedAmount": 50,
+      "quantity": 645665.9810581183,
+      "buyDate": "2026-08-24"
+    },
+    {
+      "id": "wink",
+      "symbol": "WIN",
+      "name": "WINkLink",
+      "thesis": "Speculative exposure to WINkLink, that passed the workflow's lower-market-cap, liquidity, and momentum screens, with material volatility, liquidity, token-supply, and project-execution risk.",
+      "investedAmount": 50,
+      "quantity": 1683221.1442806083,
+      "buyDate": "2026-08-24"
+    },
+    {
+      "id": "test-3",
+      "symbol": "TST",
+      "name": "Test",
+      "thesis": "Speculative exposure to Test, that passed the workflow's lower-market-cap, liquidity, and momentum screens, with material volatility, liquidity, token-supply, and project-execution risk.",
+      "investedAmount": 50,
+      "quantity": 3624.9170048429046,
+      "buyDate": "2026-08-24"
+    },
+    {
+      "id": "mubarak",
+      "symbol": "MUBARAK",
+      "name": "Mubarak",
+      "thesis": "Speculative exposure to Mubarak, that passed the workflow's lower-market-cap, liquidity, and momentum screens, with material volatility, liquidity, token-supply, and project-execution risk.",
+      "investedAmount": 50,
+      "quantity": 2461.594418435329,
+      "buyDate": "2026-08-24"
+    },
+    {
+      "id": "czs-dog",
+      "symbol": "BROCCOLI",
+      "name": "CZ's Dog",
+      "thesis": "Speculative exposure to CZ's Dog, that passed the workflow's lower-market-cap, liquidity, and momentum screens, with material volatility, liquidity, token-supply, and project-execution risk.",
+      "investedAmount": 50,
+      "quantity": 3312.887059023864,
+      "buyDate": "2026-08-24"
+    },
+    {
+      "id": "dogs-2",
+      "symbol": "DOGS",
+      "name": "Dogs",
+      "thesis": "Speculative exposure to Dogs, that passed the workflow's lower-market-cap, liquidity, and momentum screens, with material volatility, liquidity, token-supply, and project-execution risk.",
+      "investedAmount": 50,
+      "quantity": 1471695.654804217,
+      "buyDate": "2026-08-24"
+    },
+    {
+      "id": "portal-2",
+      "symbol": "PORTAL",
+      "name": "Portal",
+      "thesis": "Speculative exposure to Portal, that passed the workflow's lower-market-cap, liquidity, and momentum screens, with material volatility, liquidity, token-supply, and project-execution risk.",
+      "investedAmount": 50,
+      "quantity": 3454.5443095603646,
+      "buyDate": "2026-08-24"
+    },
+    {
+      "id": "celer-network",
+      "symbol": "CELR",
+      "name": "Celer Network",
+      "thesis": "Speculative exposure to Celer Network, that passed the workflow's lower-market-cap, liquidity, and momentum screens, with material volatility, liquidity, token-supply, and project-execution risk.",
+      "investedAmount": 50,
+      "quantity": 25811.867170412068,
+      "buyDate": "2026-08-24"
+    },
+    {
+      "id": "coin98",
+      "symbol": "C98",
+      "name": "Coin98",
+      "thesis": "Speculative exposure to Coin98, that passed the workflow's lower-market-cap, liquidity, and momentum screens, with material volatility, liquidity, token-supply, and project-execution risk.",
+      "investedAmount": 50,
+      "quantity": 3847.4958525327897,
+      "buyDate": "2026-08-24"
+    }
+  ]
+}
