@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-21T08:38:48.614Z",
+  "generatedAt": "2026-08-24T07:45:34.410Z",
   "reports": {
     "test": {
       "profile": {
@@ -7,24 +7,24 @@
         "name": "test",
         "type": "real"
       },
-      "generatedAt": "2026-08-21T08:38:48.614Z",
+      "generatedAt": "2026-08-24T07:45:34.410Z",
       "periodStart": "2026-08-13",
-      "periodEnd": "2026-08-21",
+      "periodEnd": "2026-08-24",
       "status": "Strong momentum",
-      "summary": "The portfolio moved +20.90% over a 366-day trailing window (9 closes).",
-      "portfolioChangePct": 20.9014,
+      "summary": "The portfolio moved +20.77% over a 366-day trailing window (12 closes).",
+      "portfolioChangePct": 20.7734,
       "bestPerformer": {
-        "symbol": "LINK",
-        "changePct": 31.6027
+        "symbol": "HYPE",
+        "changePct": 40.0489
       },
       "worstPerformer": {
-        "symbol": "INJ",
-        "changePct": 5.9685
+        "symbol": "TAI",
+        "changePct": -8.2722
       },
       "observations": [
-        "LINK led the portfolio at +31.60%.",
-        "INJ was weakest at +5.97%.",
-        "This early report uses 9 closes; the target 366-day window has 367.",
+        "HYPE led the portfolio at +40.05%.",
+        "TAI was weakest at -8.27%.",
+        "This early report uses 12 closes; the target 366-day window has 367.",
         "Momentum is descriptive, not predictive; review concentration and downside before acting."
       ]
     },
@@ -34,24 +34,24 @@
         "name": "test2",
         "type": "real"
       },
-      "generatedAt": "2026-08-21T08:38:48.614Z",
-      "periodStart": "2025-08-21",
-      "periodEnd": "2026-08-21",
+      "generatedAt": "2026-08-24T07:45:34.410Z",
+      "periodStart": "2025-08-23",
+      "periodEnd": "2026-08-24",
       "status": "Risk-off",
-      "summary": "The portfolio moved -46.94% over a 366-day trailing window (366 closes).",
-      "portfolioChangePct": -46.9434,
+      "summary": "The portfolio moved -47.75% over a 366-day trailing window (367 closes).",
+      "portfolioChangePct": -47.7544,
       "bestPerformer": {
         "symbol": "HYPE",
-        "changePct": 72.8656
+        "changePct": 76.1406
       },
       "worstPerformer": {
         "symbol": "TAI",
-        "changePct": -87.0548
+        "changePct": -90.4236
       },
       "observations": [
-        "HYPE led the portfolio at +72.87%.",
-        "TAI was weakest at -87.05%.",
-        "This early report uses 366 closes; the target 366-day window has 367.",
+        "HYPE led the portfolio at +76.14%.",
+        "TAI was weakest at -90.42%.",
+        "Performance is allocation-weighted across the 366-day trailing window (367 closes).",
         "Momentum is descriptive, not predictive; review concentration and downside before acting."
       ]
     },
@@ -61,24 +61,24 @@
         "name": "Top 10 Crypto Lottery",
         "type": "real"
       },
-      "generatedAt": "2026-08-21T08:38:48.614Z",
+      "generatedAt": "2026-08-24T07:45:34.410Z",
       "periodStart": "2026-08-13",
-      "periodEnd": "2026-08-21",
+      "periodEnd": "2026-08-24",
       "status": "Strong momentum",
-      "summary": "The portfolio moved +23.06% over a 366-day trailing window (9 closes).",
-      "portfolioChangePct": 23.0591,
+      "summary": "The portfolio moved +35.23% over a 366-day trailing window (12 closes).",
+      "portfolioChangePct": 35.2301,
       "bestPerformer": {
-        "symbol": "PEPE",
-        "changePct": 30.1677
+        "symbol": "PENGU",
+        "changePct": 53.3324
       },
       "worstPerformer": {
-        "symbol": "POPCAT",
-        "changePct": 16.0294
+        "symbol": "MOG",
+        "changePct": 17.0372
       },
       "observations": [
-        "PEPE led the portfolio at +30.17%.",
-        "POPCAT was weakest at +16.03%.",
-        "This early report uses 9 closes; the target 366-day window has 367.",
+        "PENGU led the portfolio at +53.33%.",
+        "MOG was weakest at +17.04%.",
+        "This early report uses 12 closes; the target 366-day window has 367.",
         "Momentum is descriptive, not predictive; review concentration and downside before acting."
       ]
     }
