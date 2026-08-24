@@ -2,15 +2,13 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { getDiamondQuantities } from '../.github/skills/diamond-quantities/scripts/rank-diamond-quantities.mjs';
-import { resolveSupportedAssetById } from '../.github/skills/supported-asset-entry/scripts/resolve-supported-asset.mjs';
+import { resolveSupportedAssetsByIds } from '../.github/skills/supported-asset-entry/scripts/resolve-supported-asset.mjs';
 import { isValidProfile } from '../src/model.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DEFAULT_INVESTED_AMOUNT = 50;
 const DEFAULT_LIMIT = 10;
 const DEFAULT_CANDIDATE_LIMIT = 1_000;
-
-const sleep = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
 
 function normalizeCategory(value) {
   return String(value ?? '')
@@ -287,10 +285,8 @@ export async function generateDailyGemsIssue(portfolioConfig, {
   investedAmount = DEFAULT_INVESTED_AMOUNT,
   limit = DEFAULT_LIMIT,
   candidateLimit = DEFAULT_CANDIDATE_LIMIT,
-  metadataDelayMs = 1_000,
   getRanking = getDiamondQuantities,
-  resolveById = resolveSupportedAssetById,
-  sleepImpl = sleep,
+  resolveByIds = resolveSupportedAssetsByIds,
   onProgress = () => {},
 } = {}) {
   onProgress(`Screening up to ${candidateLimit} CoinGecko candidates for ${limit} positions.`);
@@ -306,15 +302,9 @@ export async function generateDailyGemsIssue(portfolioConfig, {
   onProgress(`Selected ${ranking.assets.length} assets from ${ranking.eligibleCount} eligible candidates.`);
   const supportedIds = new Set((portfolioConfig.supportedAssets ?? []).map(({ id }) => id));
   const missingIds = ranking.assets.map(({ id }) => id).filter((id) => !supportedIds.has(id));
-  onProgress(`Verifying CoinGecko metadata for ${missingIds.length} unregistered ${missingIds.length === 1 ? 'asset' : 'assets'}.`);
-  const resolvedAssets = [];
-  for (const [index, id] of missingIds.entries()) {
-    onProgress(`Verifying ${id} (${index + 1}/${missingIds.length}).`);
-    resolvedAssets.push(await resolveById(id));
-    if (metadataDelayMs > 0 && index < missingIds.length - 1) {
-      await sleepImpl(metadataDelayMs);
-    }
-  }
+  onProgress(`Verifying ${missingIds.length} unregistered ${missingIds.length === 1 ? 'asset' : 'assets'} in one CoinGecko request.`);
+  const resolvedAssets = await resolveByIds(missingIds);
+  onProgress(`Verified ${resolvedAssets.length} canonical CoinGecko ${resolvedAssets.length === 1 ? 'entry' : 'entries'}.`);
   const result = buildDailyGemsAdoptionPackage(ranking, portfolioConfig, resolvedAssets, {
     expectedAssetCount: Number(limit),
   });

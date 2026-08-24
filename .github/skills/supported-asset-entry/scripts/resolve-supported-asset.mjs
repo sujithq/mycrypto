@@ -50,6 +50,31 @@ async function fetchJson(url, {
   throw lastError ?? new Error('CoinGecko request failed.');
 }
 
+export async function resolveSupportedAssetsByIds(assetIdsInput, options = {}) {
+  if (!Array.isArray(assetIdsInput)) throw new Error('Provide CoinGecko asset IDs as an array.');
+  const assetIds = assetIdsInput.map((value) => String(value ?? '').trim().toLowerCase());
+  if (assetIds.some((id) => !id)) throw new Error('CoinGecko asset IDs cannot be empty.');
+  if (assetIds.length === 0) return [];
+
+  const coins = await fetchJson(`${API}/coins/list?include_platform=false`, options);
+  if (!Array.isArray(coins)) throw new Error('CoinGecko returned an invalid coin list.');
+  const coinsById = new Map(coins.map((coin) => [String(coin?.id ?? '').toLowerCase(), coin]));
+  return assetIds.map((assetId) => {
+    const coin = coinsById.get(assetId);
+    const id = String(coin?.id ?? '').trim();
+    const symbol = String(coin?.symbol ?? '').trim().toUpperCase();
+    const name = String(coin?.name ?? '').trim();
+    if (!id || id.toLowerCase() !== assetId || !symbol || !name) {
+      throw new Error(`CoinGecko returned no complete canonical metadata for ${assetId}.`);
+    }
+    return {
+      entry: { id, symbol, name },
+      source: 'CoinGecko',
+      context: { categories: [], description: '' },
+    };
+  });
+}
+
 export async function resolveSupportedAssetById(assetIdInput, options = {}) {
   const assetId = String(assetIdInput ?? '').trim().toLowerCase();
   if (!assetId) throw new Error('Provide a CoinGecko asset ID.');

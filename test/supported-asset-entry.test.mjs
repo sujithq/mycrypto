@@ -3,6 +3,7 @@ import test from 'node:test';
 import {
   resolveSupportedAsset,
   resolveSupportedAssetById,
+  resolveSupportedAssetsByIds,
 } from '../.github/skills/supported-asset-entry/scripts/resolve-supported-asset.mjs';
 
 const portfolioConfig = {
@@ -104,6 +105,29 @@ test('resolves an already verified CoinGecko id without fetching the coin list',
     symbol: 'WIF',
     name: 'dogwifhat',
   });
+});
+
+test('resolves multiple canonical IDs with one CoinGecko request', async () => {
+  const requests = [];
+  const result = await resolveSupportedAssetsByIds(['dogwifcoin', 'bitcoin'], {
+    fetchImpl: async (url) => {
+      requests.push(new URL(url));
+      return {
+        ok: true,
+        json: async () => [
+          { id: 'bitcoin', symbol: 'btc', name: 'Bitcoin' },
+          { id: 'dogwifcoin', symbol: 'wif', name: 'dogwifhat' },
+        ],
+      };
+    },
+  });
+
+  assert.equal(requests.length, 1);
+  assert.equal(requests[0].pathname, '/api/v3/coins/list');
+  assert.deepEqual(result.map(({ entry }) => entry), [
+    { id: 'dogwifcoin', symbol: 'WIF', name: 'dogwifhat' },
+    { id: 'bitcoin', symbol: 'BTC', name: 'Bitcoin' },
+  ]);
 });
 
 test('rejects mismatched metadata for a canonical id', async () => {
