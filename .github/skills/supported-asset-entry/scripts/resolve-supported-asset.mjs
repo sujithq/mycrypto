@@ -50,6 +50,38 @@ async function fetchJson(url, {
   throw lastError ?? new Error('CoinGecko request failed.');
 }
 
+export async function resolveSupportedAssetById(assetIdInput, options = {}) {
+  const assetId = String(assetIdInput ?? '').trim().toLowerCase();
+  if (!assetId) throw new Error('Provide a CoinGecko asset ID.');
+
+  const query = new URLSearchParams({
+    localization: 'false',
+    tickers: 'false',
+    market_data: 'false',
+    community_data: 'false',
+    developer_data: 'false',
+    sparkline: 'false',
+  });
+  const details = await fetchJson(`${API}/coins/${encodeURIComponent(assetId)}?${query}`, options);
+  const id = String(details?.id ?? '').trim();
+  const symbol = String(details?.symbol ?? '').trim().toUpperCase();
+  const name = String(details?.name ?? '').trim();
+  if (!id || id.toLowerCase() !== assetId || !symbol || !name) {
+    throw new Error(`CoinGecko returned incomplete or mismatched metadata for ${assetId}.`);
+  }
+
+  return {
+    entry: { id, symbol, name },
+    source: 'CoinGecko',
+    context: {
+      categories: Array.isArray(details?.categories)
+        ? details.categories.filter((category) => typeof category === 'string' && category.trim())
+        : [],
+      description: descriptionText(details?.description?.en),
+    },
+  };
+}
+
 export async function resolveSupportedAsset(assetInput, portfolioConfig, options = {}) {
   const assetKey = String(assetInput ?? '').trim().toLowerCase();
   if (!assetKey) throw new Error('Provide an asset symbol or CoinGecko ID.');
@@ -75,30 +107,7 @@ export async function resolveSupportedAsset(assetInput, portfolioConfig, options
   }
 
   const match = exactId ?? symbolMatches[0];
-  const query = new URLSearchParams({
-    localization: 'false',
-    tickers: 'false',
-    market_data: 'false',
-    community_data: 'false',
-    developer_data: 'false',
-    sparkline: 'false',
-  });
-  const details = await fetchJson(`${API}/coins/${encodeURIComponent(match.id)}?${query}`, options);
-  const id = String(details?.id ?? match.id).trim();
-  const symbol = String(details?.symbol ?? match.symbol).trim().toUpperCase();
-  const name = String(details?.name ?? match.name).trim();
-  if (!id || !symbol || !name) throw new Error(`CoinGecko returned incomplete metadata for ${match.id}.`);
-
-  return {
-    entry: { id, symbol, name },
-    source: 'CoinGecko',
-    context: {
-      categories: Array.isArray(details?.categories)
-        ? details.categories.filter((category) => typeof category === 'string' && category.trim())
-        : [],
-      description: descriptionText(details?.description?.en),
-    },
-  };
+  return resolveSupportedAssetById(match.id, options);
 }
 
 async function main([assetInput]) {

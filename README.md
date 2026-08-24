@@ -127,6 +127,32 @@ scenario. New assets are marked as unsupported until their canonical metadata
 and thesis are added with the `supported-asset-entry` skill. The ranking is a
 quantitative research screen, not a price forecast.
 
+### Review a daily gems profile
+
+The **Propose daily crypto gems** workflow runs every day at 07:15 UTC. It
+creates one `[Daily Gems]` issue per UTC date, or updates that issue when the
+workflow is rerun. The repository remains unchanged.
+
+Each issue is a complete adoption package containing:
+
+- The live ranking inputs, scores, quantities, and exclusion summary.
+- Insertion-ready `supportedAssets` objects for every new CoinGecko asset.
+- A complete `type: "real"` profile and its target `profiles/` path.
+- A machine-readable manifest and the commands needed to refresh and validate
+	the repository.
+
+Generate the same issue body locally with:
+
+```bash
+npm run daily-gems-issue -- --output daily-gems-issue.md --summary-output daily-gems-summary.json
+```
+
+Generated quantities are reference fills based on CoinGecko spot prices. Before
+publishing the proposed real profile, replace them with actual executed
+quantities to account for fees, spread, and slippage. Add proposed assets only
+to `supportedAssets`, not `defaultPortfolio`, then run `npm run
+update-data:force` and `npm run check`.
+
 ### Resolve a supported asset entry
 
 The `supported-asset-entry` agent skill returns a `supportedAssets` JSON object

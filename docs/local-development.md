@@ -112,3 +112,25 @@ be created, edited, and deleted with the local-only management build.
 The management page generates one complete profile object. It does not write or
 modify any published profile. Publishing requires saving the generated JSON in
 the repository, committing it, and pushing with an authorized Git identity.
+
+## Daily gems issues
+
+The scheduled **Propose daily crypto gems** workflow creates or updates one
+issue per UTC date. It has read-only access to repository contents and write
+access to issues; it never updates `data/` or `profiles/` directly.
+
+To inspect the generated adoption package locally without creating an issue:
+
+```bash
+npm run daily-gems-issue -- --output daily-gems-issue.md --summary-output daily-gems-summary.json
+```
+
+The issue contains complete `supportedAssets` additions and a `real` profile.
+Its quantities are CoinGecko reference fills, not evidence of completed trades.
+Replace them with actual fills before saving the profile, append only the
+missing registry entries to `data/portfolio.json`, then run:
+
+```bash
+npm run update-data:force
+npm run check
+```

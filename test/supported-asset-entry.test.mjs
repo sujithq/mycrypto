@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   resolveSupportedAsset,
+  resolveSupportedAssetById,
 } from '../.github/skills/supported-asset-entry/scripts/resolve-supported-asset.mjs';
 
 const portfolioConfig = {
@@ -77,6 +78,41 @@ test('resolves a unique CoinGecko symbol', async () => {
     symbol: 'WIF',
     name: 'dogwifhat',
   });
+});
+
+test('resolves an already verified CoinGecko id without fetching the coin list', async () => {
+  let requestedUrl;
+  const result = await resolveSupportedAssetById('dogwifcoin', {
+    fetchImpl: async (url) => {
+      requestedUrl = new URL(url);
+      return {
+        ok: true,
+        json: async () => ({
+          id: 'dogwifcoin',
+          symbol: 'wif',
+          name: 'dogwifhat',
+          categories: ['Meme', 'Solana Ecosystem'],
+          description: { en: '<p>A community-driven meme coin on Solana.</p>' },
+        }),
+      };
+    },
+  });
+
+  assert.equal(requestedUrl.pathname, '/api/v3/coins/dogwifcoin');
+  assert.deepEqual(result.entry, {
+    id: 'dogwifcoin',
+    symbol: 'WIF',
+    name: 'dogwifhat',
+  });
+});
+
+test('rejects mismatched metadata for a canonical id', async () => {
+  await assert.rejects(resolveSupportedAssetById('dogwifcoin', {
+    fetchImpl: async () => ({
+      ok: true,
+      json: async () => ({ id: 'another-coin', symbol: 'wif', name: 'dogwifhat' }),
+    }),
+  }), /incomplete or mismatched metadata/);
 });
 
 test('rejects an ambiguous symbol with canonical id choices', async () => {
