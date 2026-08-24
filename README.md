@@ -39,7 +39,7 @@ Research and identifier references:
 - `data/portfolio.json` defines the research portfolio, configurable asset universe, and trailing chart/report timeframe.
 - Each JSON file in `profiles/` defines one read-only selectable profile. The build validates the files and publishes their index.
 - Managed profiles can be simulations or real portfolios. Simulations use monthly or per-purchase baselines; real portfolios use manually entered quantities and invested amounts.
-- `.github/workflows/update-market-data.yml` runs hourly, fetches supported EUR quotes from CoinGecko, generates a trailing report for every published profile, commits changed data, and deploys the refreshed site.
+- `.github/workflows/update-market-data.yml` runs daily at 05:45 UTC, fetches supported EUR quotes from CoinGecko, generates a trailing report for every published profile, commits changed data, and deploys the refreshed site.
 - Each update adds or replaces that day’s UTC snapshot. Stored history is retained beyond one year so older cached prices remain available even after they leave CoinGecko's public 365-day retrieval window. The chart and report still use the configured 366-day display window.
 - The dashboard can opt into browser-only live prices every 1, 5, 15, 30, or 60 minutes. Selecting an asset's `1D` range lazily loads and caches its rolling 24-hour CoinGecko series; while live prices are enabled, the open intraday chart follows the selected refresh interval. Settings, quotes, and per-asset intraday caches stay in `localStorage`; they do not change repository data or trigger a deployment.
 - The local-only management build can create, rename, edit, and delete browser profiles stored in `localStorage`. It can also compose complete JSON for a file-based simulation or real portfolio without changing published profiles.
@@ -47,9 +47,15 @@ Research and identifier references:
 - Real holdings can be entered row by row or pasted using an asset ID or symbol, `quantity`, `investedAmount`, and an optional `buyDate`. Legacy `amount`, `cost`, and `actualCost` fields are accepted on import. Assets may appear more than once with different buy dates. TARS AI (TAI) is included in the supported asset universe.
 - `.github/workflows/deploy-pages.yml` validates and deploys every push to `main`.
 
+The market workflow deploys its own generated site because commits made with
+GitHub Actions' `GITHUB_TOKEN` do not trigger another push workflow. Human
+pushes continue to use the standard Pages workflow, so the two deployment paths
+do not overlap for an automated market-data commit.
+
 Crypto markets never close. The repository keeps the latest automated quote
-captured for each UTC date. Optional live prices temporarily replace today's
-point in the browser only.
+captured for each UTC date as a fallback and historical point. Optional live
+prices cover intraday changes by temporarily replacing today's point in the
+browser only.
 
 ## Local development
 

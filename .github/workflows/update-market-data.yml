@@ -2,8 +2,8 @@ name: Update market data
 
 on:
   schedule:
-    # GitHub cron uses UTC; an hourly cadence covers every Brussels-local hour year-round.
-    - cron: "55 * * * *"
+    # Refresh the daily fallback and history before the 07:15 UTC gems scan.
+    - cron: "45 5 * * *"
   workflow_dispatch:
 
 permissions:
@@ -56,6 +56,9 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: update
+    concurrency:
+      group: pages
+      cancel-in-progress: true
     steps:
       - name: Deploy Pages
         id: deployment

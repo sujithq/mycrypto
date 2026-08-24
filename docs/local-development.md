@@ -40,7 +40,8 @@ npm run update-data
 A normal run reuses complete current quotes for up to five minutes. Once those
 quotes are five minutes old, another run fetches fresh prices and replaces the
 current UTC date's snapshot. Use `npm run update-data:force` to refresh current
-quotes sooner. The scheduled hourly workflow uses the forced command.
+quotes sooner. The scheduled workflow uses the forced command once daily at
+05:45 UTC, before the 07:15 UTC gems scan.
 
 The script fetches EUR quotes for the configured default portfolio from
 CoinGecko in one combined request, updates `data/market.json`, and regenerates
@@ -79,6 +80,9 @@ Live quotes replace the current UTC date's point only in browser memory. They
 do not write `data/market.json`, run a workflow, or deploy the site. Turning
 the switch off immediately restores the repository snapshot. A failed request
 keeps the last good browser cache and retries after the selected interval.
+The daily repository refresh remains necessary for that fallback, one durable
+UTC history point, and the published profile reports; hourly repository commits
+are unnecessary while browser live prices provide intraday updates.
 
 ## Add a published profile
 
