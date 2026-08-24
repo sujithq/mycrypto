@@ -32,12 +32,12 @@
       "buyDate": "2026-08-24"
     },
     {
-      "id": "test-3",
-      "symbol": "TST",
-      "name": "Test",
-      "thesis": "Speculative exposure to Test, that passed the workflow's lower-market-cap, liquidity, and momentum screens, with material volatility, liquidity, token-supply, and project-execution risk.",
+      "id": "bitcoin",
+      "symbol": "BTC",
+      "name": "Bitcoin",
+      "thesis": "Liquid macro anchor intended to moderate the higher-beta satellite positions.",
       "investedAmount": 50,
-      "quantity": 3624.9170048429046,
+      "quantity": 0.000754386759003606,
       "buyDate": "2026-08-24"
     },
     {
