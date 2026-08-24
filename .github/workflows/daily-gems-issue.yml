@@ -4,6 +4,16 @@ on:
   schedule:
     - cron: "15 7 * * *"
   workflow_dispatch:
+    inputs:
+      quote_mode:
+        description: Revolut X quote currency mode
+        required: true
+        default: EUR
+        type: choice
+        options:
+          - EUR
+          - USD
+          - MIXED
 
 permissions:
   contents: read
@@ -32,8 +42,11 @@ jobs:
       - name: Validate repository
         run: npm run check
       - name: Generate adoption package
+        env:
+          QUOTE_CURRENCY_MODE: ${{ inputs.quote_mode || 'EUR' }}
         run: >-
           npm run daily-gems-issue --
+          --quote-mode "${QUOTE_CURRENCY_MODE}"
           --output "${RUNNER_TEMP}/daily-gems-issue.md"
           --summary-output "${RUNNER_TEMP}/daily-gems-summary.json"
       - name: Create or update daily issue

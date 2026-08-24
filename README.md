@@ -119,20 +119,24 @@ historical scenario, not a forecast.
 ### Find lower-cap diamond candidates
 
 The `diamond-quantities` agent skill searches the same live CoinGecko universe
-without using ATH data, then retains only assets with an active direct-EUR
-Revolut X market in the EEA. It verifies the Revolut currency identity and EUR
-50 order limits before ranking liquid assets below a EUR 1 billion market cap
-using market-cap headroom, quantity, momentum, volume, and supply risk:
+without using ATH data, then retains only assets with an allowed active
+direct-EUR or direct-USD Revolut X market in the EEA. EUR is the default;
+explicit USD and EUR-preferred mixed modes are available. It verifies the
+Revolut currency identity and quote-order limits before ranking liquid assets
+below a EUR 1 billion market cap using market-cap headroom, quantity, momentum,
+volume, and supply risk:
 
 ```bash
 npm run diamond-quantities
 npm run diamond-quantities -- 50 10 1000
+npm run diamond-quantities -- 50 10 1000 usd
+npm run diamond-quantities -- 50 10 1000 mixed
 ```
 
 The output includes the five component scores, exact Revolut X pair metadata,
-and a EUR 1 billion market-cap scenario. A CoinGecko EUR quote or a Revolut X
-USD-only market does not pass the screen. New assets are marked as unsupported
-until their canonical metadata and thesis are added with the
+the quote-order amount, and a EUR 1 billion market-cap scenario. USD orders use
+CoinGecko's live EUR/USD rate and may represent no more than EUR 50. New assets
+are marked as unsupported until their canonical metadata and thesis are added with the
 `supported-asset-entry` skill. The ranking is a quantitative research screen,
 not a price forecast.
 
@@ -140,12 +144,14 @@ not a price forecast.
 
 The **Propose daily crypto gems** workflow runs every day at 07:15 UTC. It
 creates one `[Daily Gems]` issue per UTC date, or updates that issue when the
-workflow is rerun. The repository remains unchanged.
+workflow is rerun. Scheduled and manual runs default to EUR; manual runs can
+select USD or MIXED from the `quote_mode` input. The repository remains
+unchanged.
 
 Each issue is a complete adoption package containing:
 
-- The live ranking inputs, scores, quantities, Revolut X EEA EUR-pair evidence,
-  and exclusion summary.
+- The live ranking inputs, scores, quantities, Revolut X EEA EUR/USD-pair
+	evidence, quote amounts, and exclusion summary.
 - Insertion-ready `supportedAssets` objects for every new CoinGecko asset.
 - A complete `type: "real"` profile and its target `profiles/` path.
 - A machine-readable manifest and the commands needed to refresh and validate
@@ -155,11 +161,12 @@ Generate the same issue body locally with:
 
 ```bash
 npm run daily-gems-issue -- --output daily-gems-issue.md --summary-output daily-gems-summary.json
+npm run daily-gems-issue -- --quote-mode mixed --output daily-gems-issue.md --summary-output daily-gems-summary.json
 ```
 
 Generated quantities are reference fills based on CoinGecko spot prices. Pair
 availability and order limits can change, so reconfirm every Revolut X EEA EUR
-pair immediately before ordering. Before publishing the proposed real profile,
+or USD pair immediately before ordering. Before publishing the proposed real profile,
 replace reference quantities with actual executed quantities to account for
 fees, spread, and slippage. Add proposed assets only to `supportedAssets`, not
 `defaultPortfolio`, then run `npm run update-data:force` and `npm run check`.

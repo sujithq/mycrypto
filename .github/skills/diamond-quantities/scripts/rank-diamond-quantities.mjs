@@ -9,6 +9,8 @@ const REVOLUT_X_API = 'https://revx.revolut.com/api';
 const REVOLUT_X_REGION = 'EEA';
 const REVOLUT_X_REQUEST_INTERVAL_MS = 1_000;
 const DEFAULT_INVESTED_AMOUNT = 50;
+const DEFAULT_QUOTE_CURRENCY_MODE = 'EUR';
+const MAX_USD_INVESTMENT_EUR = 50;
 const DEFAULT_LIMIT = 10;
 const DEFAULT_CANDIDATE_LIMIT = 1_000;
 const MAX_CANDIDATE_LIMIT = 1_000;
@@ -69,6 +71,18 @@ function normalizedIdentity(value) {
   return String(value ?? '').toLowerCase().replace(/[^a-z0-9]/g, '');
 }
 
+function normalizeQuoteCurrencyMode(value = DEFAULT_QUOTE_CURRENCY_MODE) {
+  const input = String(value ?? '').trim().toUpperCase();
+  if (input === 'DOLLAR' || input === 'DOLLARS') return 'USD';
+  if (input === 'MIX') return 'MIXED';
+  if (input === 'EUR' || input === 'USD' || input === 'MIXED') return input;
+  throw new Error('Quote currency mode must be EUR, USD, or MIXED.');
+}
+
+function quoteCurrenciesForMode(mode) {
+  return mode === 'MIXED' ? ['EUR', 'USD'] : [mode];
+}
+
 function hasVerifiedTradingIdentity(id, symbol, name, pair) {
   const mappedSymbol = REVOLUT_X_IDENTITY_OVERRIDES.get(id);
   if (mappedSymbol) return mappedSymbol === symbol && pair.base === mappedSymbol;
@@ -76,7 +90,7 @@ function hasVerifiedTradingIdentity(id, symbol, name, pair) {
     && normalizedIdentity(pair.currencyName) === normalizedIdentity(name);
 }
 
-function normalizeTradingVenue(value, expectedQuoteCurrency) {
+function normalizeTradingVenue(value, expectedQuoteCurrencies) {
   if (value === undefined) return null;
   if (!value || typeof value !== 'object'
     || !Array.isArray(value.pairs) || !Array.isArray(value.currencies)) {
@@ -87,9 +101,13 @@ function normalizeTradingVenue(value, expectedQuoteCurrency) {
   const region = String(value.region ?? '').trim().toUpperCase();
   const source = String(value.source ?? '').trim();
   const identitySource = String(value.identitySource ?? '').trim();
-  const quoteCurrency = String(value.quoteCurrency ?? '').trim().toUpperCase();
-  if (!name || !region || !source || !identitySource || quoteCurrency !== expectedQuoteCurrency) {
-    throw new Error(`Trading venue must describe ${expectedQuoteCurrency} pairs with a name, region, and sources.`);
+  const advertisedQuoteCurrencies = Array.isArray(value.quoteCurrencies)
+    ? value.quoteCurrencies.map((currency) => String(currency).trim().toUpperCase())
+    : [String(value.quoteCurrency ?? '').trim().toUpperCase()].filter(Boolean);
+  if (!name || !region || !source || !identitySource
+    || advertisedQuoteCurrencies.length !== expectedQuoteCurrencies.length
+    || !expectedQuoteCurrencies.every((currency) => advertisedQuoteCurrencies.includes(currency))) {
+    throw new Error(`Trading venue must describe ${expectedQuoteCurrencies.join('/')} pairs with a name, region, and sources.`);
   }
 
   const currenciesBySymbol = new Map();
@@ -108,10 +126,11 @@ function normalizeTradingVenue(value, expectedQuoteCurrency) {
     const base = String(pair?.base ?? '').trim().toUpperCase();
     const quote = String(pair?.quote ?? '').trim().toUpperCase();
     const status = String(pair?.status ?? '').trim().toLowerCase();
-    if (!base || quote !== quoteCurrency || status !== 'active') continue;
-    if (pairsByBase.has(base)) throw new Error(`Trading venue returned duplicate ${base}/${quote} pairs.`);
+    if (!base || !expectedQuoteCurrencies.includes(quote) || status !== 'active') continue;
+    const pairsByQuote = pairsByBase.get(base) ?? new Map();
+    if (pairsByQuote.has(quote)) throw new Error(`Trading venue returned duplicate ${base}/${quote} pairs.`);
     const currency = currenciesBySymbol.get(base);
-    pairsByBase.set(base, {
+    pairsByQuote.set(quote, {
       symbol: String(pair.symbol ?? `${base}/${quote}`).trim(),
       base,
       quote,
@@ -123,9 +142,17 @@ function normalizeTradingVenue(value, expectedQuoteCurrency) {
         ? null
         : Number(pair.maxOrderSizeQuote),
     });
+    pairsByBase.set(base, pairsByQuote);
   }
 
-  return { name, region, source, identitySource, quoteCurrency, pairsByBase };
+  return {
+    name,
+    region,
+    source,
+    identitySource,
+    quoteCurrencies: expectedQuoteCurrencies,
+    pairsByBase,
+  };
 }
 
 function supplyMetrics(quote, marketCap) {
@@ -171,6 +198,9 @@ export function rankDiamondQuantities(marketRows, portfolioConfig, {
   referenceMarketCap: referenceMarketCapInput = DEFAULT_REFERENCE_MARKET_CAP,
   minTotalVolume: minTotalVolumeInput = DEFAULT_MIN_TOTAL_VOLUME,
   minLiquidityRatio: minLiquidityRatioInput = DEFAULT_MIN_LIQUIDITY_RATIO,
+  quoteCurrencyMode: quoteCurrencyModeInput = DEFAULT_QUOTE_CURRENCY_MODE,
+  usdPerEur: usdPerEurInput,
+  exchangeRateSource = null,
   tradingVenue: tradingVenueInput,
 } = {}) {
   if (!Array.isArray(marketRows)) throw new Error('CoinGecko returned invalid market data.');
@@ -183,7 +213,18 @@ export function rankDiamondQuantities(marketRows, portfolioConfig, {
   const minTotalVolume = positiveNumber(minTotalVolumeInput, 'Minimum total volume');
   const minLiquidityRatio = positiveNumber(minLiquidityRatioInput, 'Minimum liquidity ratio');
   const currency = String(portfolioConfig.currency ?? 'eur').toUpperCase();
-  const tradingVenue = normalizeTradingVenue(tradingVenueInput, currency);
+  if (currency !== 'EUR') {
+    throw new Error('Diamond ranking requires EUR as the portfolio valuation currency.');
+  }
+  const quoteCurrencyMode = normalizeQuoteCurrencyMode(quoteCurrencyModeInput);
+  const quoteCurrencies = quoteCurrenciesForMode(quoteCurrencyMode);
+  const usdPerEur = quoteCurrencies.includes('USD')
+    ? positiveNumber(usdPerEurInput, 'USD per EUR exchange rate')
+    : null;
+  if (quoteCurrencies.includes('USD') && investedAmount > MAX_USD_INVESTMENT_EUR) {
+    throw new Error(`USD quote modes support at most EUR ${MAX_USD_INVESTMENT_EUR} per asset.`);
+  }
+  const tradingVenue = normalizeTradingVenue(tradingVenueInput, quoteCurrencies);
   if (referenceMarketCap <= minMarketCap) {
     throw new Error('Reference market capitalization must exceed the minimum market capitalization.');
   }
@@ -218,11 +259,52 @@ export function rankDiamondQuantities(marketRows, portfolioConfig, {
       excluded.push({ id, reason: 'CoinGecko returned incomplete canonical metadata.' });
       continue;
     }
-    const tradingPair = tradingVenue?.pairsByBase.get(canonicalSymbol);
+    let tradingPair = null;
+    let quoteOrderAmount = null;
+    const pairsByQuote = tradingVenue?.pairsByBase.get(canonicalSymbol);
+    if (tradingVenue && !pairsByQuote) {
+      excluded.push({
+        id,
+        reason: `No active ${tradingVenue.name} ${quoteCurrencies
+          .map((quoteCurrency) => `${canonicalSymbol}/${quoteCurrency}`)
+          .join(' or ')} market in ${tradingVenue.region}.`,
+      });
+      continue;
+    }
+    const pairRejections = [];
+    for (const quoteCurrency of quoteCurrencies) {
+      const candidatePair = pairsByQuote?.get(quoteCurrency);
+      if (!candidatePair) continue;
+      const candidateOrderAmount = quoteCurrency === 'USD'
+        ? investedAmount * usdPerEur
+        : investedAmount;
+      if (!Number.isFinite(candidatePair.minOrderSizeQuote)
+        || candidatePair.minOrderSizeQuote <= 0
+        || (candidatePair.maxOrderSizeQuote !== null
+          && (!Number.isFinite(candidatePair.maxOrderSizeQuote)
+            || candidatePair.maxOrderSizeQuote < candidatePair.minOrderSizeQuote))) {
+        pairRejections.push(`${tradingVenue.name} returned invalid ${candidatePair.symbol} quote-order limits.`);
+        continue;
+      }
+      if (candidateOrderAmount < candidatePair.minOrderSizeQuote) {
+        pairRejections.push(`${quoteCurrency} ${round(candidateOrderAmount)} is below the ${candidatePair.symbol} minimum quote order of ${candidatePair.minOrderSizeQuote}.`);
+        continue;
+      }
+      if (candidatePair.maxOrderSizeQuote !== null
+        && candidateOrderAmount > candidatePair.maxOrderSizeQuote) {
+        pairRejections.push(`${quoteCurrency} ${round(candidateOrderAmount)} exceeds the ${candidatePair.symbol} maximum quote order of ${candidatePair.maxOrderSizeQuote}.`);
+        continue;
+      }
+      tradingPair = candidatePair;
+      quoteOrderAmount = round(candidateOrderAmount);
+      break;
+    }
     if (tradingVenue && !tradingPair) {
       excluded.push({
         id,
-        reason: `No active ${tradingVenue.name} ${canonicalSymbol}/${currency} market in ${tradingVenue.region}.`,
+        reason: pairRejections[0] ?? `No active ${tradingVenue.name} ${quoteCurrencies
+          .map((quoteCurrency) => `${canonicalSymbol}/${quoteCurrency}`)
+          .join(' or ')} market in ${tradingVenue.region}.`,
       });
       continue;
     }
@@ -237,32 +319,6 @@ export function rankDiamondQuantities(marketRows, portfolioConfig, {
       excluded.push({
         id,
         reason: `CoinGecko identity ${canonicalName} (${canonicalSymbol}) does not match ${tradingVenue.name} ${tradingPair.currencyName} (${tradingPair.base}).`,
-      });
-      continue;
-    }
-    if (tradingPair && (!Number.isFinite(tradingPair.minOrderSizeQuote)
-      || tradingPair.minOrderSizeQuote <= 0
-      || (tradingPair.maxOrderSizeQuote !== null
-        && (!Number.isFinite(tradingPair.maxOrderSizeQuote)
-          || tradingPair.maxOrderSizeQuote < tradingPair.minOrderSizeQuote)))) {
-      excluded.push({
-        id,
-        reason: `${tradingVenue.name} returned invalid ${tradingPair.symbol} quote-order limits.`,
-      });
-      continue;
-    }
-    if (tradingPair && investedAmount < tradingPair.minOrderSizeQuote) {
-      excluded.push({
-        id,
-        reason: `${currency} ${investedAmount} is below the ${tradingPair.symbol} minimum quote order of ${tradingPair.minOrderSizeQuote}.`,
-      });
-      continue;
-    }
-    if (tradingPair && tradingPair.maxOrderSizeQuote !== null
-      && investedAmount > tradingPair.maxOrderSizeQuote) {
-      excluded.push({
-        id,
-        reason: `${currency} ${investedAmount} exceeds the ${tradingPair.symbol} maximum quote order of ${tradingPair.maxOrderSizeQuote}.`,
       });
       continue;
     }
@@ -324,6 +380,8 @@ export function rankDiamondQuantities(marketRows, portfolioConfig, {
       tradingRegion: tradingVenue?.region ?? null,
       tradingPairStatus: tradingPair?.status ?? null,
       tradingCurrencyName: tradingPair?.currencyName ?? null,
+      tradingQuoteCurrency: tradingPair?.quote ?? null,
+      quoteOrderAmount,
       minOrderSizeQuote: tradingPair?.minOrderSizeQuote ?? null,
       maxOrderSizeQuote: tradingPair?.maxOrderSizeQuote ?? null,
       investedAmount,
@@ -399,7 +457,11 @@ export function rankDiamondQuantities(marketRows, portfolioConfig, {
       region: tradingVenue.region,
       source: tradingVenue.source,
       identitySource: tradingVenue.identitySource,
-      quoteCurrency: tradingVenue.quoteCurrency,
+      quoteCurrencyMode,
+      quoteCurrencies,
+      quoteCurrency: quoteCurrencies.length === 1 ? quoteCurrencies[0] : null,
+      usdPerEur,
+      exchangeRateSource: quoteCurrencies.includes('USD') ? exchangeRateSource : null,
     } : null,
     rankingMetric: 'diamondScore',
     weights: {
@@ -414,6 +476,7 @@ export function rankDiamondQuantities(marketRows, portfolioConfig, {
       referenceMarketCap,
       minTotalVolume,
       minLiquidityRatio,
+      maxUsdInvestmentEur: MAX_USD_INVESTMENT_EUR,
     },
     assets,
     excluded,
@@ -457,7 +520,7 @@ async function fetchJson(url, {
 }
 
 export async function fetchRevolutXTradingVenue(
-  quoteCurrencyInput = 'EUR',
+  quoteCurrencyModeInput = DEFAULT_QUOTE_CURRENCY_MODE,
   {
     region: regionInput = REVOLUT_X_REGION,
     attempts,
@@ -465,13 +528,11 @@ export async function fetchRevolutXTradingVenue(
     sleepImpl,
   } = {},
 ) {
-  const quoteCurrency = String(quoteCurrencyInput).trim().toUpperCase();
+  const quoteCurrencyMode = normalizeQuoteCurrencyMode(quoteCurrencyModeInput);
+  const quoteCurrencies = quoteCurrenciesForMode(quoteCurrencyMode);
   const region = String(regionInput).trim().toUpperCase();
-  if (quoteCurrency !== 'EUR') {
-    throw new Error('Revolut X diamond screening requires EUR as the quote currency.');
-  }
   if (region !== 'EEA') {
-    throw new Error('Revolut X EUR diamond screening requires the EEA region.');
+    throw new Error('Revolut X diamond screening requires the EEA region.');
   }
 
   const query = new URLSearchParams({ region });
@@ -501,7 +562,9 @@ export async function fetchRevolutXTradingVenue(
     region,
     source: pairsUrl,
     identitySource: currenciesUrl,
-    quoteCurrency,
+    quoteCurrencyMode,
+    quoteCurrencies,
+    quoteCurrency: quoteCurrencies.length === 1 ? quoteCurrencies[0] : null,
     pairs: Object.entries(pairsResult).map(([symbol, pair]) => ({
       symbol,
       base: pair?.base,
@@ -515,6 +578,21 @@ export async function fetchRevolutXTradingVenue(
       name: currency?.name,
       status: currency?.status,
     })),
+  };
+}
+
+export async function fetchEurUsdRate(options = {}) {
+  const source = `${API}/exchange_rates`;
+  const result = await fetchJson(source, options);
+  const eurPerBtc = Number(result?.rates?.eur?.value);
+  const usdPerBtc = Number(result?.rates?.usd?.value);
+  if (!Number.isFinite(eurPerBtc) || eurPerBtc <= 0
+    || !Number.isFinite(usdPerBtc) || usdPerBtc <= 0) {
+    throw new Error('CoinGecko returned no valid EUR/USD exchange rate.');
+  }
+  return {
+    usdPerEur: usdPerBtc / eurPerBtc,
+    source,
   };
 }
 
@@ -556,32 +634,44 @@ export async function getDiamondQuantities(portfolioConfig, options = {}) {
     fetchImpl,
     sleepImpl,
     tradingRegion = REVOLUT_X_REGION,
+    quoteCurrencyMode: quoteCurrencyModeInput = DEFAULT_QUOTE_CURRENCY_MODE,
+    usdPerEur: usdPerEurInput,
     ...rankingOptions
   } = options;
   const currency = String(portfolioConfig.currency ?? 'eur').toUpperCase();
+  const quoteCurrencyMode = normalizeQuoteCurrencyMode(quoteCurrencyModeInput);
+  const quoteCurrencies = quoteCurrenciesForMode(quoteCurrencyMode);
   const [marketRows, tradingVenue] = await Promise.all([
     fetchLatestDiamondMarkets(
       currency,
       candidateLimit,
       { attempts, fetchImpl, sleepImpl },
     ),
-    fetchRevolutXTradingVenue(currency, {
+    fetchRevolutXTradingVenue(quoteCurrencyMode, {
       region: tradingRegion,
       attempts,
       fetchImpl,
       sleepImpl,
     }),
   ]);
+  const exchangeRate = quoteCurrencies.includes('USD')
+    ? (usdPerEurInput === undefined
+        ? await fetchEurUsdRate({ attempts, fetchImpl, sleepImpl })
+        : { usdPerEur: positiveNumber(usdPerEurInput, 'USD per EUR exchange rate'), source: 'provided' })
+    : { usdPerEur: null, source: null };
   return {
     ...rankDiamondQuantities(marketRows, portfolioConfig, {
       ...rankingOptions,
+      quoteCurrencyMode,
+      usdPerEur: exchangeRate.usdPerEur,
+      exchangeRateSource: exchangeRate.source,
       tradingVenue,
     }),
     requestedCandidateLimit: Number(candidateLimit),
   };
 }
 
-async function main([investedAmount, limit, candidateLimit]) {
+async function main([investedAmount, limit, candidateLimit, quoteCurrencyMode]) {
   const portfolioConfig = JSON.parse(await readFile(
     path.join(repositoryRoot, 'data', 'portfolio.json'),
     'utf8',
@@ -590,6 +680,7 @@ async function main([investedAmount, limit, candidateLimit]) {
   if (investedAmount !== undefined) options.investedAmount = investedAmount;
   if (limit !== undefined) options.limit = limit;
   if (candidateLimit !== undefined) options.candidateLimit = candidateLimit;
+  if (quoteCurrencyMode !== undefined) options.quoteCurrencyMode = quoteCurrencyMode;
   const result = await getDiamondQuantities(portfolioConfig, options);
   console.log(JSON.stringify(result, null, 2));
 }

@@ -9,6 +9,8 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DEFAULT_INVESTED_AMOUNT = 50;
 const DEFAULT_LIMIT = 10;
 const DEFAULT_CANDIDATE_LIMIT = 1_000;
+const DEFAULT_QUOTE_CURRENCY_MODE = 'EUR';
+const MAX_USD_INVESTMENT_EUR = 50;
 
 function normalizeCategory(value) {
   return String(value ?? '')
@@ -53,26 +55,49 @@ function assertFinitePositive(value, label) {
   }
 }
 
-function assertRevolutXEurEligibility(ranking) {
+function assertRevolutXQuoteEligibility(ranking) {
   const venue = ranking?.tradingVenue;
+  const quoteCurrencies = Array.isArray(venue?.quoteCurrencies)
+    ? venue.quoteCurrencies
+    : [];
   if (venue?.name !== 'Revolut X' || venue?.region !== 'EEA'
-    || venue?.quoteCurrency !== 'EUR' || !venue?.source || !venue?.identitySource) {
-    throw new Error('Diamond ranking must be verified against Revolut X EEA direct EUR markets.');
+    || quoteCurrencies.length === 0
+    || !quoteCurrencies.every((currency) => currency === 'EUR' || currency === 'USD')
+    || !venue?.source || !venue?.identitySource) {
+    throw new Error('Diamond ranking must be verified against Revolut X EEA direct EUR or USD markets.');
+  }
+  if (quoteCurrencies.includes('USD')) {
+    assertFinitePositive(venue.usdPerEur, 'USD per EUR exchange rate');
+    if (!venue.exchangeRateSource) {
+      throw new Error('USD rankings must include an exchange-rate source.');
+    }
   }
 
   for (const asset of ranking.assets) {
-    const expectedPair = `${String(asset.symbol).toUpperCase()}/EUR`;
+    const quoteCurrency = String(asset.tradingQuoteCurrency ?? '').toUpperCase();
+    const expectedPair = `${String(asset.symbol).toUpperCase()}/${quoteCurrency}`;
     if (asset.tradingVenue !== 'Revolut X' || asset.tradingRegion !== 'EEA'
       || asset.tradingPair !== expectedPair || asset.tradingPairStatus !== 'active'
-      || !asset.tradingCurrencyName) {
-      throw new Error(`${asset.id} is missing active Revolut X EEA EUR-pair verification.`);
+      || !quoteCurrencies.includes(quoteCurrency) || !asset.tradingCurrencyName) {
+      throw new Error(`${asset.id} is missing active Revolut X EEA quote-pair verification.`);
     }
-    assertFinitePositive(asset.minOrderSizeQuote, `${asset.id} minimum EUR order`);
-    if (Number(asset.investedAmount) < Number(asset.minOrderSizeQuote)
+    assertFinitePositive(asset.quoteOrderAmount, `${asset.id} quote order amount`);
+    assertFinitePositive(asset.minOrderSizeQuote, `${asset.id} minimum ${quoteCurrency} order`);
+    if (Number(asset.quoteOrderAmount) < Number(asset.minOrderSizeQuote)
       || (asset.maxOrderSizeQuote !== null
         && (!Number.isFinite(Number(asset.maxOrderSizeQuote))
-          || Number(asset.investedAmount) > Number(asset.maxOrderSizeQuote)))) {
-      throw new Error(`${asset.id} cannot accept the proposed EUR order size on Revolut X.`);
+          || Number(asset.quoteOrderAmount) > Number(asset.maxOrderSizeQuote)))) {
+      throw new Error(`${asset.id} cannot accept the proposed ${quoteCurrency} order size on Revolut X.`);
+    }
+    const expectedQuoteOrderAmount = quoteCurrency === 'USD'
+      ? Number(asset.investedAmount) * Number(venue.usdPerEur)
+      : Number(asset.investedAmount);
+    if (Math.abs(Number(asset.quoteOrderAmount) - expectedQuoteOrderAmount) > 0.000001) {
+      throw new Error(`${asset.id} quote order amount does not match its EUR allocation.`);
+    }
+    if (quoteCurrency === 'USD'
+      && Number(asset.investedAmount) > MAX_USD_INVESTMENT_EUR) {
+      throw new Error(`${asset.id} USD order exceeds the EUR ${MAX_USD_INVESTMENT_EUR} maximum.`);
     }
   }
 }
@@ -97,12 +122,13 @@ function renderRankingTable(assets, currency) {
     `${currency} ${formatNumber(asset.marketCap, 0)}`,
     `${formatNumber(asset.priceChange7dPct)}% / ${formatNumber(asset.priceChange30dPct)}%`,
     `${markdownCell(asset.tradingPair)} (${markdownCell(asset.tradingPairStatus)}, ${markdownCell(asset.tradingRegion)})`,
+    `${markdownCell(asset.tradingQuoteCurrency)} ${formatNumber(asset.quoteOrderAmount)}`,
     `${formatNumber(asset.growthMultipleToReferenceMarketCap)}x`,
     formatNumber(asset.diamondScore),
   ].join(' | '));
   return [
-    '| Rank | Asset | Reference quantity | Reference price | Market cap | 7d / 30d | Revolut X market | Headroom | Score |',
-    '| ---: | --- | ---: | ---: | ---: | ---: | --- | ---: | ---: |',
+    '| Rank | Asset | Reference quantity | Reference price | Market cap | 7d / 30d | Revolut X market | Quote order | Headroom | Score |',
+    '| ---: | --- | ---: | ---: | ---: | ---: | --- | ---: | ---: | ---: |',
     ...rows.map((row) => `| ${row} |`),
   ].join('\n');
 }
@@ -125,11 +151,18 @@ export function renderDailyGemsIssue(adoptionPackage) {
   const exclusionLines = exclusionSummary.length > 0
     ? exclusionSummary.map(({ reason, count }) => `- ${count}: ${reason}`).join('\n')
     : '- None.';
+  const quoteCurrencies = ranking.tradingVenue.quoteCurrencies;
+  const quoteMarketDescription = quoteCurrencies.length === 1
+    ? `direct-${quoteCurrencies[0]}`
+    : `direct ${quoteCurrencies.join(' or ')}`;
+  const exchangeRateLine = quoteCurrencies.includes('USD')
+    ? `- EUR/USD conversion: ${formatNumber(ranking.tradingVenue.usdPerEur, 6)} USD per EUR (${ranking.tradingVenue.exchangeRateSource})\n`
+    : '';
 
   return `<!-- daily-gems:${date} -->
 # Proposed real crypto-gems profile
 
-Generated from live ${ranking.source} data at ${generatedAt}. Every candidate was also verified against an active direct-EUR market on ${ranking.tradingVenue.name} in ${ranking.tradingVenue.region}. This issue is an adoption package; it does not record a purchase or modify the repository.
+Generated from live ${ranking.source} data at ${generatedAt}. Every candidate was also verified against an active ${quoteMarketDescription} market on ${ranking.tradingVenue.name} in ${ranking.tradingVenue.region}. This issue is an adoption package; it does not record a purchase or modify the repository.
 
 > [!IMPORTANT]
 > The quantities below are reference fills calculated from reported spot prices. Before publishing this as a real portfolio, replace them with actual executed quantities and adjust the buy date if needed. Fees, spread, and slippage are not included.
@@ -141,7 +174,7 @@ Generated from live ${ranking.source} data at ${generatedAt}. Every candidate wa
 
 - [ ] Review the candidates, score inputs, and risks.
 - [ ] Confirm a total allocation of ${currency} ${formatNumber(totalInvestment)}.
-- [ ] Reconfirm every listed ${ranking.tradingVenue.name} pair is active in ${ranking.tradingVenue.region} and accepts a ${currency} ${formatNumber(ranking.investedAmountPerAsset)} order.
+- [ ] Reconfirm every listed ${ranking.tradingVenue.name} pair is active in ${ranking.tradingVenue.region} and accepts its listed quote-order amount; any USD order must remain worth no more than EUR ${MAX_USD_INVESTMENT_EUR}.
 - [ ] Replace reference quantities with actual filled quantities.
 - [ ] Add the missing registry entries below to \`data/portfolio.json\`.
 - [ ] Save the profile below as \`${profilePath}\`.
@@ -184,10 +217,10 @@ Suggested commit:
 
 - Candidates inspected: ${ranking.candidateCount}
 - Candidates eligible: ${ranking.eligibleCount}
-- Execution venue: ${ranking.tradingVenue.name} (${ranking.tradingVenue.region}), direct ${ranking.tradingVenue.quoteCurrency} pairs only
+- Execution venue: ${ranking.tradingVenue.name} (${ranking.tradingVenue.region}), direct ${quoteCurrencies.join('/')} pairs only
 - Pair configuration: ${ranking.tradingVenue.source}
 - Currency identities: ${ranking.tradingVenue.identitySource}
-- Ranking metric: \`${ranking.rankingMetric}\`
+${exchangeRateLine}- Ranking metric: \`${ranking.rankingMetric}\`
 - Weights: ${Object.entries(ranking.weights).map(([name, weight]) => `${name} ${weight * 100}%`).join(', ')}
 - Screen: market cap ${currency} ${formatNumber(ranking.screen.minMarketCap, 0)} to below ${currency} ${formatNumber(ranking.screen.referenceMarketCap, 0)}; minimum volume ${currency} ${formatNumber(ranking.screen.minTotalVolume, 0)}; minimum volume/market-cap ratio ${formatNumber(ranking.screen.minLiquidityRatio * 100)}%
 
@@ -220,7 +253,7 @@ export function buildDailyGemsAdoptionPackage(
   if (ranking.assets.length !== expectedAssetCount) {
     throw new Error(`Expected ${expectedAssetCount} ranked assets but received ${ranking.assets.length}.`);
   }
-  assertRevolutXEurEligibility(ranking);
+  assertRevolutXQuoteEligibility(ranking);
 
   const generatedAt = new Date(ranking.observedAt).toISOString();
   const date = generatedAt.slice(0, 10);
@@ -268,6 +301,8 @@ export function buildDailyGemsAdoptionPackage(
       tradingPair: asset.tradingPair,
       tradingPairStatus: asset.tradingPairStatus,
       tradingCurrencyName: asset.tradingCurrencyName,
+      tradingQuoteCurrency: asset.tradingQuoteCurrency,
+      quoteOrderAmount: asset.quoteOrderAmount,
       minOrderSizeQuote: asset.minOrderSizeQuote,
       maxOrderSizeQuote: asset.maxOrderSizeQuote,
     })),
@@ -289,7 +324,7 @@ export function buildDailyGemsAdoptionPackage(
     .reduce((total, { investedAmount }) => total + investedAmount, 0);
   const exclusionSummary = summarizeExclusions(ranking.excluded);
   const adoptionPackage = {
-    schemaVersion: 2,
+    schemaVersion: 3,
     date,
     generatedAt,
     source: ranking.source,
@@ -314,7 +349,8 @@ export function buildDailyGemsAdoptionPackage(
       profileType: 'real',
       repositorySchema: true,
       quantitiesAreReferenceFills: true,
-      revolutXDirectEurMarkets: true,
+      revolutXEligibleQuoteMarkets: true,
+      usdOrdersCappedAtEur50: true,
     },
   };
   return {
@@ -328,21 +364,30 @@ export async function generateDailyGemsIssue(portfolioConfig, {
   investedAmount = DEFAULT_INVESTED_AMOUNT,
   limit = DEFAULT_LIMIT,
   candidateLimit = DEFAULT_CANDIDATE_LIMIT,
+  quoteCurrencyMode = DEFAULT_QUOTE_CURRENCY_MODE,
   getRanking = getDiamondQuantities,
   resolveByIds = resolveSupportedAssetsByIds,
   onProgress = () => {},
 } = {}) {
-  onProgress(`Screening up to ${candidateLimit} CoinGecko candidates against Revolut X EEA EUR markets for ${limit} positions.`);
+  const requestedQuoteMode = String(quoteCurrencyMode).trim().toUpperCase();
+  const normalizedQuoteMode = requestedQuoteMode === 'DOLLAR' || requestedQuoteMode === 'DOLLARS'
+    ? 'USD'
+    : requestedQuoteMode === 'MIX' ? 'MIXED' : requestedQuoteMode;
+  const quoteDescription = normalizedQuoteMode === 'MIXED'
+    ? 'EUR-preferred EUR/USD'
+    : normalizedQuoteMode;
+  onProgress(`Screening up to ${candidateLimit} CoinGecko candidates against Revolut X EEA ${quoteDescription} markets for ${limit} positions.`);
   const ranking = await getRanking(portfolioConfig, {
     investedAmount,
     limit,
     candidateLimit,
+    quoteCurrencyMode,
   });
   if (ranking.assets.length !== Number(limit)) {
     throw new Error(`Expected ${limit} ranked assets but received ${ranking.assets.length}.`);
   }
 
-  onProgress(`Selected ${ranking.assets.length} assets from ${ranking.eligibleCount} candidates with verified direct EUR markets.`);
+  onProgress(`Selected ${ranking.assets.length} assets from ${ranking.eligibleCount} candidates with verified direct ${quoteDescription} markets.`);
   const supportedIds = new Set((portfolioConfig.supportedAssets ?? []).map(({ id }) => id));
   const missingIds = ranking.assets.map(({ id }) => id).filter((id) => !supportedIds.has(id));
   onProgress(`Verifying ${missingIds.length} unregistered ${missingIds.length === 1 ? 'asset' : 'assets'} in one CoinGecko request.`);
@@ -367,6 +412,7 @@ function parseArguments(args) {
     else if (argument === '--amount') options.investedAmount = value;
     else if (argument === '--limit') options.limit = value;
     else if (argument === '--candidate-limit') options.candidateLimit = value;
+    else if (argument === '--quote-mode') options.quoteCurrencyMode = value;
     else throw new Error(`Unknown argument: ${argument}`);
   }
   return options;

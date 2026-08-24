@@ -1,28 +1,31 @@
 ---
 name: diamond-quantities
-description: Discover CoinGecko-listed crypto "diamonds" that have active direct-EUR markets on Revolut X in the EEA. Uses market-cap headroom, EUR 50 quantity, liquidity, momentum, and supply-risk analysis without using ATH. Returns 10 venue-verified candidates with an auditable composite score and local support status. Use when asked for crypto gems, diamonds, growth candidates, low-price opportunities, or maximum quantities with room to grow.
+description: Discover CoinGecko-listed crypto "diamonds" that have active direct-EUR or direct-USD markets on Revolut X in the EEA. Defaults to EUR, with optional USD or EUR-preferred mixed screening. Uses market-cap headroom, a maximum EUR 50 position for USD pairs, liquidity, momentum, and supply-risk analysis without using ATH. Returns 10 venue-verified candidates with an auditable composite score and local support status. Use when asked for crypto gems, diamonds, growth candidates, low-price opportunities, or maximum quantities with room to grow.
 license: MIT
 metadata:
   author: sujithq
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # Diamond Quantities
 
 Discover liquid, lower-market-cap CoinGecko assets where EUR 50 buys a
 meaningful quantity, the asset has measurable room to grow, and the exact asset
-has an active direct-EUR Revolut X market in the EEA. This is a multi-factor
-screen and does not use all-time-high prices.
+has an active direct-EUR or direct-USD Revolut X market in the EEA. EUR is the
+default; USD-only and EUR-preferred mixed screening are explicit options. This
+is a multi-factor screen and does not use all-time-high prices.
 
 ## Inputs
 
 - Invested amount per asset: optional positive number, default `50`.
 - Result limit: optional positive integer, default `10`.
 - Candidate limit: optional positive integer up to `1000`, default `1000`.
+- Quote mode: optional `EUR`, `USD`, or `MIXED`, default `EUR`. Mixed mode uses
+  an active EUR pair first and falls back to an active USD pair.
 
 Values use `data/portfolio.json`'s configured currency. This skill requires that
-currency to be EUR because candidates must be directly tradable through
-Revolut X EEA EUR pairs.
+currency to be EUR for valuation, allocation, and scoring. USD quote orders use
+CoinGecko's live exchange-rate feed and cannot exceed a EUR 50 equivalent.
 
 ## Workflow
 
@@ -31,6 +34,8 @@ Revolut X EEA EUR pairs.
    ```bash
    npm run diamond-quantities
    npm run diamond-quantities -- 50 10 1000
+  npm run diamond-quantities -- 50 10 1000 usd
+  npm run diamond-quantities -- 50 10 1000 mixed
    ```
 
 2. Read the JSON result. The command retrieves CoinGecko markets plus Revolut
@@ -48,12 +53,14 @@ A candidate must be returned by CoinGecko's live `/coins/markets` endpoint,
 match Revolut X's public currency identity, and have all of the following:
 
 - Canonical ID, symbol, and name.
-- An active `SYMBOL/EUR` pair in Revolut X's EEA configuration.
+- An active `SYMBOL/EUR` or `SYMBOL/USD` pair allowed by the requested mode in
+  Revolut X's EEA configuration. Mixed mode prefers `SYMBOL/EUR`.
 - An active Revolut X currency whose symbol and name identify the same asset;
   ambiguous symbol collisions fail closed unless covered by an explicit
   canonical CoinGecko-ID mapping.
-- A EUR 50 order that satisfies the pair's minimum and available maximum quote
-  order limits.
+- A quote order that satisfies the pair's minimum and available maximum order
+  limits. USD amounts are converted from EUR using CoinGecko's live EUR/USD
+  rate and remain capped at a EUR 50 equivalent.
 - Positive current price.
 - Market capitalization from EUR 10 million up to, but not including, EUR 1
   billion.
@@ -95,8 +102,9 @@ count.
 
 - Discover up to the latest 1000 assets ordered by market capitalization.
 - Treat Revolut X's public EEA pair configuration as the source of truth for
-  direct EUR tradability. A CoinGecko EUR valuation or a USD-only Revolut X pair
-  is not sufficient.
+  direct EUR and USD tradability. A CoinGecko valuation alone is not sufficient.
+- Default to EUR-only screening. Use USD only when explicitly requested; in
+  mixed mode, prefer EUR and use USD as a fallback.
 - Recheck pair status and order limits immediately before trading because venue
   configuration can change after a ranking is generated.
 - Never use ATH price or ATH recovery in eligibility, scoring, or ranking.
@@ -133,6 +141,8 @@ this core information:
   "tradingRegion": "EEA",
   "tradingPairStatus": "active",
   "tradingCurrencyName": "Coin",
+  "tradingQuoteCurrency": "EUR",
+  "quoteOrderAmount": 50,
   "minOrderSizeQuote": 0.1,
   "maxOrderSizeQuote": 1000000,
   "investedAmount": 50,

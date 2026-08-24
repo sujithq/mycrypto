@@ -112,6 +112,49 @@ test('fetches live growth signals without using ATH data or invented IDs', async
   assert.equal(result.assets[0].tradingPair, 'NEW/EUR');
 });
 
+test('uses a live EUR/USD rate for USD quote mode', async () => {
+  const requestedUrls = [];
+  const result = await getDiamondQuantities(portfolioConfig, {
+    observedAt: '2026-08-24T12:00:00.000Z',
+    candidateLimit: 1,
+    quoteCurrencyMode: 'dollar',
+    sleepImpl: async () => {},
+    fetchImpl: async (url) => {
+      const requestedUrl = new URL(url);
+      requestedUrls.push(requestedUrl);
+      let body = [marketRow({ id: 'usd-asset', symbol: 'usdasset', name: 'USD Asset' })];
+      if (requestedUrl.pathname.endsWith('/exchange_rates')) {
+        body = { rates: { eur: { value: 100 }, usd: { value: 120 } } };
+      }
+      else if (requestedUrl.pathname.endsWith('/pairs')) {
+        body = {
+          'USDASSET/USD': {
+            base: 'USDASSET',
+            quote: 'USD',
+            status: 'active',
+            min_order_size_quote: '0.1',
+            max_order_size_quote: '1000000',
+          },
+        };
+      }
+      else if (requestedUrl.pathname.endsWith('/currencies')) {
+        body = {
+          USDASSET: { symbol: 'USDASSET', name: 'USD Asset', status: 'active' },
+        };
+      }
+      return { ok: true, json: async () => body };
+    },
+  });
+
+  assert.ok(requestedUrls.some(({ pathname }) => pathname.endsWith('/exchange_rates')));
+  assert.equal(result.tradingVenue.quoteCurrencyMode, 'USD');
+  assert.equal(result.tradingVenue.usdPerEur, 1.2);
+  assert.equal(result.assets[0].tradingPair, 'USDASSET/USD');
+  assert.equal(result.assets[0].tradingQuoteCurrency, 'USD');
+  assert.equal(result.assets[0].quoteOrderAmount, 60);
+  assert.equal(result.assets[0].investedAmount, 50);
+});
+
 test('normalizes active Revolut X EUR pair configuration', async () => {
   const venue = await fetchRevolutXTradingVenue('eur', {
     sleepImpl: async () => {},
@@ -135,6 +178,8 @@ test('normalizes active Revolut X EUR pair configuration', async () => {
 
   assert.equal(venue.name, 'Revolut X');
   assert.equal(venue.region, 'EEA');
+  assert.equal(venue.quoteCurrencyMode, 'EUR');
+  assert.deepEqual(venue.quoteCurrencies, ['EUR']);
   assert.equal(venue.quoteCurrency, 'EUR');
   assert.deepEqual(venue.pairs, [{
     symbol: 'BTC/EUR',
@@ -219,7 +264,11 @@ test('requires an active EUR pair on the configured trading venue', () => {
     region: 'EEA',
     source: 'Revolut X public configuration API',
     identitySource: 'Revolut X public currencies API',
+    quoteCurrencyMode: 'EUR',
+    quoteCurrencies: ['EUR'],
     quoteCurrency: 'EUR',
+    usdPerEur: null,
+    exchangeRateSource: null,
   });
   assert.deepEqual(result.excluded, [
     {
@@ -235,6 +284,61 @@ test('requires an active EUR pair on the configured trading venue', () => {
       reason: 'EUR 50 is below the PRICEY/EUR minimum quote order of 100.',
     },
   ]);
+});
+
+test('prefers EUR and falls back to affordable USD pairs in mixed mode', () => {
+  const result = rankDiamondQuantities([
+    marketRow({ id: 'dual-listed', symbol: 'both', name: 'Both' }),
+    marketRow({ id: 'usd-only', symbol: 'usdonly', name: 'USD Only' }),
+    marketRow({ id: 'unaffordable-usd', symbol: 'pricey', name: 'Pricey USD' }),
+  ], portfolioConfig, {
+    observedAt: '2026-08-24T12:00:00.000Z',
+    quoteCurrencyMode: 'mixed',
+    usdPerEur: 1.2,
+    exchangeRateSource: 'test-rate',
+    tradingVenue: {
+      name: 'Revolut X',
+      region: 'EEA',
+      source: 'Revolut X public configuration API',
+      identitySource: 'Revolut X public currencies API',
+      quoteCurrencies: ['EUR', 'USD'],
+      pairs: [
+        {
+          symbol: 'BOTH/EUR', base: 'BOTH', quote: 'EUR', status: 'active',
+          minOrderSizeQuote: '0.1', maxOrderSizeQuote: '1000000',
+        },
+        {
+          symbol: 'BOTH/USD', base: 'BOTH', quote: 'USD', status: 'active',
+          minOrderSizeQuote: '0.1', maxOrderSizeQuote: '1000000',
+        },
+        {
+          symbol: 'USDONLY/USD', base: 'USDONLY', quote: 'USD', status: 'active',
+          minOrderSizeQuote: '0.1', maxOrderSizeQuote: '1000000',
+        },
+        {
+          symbol: 'PRICEY/USD', base: 'PRICEY', quote: 'USD', status: 'active',
+          minOrderSizeQuote: '61', maxOrderSizeQuote: '1000000',
+        },
+      ],
+      currencies: [
+        { symbol: 'BOTH', name: 'Both', status: 'active' },
+        { symbol: 'USDONLY', name: 'USD Only', status: 'active' },
+        { symbol: 'PRICEY', name: 'Pricey USD', status: 'active' },
+      ],
+    },
+  });
+
+  assert.deepEqual(result.assets.map(({ id }) => id), ['dual-listed', 'usd-only']);
+  assert.deepEqual(result.assets.map(({ tradingPair }) => tradingPair), ['BOTH/EUR', 'USDONLY/USD']);
+  assert.deepEqual(result.assets.map(({ tradingQuoteCurrency }) => tradingQuoteCurrency), ['EUR', 'USD']);
+  assert.deepEqual(result.assets.map(({ quoteOrderAmount }) => quoteOrderAmount), [50, 60]);
+  assert.equal(result.tradingVenue.quoteCurrencyMode, 'MIXED');
+  assert.deepEqual(result.tradingVenue.quoteCurrencies, ['EUR', 'USD']);
+  assert.equal(result.tradingVenue.exchangeRateSource, 'test-rate');
+  assert.deepEqual(result.excluded, [{
+    id: 'unaffordable-usd',
+    reason: 'USD 60 is below the PRICEY/USD minimum quote order of 61.',
+  }]);
 });
 
 test('rejects a symbol collision when CoinGecko and Revolut identities differ', () => {
@@ -271,4 +375,9 @@ test('rejects invalid ranking inputs', () => {
     referenceMarketCap: 10_000_000,
   }), /must exceed the minimum market capitalization/);
   assert.throws(() => rankDiamondQuantities({}, portfolioConfig), /invalid market data/);
+  assert.throws(() => rankDiamondQuantities([], portfolioConfig, {
+    investedAmount: 50.01,
+    quoteCurrencyMode: 'USD',
+    usdPerEur: 1.2,
+  }), /USD quote modes support at most EUR 50 per asset/);
 });
