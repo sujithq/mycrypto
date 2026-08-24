@@ -130,9 +130,12 @@ npm run daily-gems-issue -- --output daily-gems-issue.md --summary-output daily-
 ```
 
 The issue contains complete `supportedAssets` additions and a `real` profile.
+Candidates must have an active direct-EUR Revolut X pair in the EEA, a verified
+Revolut currency identity, and order limits that accept the proposed EUR 50.
 Its quantities are CoinGecko reference fills, not evidence of completed trades.
-Replace them with actual fills before saving the profile, append only the
-missing registry entries to `data/portfolio.json`, then run:
+Reconfirm each pair immediately before trading, replace reference quantities
+with actual fills before saving the profile, append only the missing registry
+entries to `data/portfolio.json`, then run:
 
 ```bash
 npm run update-data:force

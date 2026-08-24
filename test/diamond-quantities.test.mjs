@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
+  fetchRevolutXTradingVenue,
   getDiamondQuantities,
   rankDiamondQuantities,
 } from '../.github/skills/diamond-quantities/scripts/rank-diamond-quantities.mjs';
@@ -65,23 +66,89 @@ test('ranks liquid low-price candidates with market-cap headroom', () => {
 });
 
 test('fetches live growth signals without using ATH data or invented IDs', async () => {
-  let requestedUrl;
+  const requestedUrls = [];
   const rows = [marketRow({ id: 'verified-new', symbol: 'new', name: 'Verified New' })];
   const result = await getDiamondQuantities(portfolioConfig, {
     observedAt: '2026-08-24T12:00:00.000Z',
     candidateLimit: 1,
+    sleepImpl: async () => {},
     fetchImpl: async (url) => {
-      requestedUrl = new URL(url);
-      return { ok: true, json: async () => rows };
+      const requestedUrl = new URL(url);
+      requestedUrls.push(requestedUrl);
+      let body = rows;
+      if (requestedUrl.pathname.endsWith('/pairs')) {
+        body = {
+            'NEW/EUR': {
+              base: 'NEW',
+              quote: 'EUR',
+              status: 'active',
+              min_order_size_quote: '0.1',
+              max_order_size_quote: '1000000',
+            },
+          };
+      }
+      else if (requestedUrl.pathname.endsWith('/currencies')) {
+        body = {
+          NEW: { symbol: 'NEW', name: 'Verified New', status: 'active' },
+        };
+      }
+      return { ok: true, json: async () => body };
     },
   });
 
+  const requestedUrl = requestedUrls.find(({ hostname }) => hostname === 'api.coingecko.com');
   assert.equal(requestedUrl.pathname, '/api/v3/coins/markets');
   assert.equal(requestedUrl.searchParams.get('ids'), null);
   assert.equal(requestedUrl.searchParams.get('price_change_percentage'), '7d,30d');
   assert.equal(requestedUrl.searchParams.get('precision'), 'full');
+  const revolutUrls = requestedUrls.filter(({ hostname }) => hostname === 'revx.revolut.com');
+  assert.deepEqual(revolutUrls.map(({ pathname }) => pathname), [
+    '/api/1.0/public/configuration/pairs',
+    '/api/1.0/public/configuration/currencies',
+  ]);
+  assert.ok(revolutUrls.every((url) => url.searchParams.get('region') === 'EEA'));
   assert.equal(result.assets[0].id, 'verified-new');
   assert.equal(result.assets[0].isSupported, false);
+  assert.equal(result.assets[0].tradingPair, 'NEW/EUR');
+});
+
+test('normalizes active Revolut X EUR pair configuration', async () => {
+  const venue = await fetchRevolutXTradingVenue('eur', {
+    sleepImpl: async () => {},
+    fetchImpl: async (url) => ({
+      ok: true,
+      json: async () => new URL(url).pathname.endsWith('/pairs')
+        ? {
+            'BTC/EUR': {
+              base: 'BTC',
+              quote: 'EUR',
+              status: 'active',
+              min_order_size_quote: '0.1',
+              max_order_size_quote: '1000000',
+            },
+          }
+        : {
+            BTC: { symbol: 'BTC', name: 'Bitcoin', status: 'active' },
+          },
+    }),
+  });
+
+  assert.equal(venue.name, 'Revolut X');
+  assert.equal(venue.region, 'EEA');
+  assert.equal(venue.quoteCurrency, 'EUR');
+  assert.deepEqual(venue.pairs, [{
+    symbol: 'BTC/EUR',
+    base: 'BTC',
+    quote: 'EUR',
+    status: 'active',
+    minOrderSizeQuote: '0.1',
+    maxOrderSizeQuote: '1000000',
+  }]);
+  assert.deepEqual(venue.currencies, [{
+    symbol: 'BTC',
+    name: 'Bitcoin',
+    status: 'active',
+  }]);
 });
 
 test('excludes illiquid assets even when EUR 50 buys an enormous quantity', () => {
@@ -107,6 +174,93 @@ test('excludes illiquid assets even when EUR 50 buys an enormous quantity', () =
     { id: 'illiquid', reason: 'Trading volume is below 100000.' },
     { id: 'no-headroom', reason: 'Market capitalization has no headroom below 1000000000.' },
   ]);
+});
+
+test('requires an active EUR pair on the configured trading venue', () => {
+  const result = rankDiamondQuantities([
+    marketRow({ id: 'eur-listed', symbol: 'listed', name: 'EUR Listed' }),
+    marketRow({ id: 'usd-only', symbol: 'usdonly', name: 'USD Only' }),
+    marketRow({ id: 'inactive-eur', symbol: 'inactive', name: 'Inactive EUR' }),
+    marketRow({ id: 'unaffordable-eur', symbol: 'pricey', name: 'Pricey EUR' }),
+  ], portfolioConfig, {
+    observedAt: '2026-08-24T12:00:00.000Z',
+    tradingVenue: {
+      name: 'Revolut X',
+      region: 'EEA',
+      source: 'Revolut X public configuration API',
+      identitySource: 'Revolut X public currencies API',
+      quoteCurrency: 'EUR',
+      pairs: [
+        {
+          symbol: 'LISTED/EUR', base: 'LISTED', quote: 'EUR', status: 'active',
+          minOrderSizeQuote: '0.1', maxOrderSizeQuote: '1000000',
+        },
+        { symbol: 'USDONLY/USD', base: 'USDONLY', quote: 'USD', status: 'active' },
+        { symbol: 'INACTIVE/EUR', base: 'INACTIVE', quote: 'EUR', status: 'inactive' },
+        {
+          symbol: 'PRICEY/EUR', base: 'PRICEY', quote: 'EUR', status: 'active',
+          minOrderSizeQuote: '100', maxOrderSizeQuote: '1000000',
+        },
+      ],
+      currencies: [
+        { symbol: 'LISTED', name: 'EUR Listed', status: 'active' },
+        { symbol: 'USDONLY', name: 'USD Only', status: 'active' },
+        { symbol: 'INACTIVE', name: 'Inactive EUR', status: 'active' },
+        { symbol: 'PRICEY', name: 'Pricey EUR', status: 'active' },
+      ],
+    },
+  });
+
+  assert.deepEqual(result.assets.map(({ id }) => id), ['eur-listed']);
+  assert.equal(result.assets[0].tradingPair, 'LISTED/EUR');
+  assert.equal(result.assets[0].tradingVenue, 'Revolut X');
+  assert.deepEqual(result.tradingVenue, {
+    name: 'Revolut X',
+    region: 'EEA',
+    source: 'Revolut X public configuration API',
+    identitySource: 'Revolut X public currencies API',
+    quoteCurrency: 'EUR',
+  });
+  assert.deepEqual(result.excluded, [
+    {
+      id: 'usd-only',
+      reason: 'No active Revolut X USDONLY/EUR market in EEA.',
+    },
+    {
+      id: 'inactive-eur',
+      reason: 'No active Revolut X INACTIVE/EUR market in EEA.',
+    },
+    {
+      id: 'unaffordable-eur',
+      reason: 'EUR 50 is below the PRICEY/EUR minimum quote order of 100.',
+    },
+  ]);
+});
+
+test('rejects a symbol collision when CoinGecko and Revolut identities differ', () => {
+  const result = rankDiamondQuantities([
+    marketRow({ id: 'unrelated-btc', symbol: 'btc', name: 'Not Bitcoin' }),
+  ], portfolioConfig, {
+    observedAt: '2026-08-24T12:00:00.000Z',
+    tradingVenue: {
+      name: 'Revolut X',
+      region: 'EEA',
+      source: 'Revolut X public configuration API',
+      identitySource: 'Revolut X public currencies API',
+      quoteCurrency: 'EUR',
+      pairs: [{
+        symbol: 'BTC/EUR', base: 'BTC', quote: 'EUR', status: 'active',
+        minOrderSizeQuote: '0.1', maxOrderSizeQuote: '1000000',
+      }],
+      currencies: [{ symbol: 'BTC', name: 'Bitcoin', status: 'active' }],
+    },
+  });
+
+  assert.equal(result.assets.length, 0);
+  assert.deepEqual(result.excluded, [{
+    id: 'unrelated-btc',
+    reason: 'CoinGecko identity Not Bitcoin (BTC) does not match Revolut X Bitcoin (BTC).',
+  }]);
 });
 
 test('rejects invalid ranking inputs', () => {

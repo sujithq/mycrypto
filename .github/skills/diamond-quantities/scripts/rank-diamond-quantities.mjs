@@ -5,6 +5,9 @@ import path from 'node:path';
 const skillRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const repositoryRoot = path.resolve(skillRoot, '..', '..', '..');
 const API = 'https://api.coingecko.com/api/v3';
+const REVOLUT_X_API = 'https://revx.revolut.com/api';
+const REVOLUT_X_REGION = 'EEA';
+const REVOLUT_X_REQUEST_INTERVAL_MS = 1_000;
 const DEFAULT_INVESTED_AMOUNT = 50;
 const DEFAULT_LIMIT = 10;
 const DEFAULT_CANDIDATE_LIMIT = 1_000;
@@ -14,6 +17,16 @@ const DEFAULT_MIN_MARKET_CAP = 10_000_000;
 const DEFAULT_REFERENCE_MARKET_CAP = 1_000_000_000;
 const DEFAULT_MIN_TOTAL_VOLUME = 100_000;
 const DEFAULT_MIN_LIQUIDITY_RATIO = 0.01;
+
+const REVOLUT_X_IDENTITY_OVERRIDES = new Map([
+  ['artificial-superintelligence-alliance', 'FET'],
+  ['binancecoin', 'BNB'],
+  ['lido-dao', 'LDO'],
+  ['official-trump', 'TRUMP'],
+  ['polygon-ecosystem-token', 'POL'],
+  ['render-token', 'RENDER'],
+  ['the-open-network', 'TON'],
+]);
 
 const sleep = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
 
@@ -50,6 +63,69 @@ function round(value) {
 function normalizedScore(value, minimum, maximum) {
   if (minimum === maximum) return 50;
   return clamp((value - minimum) / (maximum - minimum) * 100);
+}
+
+function normalizedIdentity(value) {
+  return String(value ?? '').toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+function hasVerifiedTradingIdentity(id, symbol, name, pair) {
+  const mappedSymbol = REVOLUT_X_IDENTITY_OVERRIDES.get(id);
+  if (mappedSymbol) return mappedSymbol === symbol && pair.base === mappedSymbol;
+  return pair.base === symbol
+    && normalizedIdentity(pair.currencyName) === normalizedIdentity(name);
+}
+
+function normalizeTradingVenue(value, expectedQuoteCurrency) {
+  if (value === undefined) return null;
+  if (!value || typeof value !== 'object'
+    || !Array.isArray(value.pairs) || !Array.isArray(value.currencies)) {
+    throw new Error('Trading venue must include pairs and currencies arrays.');
+  }
+
+  const name = String(value.name ?? '').trim();
+  const region = String(value.region ?? '').trim().toUpperCase();
+  const source = String(value.source ?? '').trim();
+  const identitySource = String(value.identitySource ?? '').trim();
+  const quoteCurrency = String(value.quoteCurrency ?? '').trim().toUpperCase();
+  if (!name || !region || !source || !identitySource || quoteCurrency !== expectedQuoteCurrency) {
+    throw new Error(`Trading venue must describe ${expectedQuoteCurrency} pairs with a name, region, and sources.`);
+  }
+
+  const currenciesBySymbol = new Map();
+  for (const currency of value.currencies) {
+    const symbol = String(currency?.symbol ?? '').trim().toUpperCase();
+    if (!symbol) continue;
+    if (currenciesBySymbol.has(symbol)) throw new Error(`Trading venue returned duplicate ${symbol} currencies.`);
+    currenciesBySymbol.set(symbol, {
+      name: String(currency?.name ?? '').trim(),
+      status: String(currency?.status ?? '').trim().toLowerCase(),
+    });
+  }
+
+  const pairsByBase = new Map();
+  for (const pair of value.pairs) {
+    const base = String(pair?.base ?? '').trim().toUpperCase();
+    const quote = String(pair?.quote ?? '').trim().toUpperCase();
+    const status = String(pair?.status ?? '').trim().toLowerCase();
+    if (!base || quote !== quoteCurrency || status !== 'active') continue;
+    if (pairsByBase.has(base)) throw new Error(`Trading venue returned duplicate ${base}/${quote} pairs.`);
+    const currency = currenciesBySymbol.get(base);
+    pairsByBase.set(base, {
+      symbol: String(pair.symbol ?? `${base}/${quote}`).trim(),
+      base,
+      quote,
+      status: 'active',
+      currencyName: currency?.name ?? null,
+      currencyStatus: currency?.status ?? null,
+      minOrderSizeQuote: Number(pair.minOrderSizeQuote),
+      maxOrderSizeQuote: pair.maxOrderSizeQuote === undefined || pair.maxOrderSizeQuote === null
+        ? null
+        : Number(pair.maxOrderSizeQuote),
+    });
+  }
+
+  return { name, region, source, identitySource, quoteCurrency, pairsByBase };
 }
 
 function supplyMetrics(quote, marketCap) {
@@ -95,6 +171,7 @@ export function rankDiamondQuantities(marketRows, portfolioConfig, {
   referenceMarketCap: referenceMarketCapInput = DEFAULT_REFERENCE_MARKET_CAP,
   minTotalVolume: minTotalVolumeInput = DEFAULT_MIN_TOTAL_VOLUME,
   minLiquidityRatio: minLiquidityRatioInput = DEFAULT_MIN_LIQUIDITY_RATIO,
+  tradingVenue: tradingVenueInput,
 } = {}) {
   if (!Array.isArray(marketRows)) throw new Error('CoinGecko returned invalid market data.');
 
@@ -105,6 +182,8 @@ export function rankDiamondQuantities(marketRows, portfolioConfig, {
   const referenceMarketCap = positiveNumber(referenceMarketCapInput, 'Reference market capitalization');
   const minTotalVolume = positiveNumber(minTotalVolumeInput, 'Minimum total volume');
   const minLiquidityRatio = positiveNumber(minLiquidityRatioInput, 'Minimum liquidity ratio');
+  const currency = String(portfolioConfig.currency ?? 'eur').toUpperCase();
+  const tradingVenue = normalizeTradingVenue(tradingVenueInput, currency);
   if (referenceMarketCap <= minMarketCap) {
     throw new Error('Reference market capitalization must exceed the minimum market capitalization.');
   }
@@ -137,6 +216,54 @@ export function rankDiamondQuantities(marketRows, portfolioConfig, {
     const lastUpdated = Date.parse(String(quote?.last_updated ?? ''));
     if (!canonicalSymbol || !canonicalName) {
       excluded.push({ id, reason: 'CoinGecko returned incomplete canonical metadata.' });
+      continue;
+    }
+    const tradingPair = tradingVenue?.pairsByBase.get(canonicalSymbol);
+    if (tradingVenue && !tradingPair) {
+      excluded.push({
+        id,
+        reason: `No active ${tradingVenue.name} ${canonicalSymbol}/${currency} market in ${tradingVenue.region}.`,
+      });
+      continue;
+    }
+    if (tradingPair && (!tradingPair.currencyName || tradingPair.currencyStatus !== 'active')) {
+      excluded.push({
+        id,
+        reason: `${tradingVenue.name} currency identity for ${canonicalSymbol} is not active and complete.`,
+      });
+      continue;
+    }
+    if (tradingPair && !hasVerifiedTradingIdentity(id, canonicalSymbol, canonicalName, tradingPair)) {
+      excluded.push({
+        id,
+        reason: `CoinGecko identity ${canonicalName} (${canonicalSymbol}) does not match ${tradingVenue.name} ${tradingPair.currencyName} (${tradingPair.base}).`,
+      });
+      continue;
+    }
+    if (tradingPair && (!Number.isFinite(tradingPair.minOrderSizeQuote)
+      || tradingPair.minOrderSizeQuote <= 0
+      || (tradingPair.maxOrderSizeQuote !== null
+        && (!Number.isFinite(tradingPair.maxOrderSizeQuote)
+          || tradingPair.maxOrderSizeQuote < tradingPair.minOrderSizeQuote)))) {
+      excluded.push({
+        id,
+        reason: `${tradingVenue.name} returned invalid ${tradingPair.symbol} quote-order limits.`,
+      });
+      continue;
+    }
+    if (tradingPair && investedAmount < tradingPair.minOrderSizeQuote) {
+      excluded.push({
+        id,
+        reason: `${currency} ${investedAmount} is below the ${tradingPair.symbol} minimum quote order of ${tradingPair.minOrderSizeQuote}.`,
+      });
+      continue;
+    }
+    if (tradingPair && tradingPair.maxOrderSizeQuote !== null
+      && investedAmount > tradingPair.maxOrderSizeQuote) {
+      excluded.push({
+        id,
+        reason: `${currency} ${investedAmount} exceeds the ${tradingPair.symbol} maximum quote order of ${tradingPair.maxOrderSizeQuote}.`,
+      });
       continue;
     }
     if (!Number.isFinite(currentPrice) || currentPrice <= 0) {
@@ -192,6 +319,13 @@ export function rankDiamondQuantities(marketRows, portfolioConfig, {
       name: supportedAsset?.name ?? canonicalName,
       thesis: supportedAsset?.thesis ?? null,
       isSupported: Boolean(supportedAsset),
+      tradingPair: tradingPair?.symbol ?? null,
+      tradingVenue: tradingVenue?.name ?? null,
+      tradingRegion: tradingVenue?.region ?? null,
+      tradingPairStatus: tradingPair?.status ?? null,
+      tradingCurrencyName: tradingPair?.currencyName ?? null,
+      minOrderSizeQuote: tradingPair?.minOrderSizeQuote ?? null,
+      maxOrderSizeQuote: tradingPair?.maxOrderSizeQuote ?? null,
       investedAmount,
       quantity,
       buyDate: observedAt.slice(0, 10),
@@ -253,13 +387,20 @@ export function rankDiamondQuantities(marketRows, portfolioConfig, {
     .map((asset, index) => ({ rank: index + 1, ...asset }));
 
   return {
-    currency: String(portfolioConfig.currency ?? 'eur').toUpperCase(),
+    currency,
     investedAmountPerAsset: investedAmount,
     requestedLimit: limit,
     candidateCount: quotesById.size,
     eligibleCount: eligible.length,
     observedAt,
     source: 'CoinGecko',
+    tradingVenue: tradingVenue ? {
+      name: tradingVenue.name,
+      region: tradingVenue.region,
+      source: tradingVenue.source,
+      identitySource: tradingVenue.identitySource,
+      quoteCurrency: tradingVenue.quoteCurrency,
+    } : null,
     rankingMetric: 'diamondScore',
     weights: {
       marketCapHeadroom: 0.30,
@@ -283,30 +424,98 @@ async function fetchJson(url, {
   attempts = 3,
   fetchImpl = globalThis.fetch,
   sleepImpl = sleep,
+  source = 'CoinGecko',
+  userAgent = 'mycrypto-diamond-quantities/1.0',
+  retryAfterUnit = 'seconds',
 } = {}) {
   let lastError;
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
     try {
       const response = await fetchImpl(url, {
-        headers: { accept: 'application/json', 'user-agent': 'mycrypto-diamond-quantities/1.0' },
+        headers: { accept: 'application/json', 'user-agent': userAgent },
         signal: AbortSignal.timeout(20_000),
       });
       if (response.ok) return response.json();
       const detail = typeof response.text === 'function' ? (await response.text()).slice(0, 300) : '';
-      lastError = new Error(`CoinGecko request failed (${response.status}): ${detail}`);
+      lastError = new Error(`${source} request failed (${response.status}): ${detail}`);
       const retryAfterHeader = response.headers?.get?.('retry-after');
       const retryAfter = retryAfterHeader === null || retryAfterHeader === undefined
         ? Number.NaN
         : Number(retryAfterHeader);
       if (attempt < attempts) {
-        await sleepImpl(Number.isFinite(retryAfter) ? retryAfter * 1_000 : attempt * 5_000);
+        const retryAfterMultiplier = retryAfterUnit === 'milliseconds' ? 1 : 1_000;
+        await sleepImpl(Number.isFinite(retryAfter)
+          ? retryAfter * retryAfterMultiplier
+          : attempt * 5_000);
       }
     } catch (error) {
       lastError = error;
       if (attempt < attempts) await sleepImpl(attempt * 5_000);
     }
   }
-  throw lastError ?? new Error('CoinGecko request failed.');
+  throw lastError ?? new Error(`${source} request failed.`);
+}
+
+export async function fetchRevolutXTradingVenue(
+  quoteCurrencyInput = 'EUR',
+  {
+    region: regionInput = REVOLUT_X_REGION,
+    attempts,
+    fetchImpl,
+    sleepImpl,
+  } = {},
+) {
+  const quoteCurrency = String(quoteCurrencyInput).trim().toUpperCase();
+  const region = String(regionInput).trim().toUpperCase();
+  if (quoteCurrency !== 'EUR') {
+    throw new Error('Revolut X diamond screening requires EUR as the quote currency.');
+  }
+  if (region !== 'EEA') {
+    throw new Error('Revolut X EUR diamond screening requires the EEA region.');
+  }
+
+  const query = new URLSearchParams({ region });
+  const pairsUrl = `${REVOLUT_X_API}/1.0/public/configuration/pairs?${query}`;
+  const currenciesUrl = `${REVOLUT_X_API}/1.0/public/configuration/currencies?${query}`;
+  const pause = sleepImpl ?? sleep;
+  const requestOptions = {
+    attempts,
+    fetchImpl,
+    sleepImpl: pause,
+    source: 'Revolut X',
+    userAgent: 'mycrypto-revolut-x-eligibility/1.0',
+    retryAfterUnit: 'milliseconds',
+  };
+  const pairsResult = await fetchJson(pairsUrl, requestOptions);
+  await pause(REVOLUT_X_REQUEST_INTERVAL_MS);
+  const currenciesResult = await fetchJson(currenciesUrl, requestOptions);
+  if (!pairsResult || typeof pairsResult !== 'object' || Array.isArray(pairsResult)) {
+    throw new Error('Revolut X returned invalid currency-pair data.');
+  }
+  if (!currenciesResult || typeof currenciesResult !== 'object' || Array.isArray(currenciesResult)) {
+    throw new Error('Revolut X returned invalid currency data.');
+  }
+
+  return {
+    name: 'Revolut X',
+    region,
+    source: pairsUrl,
+    identitySource: currenciesUrl,
+    quoteCurrency,
+    pairs: Object.entries(pairsResult).map(([symbol, pair]) => ({
+      symbol,
+      base: pair?.base,
+      quote: pair?.quote,
+      status: pair?.status,
+      minOrderSizeQuote: pair?.min_order_size_quote,
+      maxOrderSizeQuote: pair?.max_order_size_quote,
+    })),
+    currencies: Object.values(currenciesResult).map((currency) => ({
+      symbol: currency?.symbol,
+      name: currency?.name,
+      status: currency?.status,
+    })),
+  };
 }
 
 export async function fetchLatestDiamondMarkets(
@@ -346,15 +555,28 @@ export async function getDiamondQuantities(portfolioConfig, options = {}) {
     candidateLimit = DEFAULT_CANDIDATE_LIMIT,
     fetchImpl,
     sleepImpl,
+    tradingRegion = REVOLUT_X_REGION,
     ...rankingOptions
   } = options;
-  const marketRows = await fetchLatestDiamondMarkets(
-    portfolioConfig.currency ?? 'eur',
-    candidateLimit,
-    { attempts, fetchImpl, sleepImpl },
-  );
+  const currency = String(portfolioConfig.currency ?? 'eur').toUpperCase();
+  const [marketRows, tradingVenue] = await Promise.all([
+    fetchLatestDiamondMarkets(
+      currency,
+      candidateLimit,
+      { attempts, fetchImpl, sleepImpl },
+    ),
+    fetchRevolutXTradingVenue(currency, {
+      region: tradingRegion,
+      attempts,
+      fetchImpl,
+      sleepImpl,
+    }),
+  ]);
   return {
-    ...rankDiamondQuantities(marketRows, portfolioConfig, rankingOptions),
+    ...rankDiamondQuantities(marketRows, portfolioConfig, {
+      ...rankingOptions,
+      tradingVenue,
+    }),
     requestedCandidateLimit: Number(candidateLimit),
   };
 }

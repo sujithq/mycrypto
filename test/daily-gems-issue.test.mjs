@@ -25,6 +25,13 @@ function rankedAsset(overrides) {
     name: 'New Coin',
     thesis: null,
     isSupported: false,
+    tradingPair: 'NEW/EUR',
+    tradingVenue: 'Revolut X',
+    tradingRegion: 'EEA',
+    tradingPairStatus: 'active',
+    tradingCurrencyName: 'New Coin',
+    minOrderSizeQuote: 0.1,
+    maxOrderSizeQuote: 1_000_000,
     investedAmount: 50,
     quantity: 50_000,
     buyDate: '2026-08-24',
@@ -64,6 +71,13 @@ function ranking() {
     eligibleCount: 600,
     observedAt: '2026-08-24T12:00:00.000Z',
     source: 'CoinGecko',
+    tradingVenue: {
+      name: 'Revolut X',
+      region: 'EEA',
+      source: 'https://revx.revolut.com/api/1.0/public/configuration/pairs?region=EEA',
+      identitySource: 'https://revx.revolut.com/api/1.0/public/configuration/currencies?region=EEA',
+      quoteCurrency: 'EUR',
+    },
     rankingMetric: 'diamondScore',
     weights: {
       marketCapHeadroom: 0.3,
@@ -86,6 +100,8 @@ function ranking() {
         symbol: 'EST',
         name: 'API Name',
         isSupported: true,
+        tradingPair: 'EST/EUR',
+        tradingCurrencyName: 'Established',
         quantity: 25,
         currentPrice: 2,
       }),
@@ -119,10 +135,15 @@ test('builds a complete adoption package for a valid real profile', () => {
   assert.equal(result.profile.portfolio.length, 2);
   assert.equal(result.totalInvestment, 100);
   assert.equal(result.validation.repositorySchema, true);
+  assert.equal(result.validation.revolutXDirectEurMarkets, true);
   assert.deepEqual(result.supportedAssetsToAdd.map(({ id }) => id), ['new-coin']);
   assert.match(result.supportedAssetsToAdd[0].thesis, /Layer 1 and Smart Contract Platform/);
   assert.equal(result.profile.portfolio[1].name, 'Established');
   assert.equal(result.profile.portfolio[1].thesis, 'Existing registry thesis.');
+  assert.equal(result.profile.portfolio[0].tradingPair, 'NEW/EUR');
+  assert.equal(result.profile.portfolio[0].tradingPairStatus, 'active');
+  assert.equal(result.profile.portfolio[0].tradingCurrencyName, 'New Coin');
+  assert.equal(result.ranking.investedAmountPerAsset, 50);
   assert.deepEqual(result.exclusionSummary, [
     { reason: 'Trading volume is below 100000.', count: 2 },
   ]);
@@ -130,6 +151,9 @@ test('builds a complete adoption package for a valid real profile', () => {
   assert.match(result.issueBody, /profiles\/gems-2026-08-24\.json/);
   assert.match(result.issueBody, /"type": "real"/);
   assert.match(result.issueBody, /Machine-readable adoption manifest/);
+  assert.match(result.issueBody, /active direct-EUR market on Revolut X in EEA/);
+  assert.match(result.issueBody, /NEW\/EUR \(active, EEA\)/);
+  assert.doesNotMatch(result.issueBody, /EUR NaN/);
   assert.doesNotMatch(result.issueBody, /"type": "simulated"/);
 });
 
@@ -148,8 +172,8 @@ test('resolves only candidates missing from the local registry', async () => {
 
   assert.deepEqual(resolvedIds, ['new-coin']);
   assert.deepEqual(progress, [
-    'Screening up to 1000 CoinGecko candidates for 2 positions.',
-    'Selected 2 assets from 600 eligible candidates.',
+    'Screening up to 1000 CoinGecko candidates against Revolut X EEA EUR markets for 2 positions.',
+    'Selected 2 assets from 600 candidates with verified direct EUR markets.',
     'Verifying 1 unregistered asset in one CoinGecko request.',
     'Verified 1 canonical CoinGecko entry.',
     'Validated 2 holdings for profiles/gems-2026-08-24.json.',
@@ -182,4 +206,15 @@ test('rejects incomplete rankings instead of creating a partial issue', () => {
     [resolvedNewCoin],
     { expectedAssetCount: 2 },
   ), /Expected 2 ranked assets but received 1/);
+});
+
+test('rejects rankings without Revolut X direct EUR verification', () => {
+  const unverified = ranking();
+  unverified.tradingVenue = null;
+  assert.throws(() => buildDailyGemsAdoptionPackage(
+    unverified,
+    portfolioConfig,
+    [resolvedNewCoin],
+    { expectedAssetCount: 2 },
+  ), /must be verified against Revolut X EEA direct EUR markets/);
 });

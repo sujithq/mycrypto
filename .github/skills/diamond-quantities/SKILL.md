@@ -1,17 +1,18 @@
 ---
 name: diamond-quantities
-description: Discover CoinGecko-listed crypto "diamonds" using market-cap headroom, EUR 50 quantity, liquidity, momentum, and supply-risk analysis without using ATH. Returns 10 verified candidates with an auditable composite score and local support status. Use when asked for crypto gems, diamonds, growth candidates, low-price opportunities, or maximum quantities with room to grow.
+description: Discover CoinGecko-listed crypto "diamonds" that have active direct-EUR markets on Revolut X in the EEA. Uses market-cap headroom, EUR 50 quantity, liquidity, momentum, and supply-risk analysis without using ATH. Returns 10 venue-verified candidates with an auditable composite score and local support status. Use when asked for crypto gems, diamonds, growth candidates, low-price opportunities, or maximum quantities with room to grow.
 license: MIT
 metadata:
   author: sujithq
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # Diamond Quantities
 
 Discover liquid, lower-market-cap CoinGecko assets where EUR 50 buys a
-meaningful quantity and the asset has measurable room to grow. This is a
-multi-factor screen and does not use all-time-high prices.
+meaningful quantity, the asset has measurable room to grow, and the exact asset
+has an active direct-EUR Revolut X market in the EEA. This is a multi-factor
+screen and does not use all-time-high prices.
 
 ## Inputs
 
@@ -19,7 +20,9 @@ multi-factor screen and does not use all-time-high prices.
 - Result limit: optional positive integer, default `10`.
 - Candidate limit: optional positive integer up to `1000`, default `1000`.
 
-Values use `data/portfolio.json`'s configured currency, which is EUR by default.
+Values use `data/portfolio.json`'s configured currency. This skill requires that
+currency to be EUR because candidates must be directly tradable through
+Revolut X EEA EUR pairs.
 
 ## Workflow
 
@@ -30,7 +33,9 @@ Values use `data/portfolio.json`'s configured currency, which is EUR by default.
    npm run diamond-quantities -- 50 10 1000
    ```
 
-2. Read the JSON result.
+2. Read the JSON result. The command retrieves CoinGecko markets plus Revolut
+  X's public EEA pair and currency configuration; Revolut X public requests are
+  rate-limited to one per second.
 3. Return the ranked `assets`, their component scores, quantities, market data,
    and the EUR 1 billion reference-market-cap scenario.
 4. Mention any important exclusions or data limitations.
@@ -39,10 +44,16 @@ Values use `data/portfolio.json`'s configured currency, which is EUR by default.
 
 ## Eligibility Screen
 
-A candidate must be returned by CoinGecko's live `/coins/markets` endpoint and
-have all of the following:
+A candidate must be returned by CoinGecko's live `/coins/markets` endpoint,
+match Revolut X's public currency identity, and have all of the following:
 
 - Canonical ID, symbol, and name.
+- An active `SYMBOL/EUR` pair in Revolut X's EEA configuration.
+- An active Revolut X currency whose symbol and name identify the same asset;
+  ambiguous symbol collisions fail closed unless covered by an explicit
+  canonical CoinGecko-ID mapping.
+- A EUR 50 order that satisfies the pair's minimum and available maximum quote
+  order limits.
 - Positive current price.
 - Market capitalization from EUR 10 million up to, but not including, EUR 1
   billion.
@@ -83,6 +94,11 @@ count.
 ## Rules
 
 - Discover up to the latest 1000 assets ordered by market capitalization.
+- Treat Revolut X's public EEA pair configuration as the source of truth for
+  direct EUR tradability. A CoinGecko EUR valuation or a USD-only Revolut X pair
+  is not sufficient.
+- Recheck pair status and order limits immediately before trading because venue
+  configuration can change after a ranking is generated.
 - Never use ATH price or ATH recovery in eligibility, scoring, or ranking.
 - Never invent an asset. Suggest only canonical rows returned by CoinGecko that
   pass every eligibility check.
@@ -100,8 +116,9 @@ count.
 
 ## Output
 
-The command returns source metadata, screening thresholds, score weights,
-ranked assets, and exclusions. Each asset includes this core information:
+The command returns CoinGecko and Revolut X source metadata, screening
+thresholds, score weights, ranked assets, and exclusions. Each asset includes
+this core information:
 
 ```json
 {
@@ -111,6 +128,13 @@ ranked assets, and exclusions. Each asset includes this core information:
   "name": "Coin",
   "thesis": null,
   "isSupported": false,
+  "tradingPair": "COIN/EUR",
+  "tradingVenue": "Revolut X",
+  "tradingRegion": "EEA",
+  "tradingPairStatus": "active",
+  "tradingCurrencyName": "Coin",
+  "minOrderSizeQuote": 0.1,
+  "maxOrderSizeQuote": 1000000,
   "investedAmount": 50,
   "quantity": 50000,
   "currentPrice": 0.001,

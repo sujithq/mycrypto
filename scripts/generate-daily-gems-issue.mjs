@@ -53,6 +53,30 @@ function assertFinitePositive(value, label) {
   }
 }
 
+function assertRevolutXEurEligibility(ranking) {
+  const venue = ranking?.tradingVenue;
+  if (venue?.name !== 'Revolut X' || venue?.region !== 'EEA'
+    || venue?.quoteCurrency !== 'EUR' || !venue?.source || !venue?.identitySource) {
+    throw new Error('Diamond ranking must be verified against Revolut X EEA direct EUR markets.');
+  }
+
+  for (const asset of ranking.assets) {
+    const expectedPair = `${String(asset.symbol).toUpperCase()}/EUR`;
+    if (asset.tradingVenue !== 'Revolut X' || asset.tradingRegion !== 'EEA'
+      || asset.tradingPair !== expectedPair || asset.tradingPairStatus !== 'active'
+      || !asset.tradingCurrencyName) {
+      throw new Error(`${asset.id} is missing active Revolut X EEA EUR-pair verification.`);
+    }
+    assertFinitePositive(asset.minOrderSizeQuote, `${asset.id} minimum EUR order`);
+    if (Number(asset.investedAmount) < Number(asset.minOrderSizeQuote)
+      || (asset.maxOrderSizeQuote !== null
+        && (!Number.isFinite(Number(asset.maxOrderSizeQuote))
+          || Number(asset.investedAmount) > Number(asset.maxOrderSizeQuote)))) {
+      throw new Error(`${asset.id} cannot accept the proposed EUR order size on Revolut X.`);
+    }
+  }
+}
+
 export function createAssetThesis(entry, context, rankedAsset) {
   const categories = [...new Set((context?.categories ?? [])
     .map(normalizeCategory)
@@ -72,12 +96,13 @@ function renderRankingTable(assets, currency) {
     `${currency} ${formatPrice(asset.currentPrice)}`,
     `${currency} ${formatNumber(asset.marketCap, 0)}`,
     `${formatNumber(asset.priceChange7dPct)}% / ${formatNumber(asset.priceChange30dPct)}%`,
+    `${markdownCell(asset.tradingPair)} (${markdownCell(asset.tradingPairStatus)}, ${markdownCell(asset.tradingRegion)})`,
     `${formatNumber(asset.growthMultipleToReferenceMarketCap)}x`,
     formatNumber(asset.diamondScore),
   ].join(' | '));
   return [
-    '| Rank | Asset | Reference quantity | Reference price | Market cap | 7d / 30d | Headroom | Score |',
-    '| ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: |',
+    '| Rank | Asset | Reference quantity | Reference price | Market cap | 7d / 30d | Revolut X market | Headroom | Score |',
+    '| ---: | --- | ---: | ---: | ---: | ---: | --- | ---: | ---: |',
     ...rows.map((row) => `| ${row} |`),
   ].join('\n');
 }
@@ -104,15 +129,19 @@ export function renderDailyGemsIssue(adoptionPackage) {
   return `<!-- daily-gems:${date} -->
 # Proposed real crypto-gems profile
 
-Generated from live ${ranking.source} data at ${generatedAt}. This issue is an adoption package; it does not record a purchase or modify the repository.
+Generated from live ${ranking.source} data at ${generatedAt}. Every candidate was also verified against an active direct-EUR market on ${ranking.tradingVenue.name} in ${ranking.tradingVenue.region}. This issue is an adoption package; it does not record a purchase or modify the repository.
 
 > [!IMPORTANT]
 > The quantities below are reference fills calculated from reported spot prices. Before publishing this as a real portfolio, replace them with actual executed quantities and adjust the buy date if needed. Fees, spread, and slippage are not included.
+
+> [!WARNING]
+> Revolut X market availability and order limits can change. Recheck each pair immediately before placing an order; a listing verified at generation time is not an execution guarantee.
 
 ## Decision checklist
 
 - [ ] Review the candidates, score inputs, and risks.
 - [ ] Confirm a total allocation of ${currency} ${formatNumber(totalInvestment)}.
+- [ ] Reconfirm every listed ${ranking.tradingVenue.name} pair is active in ${ranking.tradingVenue.region} and accepts a ${currency} ${formatNumber(ranking.investedAmountPerAsset)} order.
 - [ ] Replace reference quantities with actual filled quantities.
 - [ ] Add the missing registry entries below to \`data/portfolio.json\`.
 - [ ] Save the profile below as \`${profilePath}\`.
@@ -155,6 +184,9 @@ Suggested commit:
 
 - Candidates inspected: ${ranking.candidateCount}
 - Candidates eligible: ${ranking.eligibleCount}
+- Execution venue: ${ranking.tradingVenue.name} (${ranking.tradingVenue.region}), direct ${ranking.tradingVenue.quoteCurrency} pairs only
+- Pair configuration: ${ranking.tradingVenue.source}
+- Currency identities: ${ranking.tradingVenue.identitySource}
 - Ranking metric: \`${ranking.rankingMetric}\`
 - Weights: ${Object.entries(ranking.weights).map(([name, weight]) => `${name} ${weight * 100}%`).join(', ')}
 - Screen: market cap ${currency} ${formatNumber(ranking.screen.minMarketCap, 0)} to below ${currency} ${formatNumber(ranking.screen.referenceMarketCap, 0)}; minimum volume ${currency} ${formatNumber(ranking.screen.minTotalVolume, 0)}; minimum volume/market-cap ratio ${formatNumber(ranking.screen.minLiquidityRatio * 100)}%
@@ -188,6 +220,7 @@ export function buildDailyGemsAdoptionPackage(
   if (ranking.assets.length !== expectedAssetCount) {
     throw new Error(`Expected ${expectedAssetCount} ranked assets but received ${ranking.assets.length}.`);
   }
+  assertRevolutXEurEligibility(ranking);
 
   const generatedAt = new Date(ranking.observedAt).toISOString();
   const date = generatedAt.slice(0, 10);
@@ -230,6 +263,13 @@ export function buildDailyGemsAdoptionPackage(
       investedAmount: Number(asset.investedAmount),
       quantity: Number(asset.quantity),
       buyDate: date,
+      tradingVenue: asset.tradingVenue,
+      tradingRegion: asset.tradingRegion,
+      tradingPair: asset.tradingPair,
+      tradingPairStatus: asset.tradingPairStatus,
+      tradingCurrencyName: asset.tradingCurrencyName,
+      minOrderSizeQuote: asset.minOrderSizeQuote,
+      maxOrderSizeQuote: asset.maxOrderSizeQuote,
     })),
   };
   const transientSupportedIds = new Set([
@@ -249,7 +289,7 @@ export function buildDailyGemsAdoptionPackage(
     .reduce((total, { investedAmount }) => total + investedAmount, 0);
   const exclusionSummary = summarizeExclusions(ranking.excluded);
   const adoptionPackage = {
-    schemaVersion: 1,
+    schemaVersion: 2,
     date,
     generatedAt,
     source: ranking.source,
@@ -260,6 +300,8 @@ export function buildDailyGemsAdoptionPackage(
     profile,
     ranking: {
       source: ranking.source,
+      tradingVenue: ranking.tradingVenue,
+      investedAmountPerAsset: ranking.investedAmountPerAsset,
       candidateCount: ranking.candidateCount,
       eligibleCount: ranking.eligibleCount,
       rankingMetric: ranking.rankingMetric,
@@ -272,6 +314,7 @@ export function buildDailyGemsAdoptionPackage(
       profileType: 'real',
       repositorySchema: true,
       quantitiesAreReferenceFills: true,
+      revolutXDirectEurMarkets: true,
     },
   };
   return {
@@ -289,7 +332,7 @@ export async function generateDailyGemsIssue(portfolioConfig, {
   resolveByIds = resolveSupportedAssetsByIds,
   onProgress = () => {},
 } = {}) {
-  onProgress(`Screening up to ${candidateLimit} CoinGecko candidates for ${limit} positions.`);
+  onProgress(`Screening up to ${candidateLimit} CoinGecko candidates against Revolut X EEA EUR markets for ${limit} positions.`);
   const ranking = await getRanking(portfolioConfig, {
     investedAmount,
     limit,
@@ -299,7 +342,7 @@ export async function generateDailyGemsIssue(portfolioConfig, {
     throw new Error(`Expected ${limit} ranked assets but received ${ranking.assets.length}.`);
   }
 
-  onProgress(`Selected ${ranking.assets.length} assets from ${ranking.eligibleCount} eligible candidates.`);
+  onProgress(`Selected ${ranking.assets.length} assets from ${ranking.eligibleCount} candidates with verified direct EUR markets.`);
   const supportedIds = new Set((portfolioConfig.supportedAssets ?? []).map(({ id }) => id));
   const missingIds = ranking.assets.map(({ id }) => id).filter((id) => !supportedIds.has(id));
   onProgress(`Verifying ${missingIds.length} unregistered ${missingIds.length === 1 ? 'asset' : 'assets'} in one CoinGecko request.`);

@@ -119,19 +119,22 @@ historical scenario, not a forecast.
 ### Find lower-cap diamond candidates
 
 The `diamond-quantities` agent skill searches the same live CoinGecko universe
-without using ATH data. It ranks liquid assets below a EUR 1 billion market cap
-using market-cap headroom, the quantity bought for EUR 50, 7-day and 30-day
-momentum, volume, and circulating-supply risk:
+without using ATH data, then retains only assets with an active direct-EUR
+Revolut X market in the EEA. It verifies the Revolut currency identity and EUR
+50 order limits before ranking liquid assets below a EUR 1 billion market cap
+using market-cap headroom, quantity, momentum, volume, and supply risk:
 
 ```bash
 npm run diamond-quantities
 npm run diamond-quantities -- 50 10 1000
 ```
 
-The output includes the five component scores and a EUR 1 billion market-cap
-scenario. New assets are marked as unsupported until their canonical metadata
-and thesis are added with the `supported-asset-entry` skill. The ranking is a
-quantitative research screen, not a price forecast.
+The output includes the five component scores, exact Revolut X pair metadata,
+and a EUR 1 billion market-cap scenario. A CoinGecko EUR quote or a Revolut X
+USD-only market does not pass the screen. New assets are marked as unsupported
+until their canonical metadata and thesis are added with the
+`supported-asset-entry` skill. The ranking is a quantitative research screen,
+not a price forecast.
 
 ### Review a daily gems profile
 
@@ -141,7 +144,8 @@ workflow is rerun. The repository remains unchanged.
 
 Each issue is a complete adoption package containing:
 
-- The live ranking inputs, scores, quantities, and exclusion summary.
+- The live ranking inputs, scores, quantities, Revolut X EEA EUR-pair evidence,
+  and exclusion summary.
 - Insertion-ready `supportedAssets` objects for every new CoinGecko asset.
 - A complete `type: "real"` profile and its target `profiles/` path.
 - A machine-readable manifest and the commands needed to refresh and validate
@@ -153,11 +157,12 @@ Generate the same issue body locally with:
 npm run daily-gems-issue -- --output daily-gems-issue.md --summary-output daily-gems-summary.json
 ```
 
-Generated quantities are reference fills based on CoinGecko spot prices. Before
-publishing the proposed real profile, replace them with actual executed
-quantities to account for fees, spread, and slippage. Add proposed assets only
-to `supportedAssets`, not `defaultPortfolio`, then run `npm run
-update-data:force` and `npm run check`.
+Generated quantities are reference fills based on CoinGecko spot prices. Pair
+availability and order limits can change, so reconfirm every Revolut X EEA EUR
+pair immediately before ordering. Before publishing the proposed real profile,
+replace reference quantities with actual executed quantities to account for
+fees, spread, and slippage. Add proposed assets only to `supportedAssets`, not
+`defaultPortfolio`, then run `npm run update-data:force` and `npm run check`.
 
 ### Resolve a supported asset entry
 
