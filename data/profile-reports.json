@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-24T05:26:08.465Z",
+  "generatedAt": "2026-08-24T06:26:14.020Z",
   "reports": {
     "test": {
       "profile": {
@@ -7,23 +7,23 @@
         "name": "test",
         "type": "real"
       },
-      "generatedAt": "2026-08-24T05:26:08.465Z",
+      "generatedAt": "2026-08-24T06:26:14.020Z",
       "periodStart": "2026-08-13",
       "periodEnd": "2026-08-24",
       "status": "Strong momentum",
-      "summary": "The portfolio moved +21.12% over a 366-day trailing window (12 closes).",
-      "portfolioChangePct": 21.1208,
+      "summary": "The portfolio moved +20.80% over a 366-day trailing window (12 closes).",
+      "portfolioChangePct": 20.7968,
       "bestPerformer": {
         "symbol": "HYPE",
-        "changePct": 41.0982
+        "changePct": 40.1929
       },
       "worstPerformer": {
         "symbol": "TAI",
-        "changePct": -9.6357
+        "changePct": -11.4759
       },
       "observations": [
-        "HYPE led the portfolio at +41.10%.",
-        "TAI was weakest at -9.64%.",
+        "HYPE led the portfolio at +40.19%.",
+        "TAI was weakest at -11.48%.",
         "This early report uses 12 closes; the target 366-day window has 367.",
         "Momentum is descriptive, not predictive; review concentration and downside before acting."
       ]
@@ -34,23 +34,23 @@
         "name": "test2",
         "type": "real"
       },
-      "generatedAt": "2026-08-24T05:26:08.465Z",
+      "generatedAt": "2026-08-24T06:26:14.020Z",
       "periodStart": "2025-08-23",
       "periodEnd": "2026-08-24",
       "status": "Risk-off",
-      "summary": "The portfolio moved -47.55% over a 366-day trailing window (367 closes).",
-      "portfolioChangePct": -47.5517,
+      "summary": "The portfolio moved -47.69% over a 366-day trailing window (367 closes).",
+      "portfolioChangePct": -47.6946,
       "bestPerformer": {
         "symbol": "HYPE",
-        "changePct": 77.4603
+        "changePct": 76.3217
       },
       "worstPerformer": {
         "symbol": "TAI",
-        "changePct": -90.5659
+        "changePct": -90.758
       },
       "observations": [
-        "HYPE led the portfolio at +77.46%.",
-        "TAI was weakest at -90.57%.",
+        "HYPE led the portfolio at +76.32%.",
+        "TAI was weakest at -90.76%.",
         "Performance is allocation-weighted across the 366-day trailing window (367 closes).",
         "Momentum is descriptive, not predictive; review concentration and downside before acting."
       ]
@@ -61,23 +61,23 @@
         "name": "Top 10 Crypto Lottery",
         "type": "real"
       },
-      "generatedAt": "2026-08-24T05:26:08.465Z",
+      "generatedAt": "2026-08-24T06:26:14.020Z",
       "periodStart": "2026-08-13",
       "periodEnd": "2026-08-24",
       "status": "Strong momentum",
-      "summary": "The portfolio moved +35.97% over a 366-day trailing window (12 closes).",
-      "portfolioChangePct": 35.9676,
+      "summary": "The portfolio moved +35.55% over a 366-day trailing window (12 closes).",
+      "portfolioChangePct": 35.5515,
       "bestPerformer": {
         "symbol": "PENGU",
-        "changePct": 52.1423
+        "changePct": 52.7688
       },
       "worstPerformer": {
         "symbol": "MOG",
-        "changePct": 17.3472
+        "changePct": 17.2899
       },
       "observations": [
-        "PENGU led the portfolio at +52.14%.",
-        "MOG was weakest at +17.35%.",
+        "PENGU led the portfolio at +52.77%.",
+        "MOG was weakest at +17.29%.",
         "This early report uses 12 closes; the target 366-day window has 367.",
         "Momentum is descriptive, not predictive; review concentration and downside before acting."
       ]
