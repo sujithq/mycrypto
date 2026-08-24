@@ -1,8 +1,8 @@
 {
-  "id": "top10",
-  "name": "Top 10 Crypto Lottery - 2026-08-13",
+  "id": "top10-2026-08-24",
+  "name": "Top 10 Crypto Lottery - 2026-08-24",
   "type": "real",
-  "buyDate": "2026-08-13",
+  "buyDate": "2026-08-24",
   "portfolio": [
     {
       "id": "dogwifcoin",
@@ -10,8 +10,8 @@
       "name": "dogwifhat",
       "thesis": "High-risk Solana meme-coin comeback bet with strong trading activity relative to its reduced market capitalization.",
       "investedAmount": 50,
-      "quantity": 417.15828770873145,
-      "buyDate": "2026-08-13"
+      "quantity": 296.5910488674073,
+      "buyDate": "2026-08-24"
     },
     {
       "id": "pudgy-penguins",
@@ -19,8 +19,8 @@
       "name": "Pudgy Penguins",
       "thesis": "Speculative exposure to a highly recognizable crypto-native consumer brand with strong token liquidity and community activity.",
       "investedAmount": 50,
-      "quantity": 9296.393185371939,
-      "buyDate": "2026-08-13"
+      "quantity": 6015.505661985675,
+      "buyDate": "2026-08-24"
     },
     {
       "id": "pepe",
@@ -28,8 +28,8 @@
       "name": "Pepe",
       "thesis": "Large and liquid meme-coin position with strong cultural recognition and a higher probability of remaining relevant during future speculative cycles.",
       "investedAmount": 50,
-      "quantity": 21459367.294469643,
-      "buyDate": "2026-08-13"
+      "quantity": 14506654.216536516,
+      "buyDate": "2026-08-24"
     },
     {
       "id": "floki",
@@ -37,8 +37,8 @@
       "name": "FLOKI",
       "thesis": "High-beta meme exposure combining a strong community with a broader ecosystem of gaming, DeFi and token-related products.",
       "investedAmount": 50,
-      "quantity": 2831257.078142695,
-      "buyDate": "2026-08-13"
+      "quantity": 2166336.1425226466,
+      "buyDate": "2026-08-24"
     },
     {
       "id": "popcat",
@@ -46,8 +46,8 @@
       "name": "Popcat",
       "thesis": "Small-market-cap Solana meme coin offering very high potential upside if attention and speculative demand return, with correspondingly high failure risk.",
       "investedAmount": 50,
-      "quantity": 1366.3901366308155,
-      "buyDate": "2026-08-13"
+      "quantity": 1032.5027002375175,
+      "buyDate": "2026-08-24"
     },
     {
       "id": "mog-coin",
@@ -55,8 +55,8 @@
       "name": "Mog Coin",
       "thesis": "Small-cap meme-coin lottery position with meaningful remaining liquidity and potentially large upside if meme-market momentum returns.",
       "investedAmount": 50,
-      "quantity": 581548583.304948,
-      "buyDate": "2026-08-13"
+      "quantity": 498651908.11100435,
+      "buyDate": "2026-08-24"
     },
     {
       "id": "based-brett",
@@ -64,17 +64,17 @@
       "name": "Brett",
       "thesis": "Extreme-risk small-cap meme position with substantial theoretical recovery potential but a significant chance of fading into irrelevance.",
       "investedAmount": 50,
-      "quantity": 14688.515343623129,
-      "buyDate": "2026-08-13"
+      "quantity": 11130.871085116463,
+      "buyDate": "2026-08-24"
     },
     {
-      "id": "bonk",
-      "symbol": "BONK",
-      "name": "Bonk",
-      "thesis": "Established Solana meme coin with strong liquidity and ecosystem recognition, balanced against elevated governance and project-specific risk.",
+      "id": "fartcoin",
+      "symbol": "FARTCOIN",
+      "name": "Fartcoin",
+      "thesis": "Speculative Solana AI-meme token exposure driven primarily by community attention and Pump.fun ecosystem activity, with limited utility and high volatility.",
       "investedAmount": 50,
-      "quantity": 25380710.659898475,
-      "buyDate": "2026-08-13"
+      "quantity": 326.8541563011957,
+      "buyDate": "2026-08-24"
     },
     {
       "id": "shiba-inu",
@@ -82,8 +82,8 @@
       "name": "Shiba Inu",
       "thesis": "More established meme-coin exposure with a large community and ecosystem, offering lower theoretical upside but stronger survival odds than smaller meme coins.",
       "investedAmount": 50,
-      "quantity": 12820512.82051282,
-      "buyDate": "2026-08-13"
+      "quantity": 10740775.554154687,
+      "buyDate": "2026-08-24"
     },
     {
       "id": "dogecoin",
@@ -91,8 +91,8 @@
       "name": "Dogecoin",
       "thesis": "The most established meme-coin position in the basket, providing greater liquidity and staying power while moderating some of the extreme small-cap risk.",
       "investedAmount": 50,
-      "quantity": 816.5798370106645,
-      "buyDate": "2026-08-13"
+      "quantity": 631.046360992579,
+      "buyDate": "2026-08-24"
     }
   ]
 }

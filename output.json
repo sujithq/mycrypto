@@ -1,0 +1,1960 @@
+
+> mycrypto@1.0.0 diamond-quantities
+> node .github/skills/diamond-quantities/scripts/rank-diamond-quantities.mjs
+
+{
+  "currency": "EUR",
+  "investedAmountPerAsset": 50,
+  "requestedLimit": 10,
+  "candidateCount": 1000,
+  "eligibleCount": 603,
+  "observedAt": "2026-08-24T07:54:33.274Z",
+  "source": "CoinGecko",
+  "rankingMetric": "diamondScore",
+  "weights": {
+    "marketCapHeadroom": 0.3,
+    "quantity": 0.25,
+    "liquidity": 0.2,
+    "momentum": 0.15,
+    "supply": 0.1
+  },
+  "screen": {
+    "minMarketCap": 10000000,
+    "referenceMarketCap": 1000000000,
+    "minTotalVolume": 100000,
+    "minLiquidityRatio": 0.01
+  },
+  "assets": [
+    {
+      "rank": 1,
+      "id": "the-index",
+      "symbol": "INDEX",
+      "name": "The Index",
+      "thesis": null,
+      "isSupported": false,
+      "investedAmount": 50,
+      "quantity": 3344.373797685955,
+      "buyDate": "2026-08-24",
+      "currentPrice": 0.01495048192118838,
+      "marketCap": 14664058,
+      "marketCapRank": 897,
+      "totalVolume": 12851609,
+      "liquidityRatio": 0.8764019482192447,
+      "priceChange7dPct": 134.3,
+      "priceChange30dPct": 69.1,
+      "circulatingSupply": 980540022.5868331,
+      "supplyDenominator": 1000000000,
+      "supplyBasis": "maxSupply",
+      "circulatingSupplyRatio": 0.9805400225868331,
+      "referenceMarketCap": 1000000000,
+      "growthMultipleToReferenceMarketCap": 68.19394740528168,
+      "potentialValueAtReferenceMarketCap": 3409.697370264084,
+      "lastUpdated": "2026-08-24T07:51:20.000Z",
+      "componentScores": {
+        "marketCapHeadroom": 91.687292,
+        "quantity": 40.102039,
+        "liquidity": 100,
+        "momentum": 100,
+        "supply": 98.054002
+      },
+      "diamondScore": 82.337097
+    },
+    {
+      "rank": 2,
+      "id": "neiro-3",
+      "symbol": "NEIRO",
+      "name": "Neiro",
+      "thesis": null,
+      "isSupported": false,
+      "investedAmount": 50,
+      "quantity": 641030.2028394091,
+      "buyDate": "2026-08-24",
+      "currentPrice": 0.00007799944492245087,
+      "marketCap": 32796835,
+      "marketCapRank": 534,
+      "totalVolume": 10758906,
+      "liquidityRatio": 0.3280470813723336,
+      "priceChange7dPct": 41,
+      "priceChange30dPct": 56.8,
+      "circulatingSupply": 420690000000,
+      "supplyDenominator": 420690000000,
+      "supplyBasis": "maxSupply",
+      "circulatingSupplyRatio": 1,
+      "referenceMarketCap": 1000000000,
+      "growthMultipleToReferenceMarketCap": 30.49074704921984,
+      "potentialValueAtReferenceMarketCap": 1524.537352460992,
+      "lastUpdated": "2026-08-24T07:51:20.000Z",
+      "componentScores": {
+        "marketCapHeadroom": 74.208403,
+        "quantity": 57.929799,
+        "liquidity": 100,
+        "momentum": 95.5,
+        "supply": 100
+      },
+      "diamondScore": 81.069971
+    },
+    {
+      "rank": 3,
+      "id": "wink",
+      "symbol": "WIN",
+      "name": "WINkLink",
+      "thesis": null,
+      "isSupported": false,
+      "investedAmount": 50,
+      "quantity": 1682923.282779106,
+      "buyDate": "2026-08-24",
+      "currentPrice": 0.00002971020753687131,
+      "marketCap": 29523968,
+      "marketCapRank": 581,
+      "totalVolume": 16661914,
+      "liquidityRatio": 0.5643521223163499,
+      "priceChange7dPct": 13.8,
+      "priceChange30dPct": 47.1,
+      "circulatingSupply": 993701854154.286,
+      "supplyDenominator": 993701859243.3864,
+      "supplyBasis": "totalSupply",
+      "circulatingSupplyRatio": 0.9999999948786447,
+      "referenceMarketCap": 1000000000,
+      "growthMultipleToReferenceMarketCap": 33.870785932297444,
+      "potentialValueAtReferenceMarketCap": 1693.5392966148722,
+      "lastUpdated": "2026-08-24T07:51:20.000Z",
+      "componentScores": {
+        "marketCapHeadroom": 76.491264,
+        "quantity": 61.203813,
+        "liquidity": 100,
+        "momentum": 79.725,
+        "supply": 99.999999
+      },
+      "diamondScore": 80.207082
+    },
+    {
+      "rank": 4,
+      "id": "mubarak",
+      "symbol": "MUBARAK",
+      "name": "Mubarak",
+      "thesis": null,
+      "isSupported": false,
+      "investedAmount": 50,
+      "quantity": 2424.4453683749043,
+      "buyDate": "2026-08-24",
+      "currentPrice": 0.02062327353390305,
+      "marketCap": 20634343,
+      "marketCapRank": 733,
+      "totalVolume": 9276610,
+      "liquidityRatio": 0.4495713771938365,
+      "priceChange7dPct": 33.6,
+      "priceChange30dPct": 130.7,
+      "circulatingSupply": 1000000000,
+      "supplyDenominator": 1000000000,
+      "supplyBasis": "maxSupply",
+      "circulatingSupplyRatio": 1,
+      "referenceMarketCap": 1000000000,
+      "growthMultipleToReferenceMarketCap": 48.46289508708855,
+      "potentialValueAtReferenceMarketCap": 2423.1447543544273,
+      "lastUpdated": "2026-08-24T07:51:20.000Z",
+      "componentScores": {
+        "marketCapHeadroom": 84.270468,
+        "quantity": 39.010906,
+        "liquidity": 100,
+        "momentum": 91.8,
+        "supply": 100
+      },
+      "diamondScore": 78.803867
+    },
+    {
+      "rank": 5,
+      "id": "test-3",
+      "symbol": "TST",
+      "name": "Test",
+      "thesis": null,
+      "isSupported": false,
+      "investedAmount": 50,
+      "quantity": 3554.5712435788673,
+      "buyDate": "2026-08-24",
+      "currentPrice": 0.014066394108803469,
+      "marketCap": 13174250,
+      "marketCapRank": 950,
+      "totalVolume": 7324090,
+      "liquidityRatio": 0.5559398068201226,
+      "priceChange7dPct": 8.6,
+      "priceChange30dPct": 42.4,
+      "circulatingSupply": 937562125.5067164,
+      "supplyDenominator": 1000000000,
+      "supplyBasis": "maxSupply",
+      "circulatingSupplyRatio": 0.9375621255067164,
+      "referenceMarketCap": 1000000000,
+      "growthMultipleToReferenceMarketCap": 75.90564927794752,
+      "potentialValueAtReferenceMarketCap": 3795.2824638973757,
+      "lastUpdated": "2026-08-24T07:51:20.000Z",
+      "componentScores": {
+        "marketCapHeadroom": 94.013705,
+        "quantity": 40.308799,
+        "liquidity": 100,
+        "momentum": 73.6,
+        "supply": 93.756213
+      },
+      "diamondScore": 78.696933
+    },
+    {
+      "rank": 6,
+      "id": "dogs-2",
+      "symbol": "DOGS",
+      "name": "Dogs",
+      "thesis": null,
+      "isSupported": false,
+      "investedAmount": 50,
+      "quantity": 1464157.4838515054,
+      "buyDate": "2026-08-24",
+      "currentPrice": 0.00003414933198884703,
+      "marketCap": 17648240,
+      "marketCapRank": 810,
+      "totalVolume": 3436848,
+      "liquidityRatio": 0.1947416852898646,
+      "priceChange7dPct": 16.2,
+      "priceChange30dPct": 13.3,
+      "circulatingSupply": 516750000000,
+      "supplyDenominator": 550000000000,
+      "supplyBasis": "maxSupply",
+      "circulatingSupplyRatio": 0.9395454545454546,
+      "referenceMarketCap": 1000000000,
+      "growthMultipleToReferenceMarketCap": 56.66287403163148,
+      "potentialValueAtReferenceMarketCap": 2833.143701581574,
+      "lastUpdated": "2026-08-24T07:51:20.000Z",
+      "componentScores": {
+        "marketCapHeadroom": 87.66493,
+        "quantity": 60.731467,
+        "liquidity": 97.370843,
+        "momentum": 55.575,
+        "supply": 93.954545
+      },
+      "diamondScore": 78.688219
+    },
+    {
+      "rank": 7,
+      "id": "czs-dog",
+      "symbol": "BROCCOLI",
+      "name": "CZ's Dog",
+      "thesis": null,
+      "isSupported": false,
+      "investedAmount": 50,
+      "quantity": 3322.1629006405456,
+      "buyDate": "2026-08-24",
+      "currentPrice": 0.015050435964581842,
+      "marketCap": 14551819,
+      "marketCapRank": 901,
+      "totalVolume": 4473332,
+      "liquidityRatio": 0.307407067116489,
+      "priceChange7dPct": 7.8,
+      "priceChange30dPct": 44.4,
+      "circulatingSupply": 966662190.8404477,
+      "supplyDenominator": 1000000000,
+      "supplyBasis": "maxSupply",
+      "circulatingSupplyRatio": 0.9666621908404477,
+      "referenceMarketCap": 1000000000,
+      "growthMultipleToReferenceMarketCap": 68.71993116461935,
+      "potentialValueAtReferenceMarketCap": 3435.996558230968,
+      "lastUpdated": "2026-08-24T07:51:20.000Z",
+      "componentScores": {
+        "marketCapHeadroom": 91.854136,
+        "quantity": 40.079436,
+        "liquidity": 100,
+        "momentum": 74.7,
+        "supply": 96.666219
+      },
+      "diamondScore": 78.447722
+    },
+    {
+      "rank": 8,
+      "id": "chromaway",
+      "symbol": "CHR",
+      "name": "Chromia",
+      "thesis": null,
+      "isSupported": false,
+      "investedAmount": 50,
+      "quantity": 3757.9457336913565,
+      "buyDate": "2026-08-24",
+      "currentPrice": 0.013305141570228577,
+      "marketCap": 13037791,
+      "marketCapRank": 958,
+      "totalVolume": 15049648,
+      "liquidityRatio": 1.1543096526090961,
+      "priceChange7dPct": 17.1,
+      "priceChange30dPct": 17.4,
+      "circulatingSupply": 974831915.3782,
+      "supplyDenominator": 978064789,
+      "supplyBasis": "maxSupply",
+      "circulatingSupplyRatio": 0.9966946222191422,
+      "referenceMarketCap": 1000000000,
+      "growthMultipleToReferenceMarketCap": 76.7001097041669,
+      "potentialValueAtReferenceMarketCap": 3835.0054852083454,
+      "lastUpdated": "2026-08-24T07:51:20.000Z",
+      "componentScores": {
+        "marketCapHeadroom": 94.239799,
+        "quantity": 40.497525,
+        "liquidity": 100,
+        "momentum": 59.1,
+        "supply": 99.669462
+      },
+      "diamondScore": 77.228267
+    },
+    {
+      "rank": 9,
+      "id": "coin98",
+      "symbol": "C98",
+      "name": "Coin98",
+      "thesis": null,
+      "isSupported": false,
+      "investedAmount": 50,
+      "quantity": 3803.22731595647,
+      "buyDate": "2026-08-24",
+      "currentPrice": 0.013146729302827787,
+      "marketCap": 13153960,
+      "marketCapRank": 952,
+      "totalVolume": 7372409,
+      "liquidityRatio": 0.5604706871542866,
+      "priceChange7dPct": 6.7,
+      "priceChange30dPct": 21.6,
+      "circulatingSupply": 999998884,
+      "supplyDenominator": 1000000000,
+      "supplyBasis": "maxSupply",
+      "circulatingSupplyRatio": 0.999998884,
+      "referenceMarketCap": 1000000000,
+      "growthMultipleToReferenceMarketCap": 76.02273383832701,
+      "potentialValueAtReferenceMarketCap": 3801.1366919163506,
+      "lastUpdated": "2026-08-24T07:51:20.000Z",
+      "componentScores": {
+        "marketCapHeadroom": 94.047174,
+        "quantity": 40.538153,
+        "liquidity": 100,
+        "momentum": 57.05,
+        "supply": 99.999888
+      },
+      "diamondScore": 76.906179
+    },
+    {
+      "rank": 10,
+      "id": "celer-network",
+      "symbol": "CELR",
+      "name": "Celer Network",
+      "thesis": null,
+      "isSupported": false,
+      "investedAmount": 50,
+      "quantity": 26392.197754520384,
+      "buyDate": "2026-08-24",
+      "currentPrice": 0.0018944992935056397,
+      "marketCap": 14981180,
+      "marketCapRank": 886,
+      "totalVolume": 16258881,
+      "liquidityRatio": 1.0852870735149034,
+      "priceChange7dPct": 6,
+      "priceChange30dPct": 32.3,
+      "circulatingSupply": 7907424106.9911995,
+      "supplyDenominator": 10000000000,
+      "supplyBasis": "maxSupply",
+      "circulatingSupplyRatio": 0.79074241069912,
+      "referenceMarketCap": 1000000000,
+      "growthMultipleToReferenceMarketCap": 66.75041618884494,
+      "potentialValueAtReferenceMarketCap": 3337.520809442247,
+      "lastUpdated": "2026-08-24T07:51:20.000Z",
+      "componentScores": {
+        "marketCapHeadroom": 91.222699,
+        "quantity": 47.109233,
+        "liquidity": 100,
+        "momentum": 64.725,
+        "supply": 79.074241
+      },
+      "diamondScore": 76.760292
+    }
+  ],
+  "excluded": [
+    {
+      "id": "bitcoin",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "ethereum",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "tether",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "binancecoin",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "ripple",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "usd-coin",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "solana",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "tron",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "figure-heloc",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "hyperliquid",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "dogecoin",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "zcash",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "rain",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "usds",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "chainlink",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "leo-token",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "whitebit",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "cardano",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "monero",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "stellar",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "bitcoin-cash",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "canton-network",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "dai",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "ethena-usde",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "the-open-network",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "litecoin",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "usd1-wlfi",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "hedera-hashgraph",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "global-dollar",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "sui",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "avalanche-2",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "shiba-inu",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "crypto-com-chain",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "hashnote-usyc",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "paypal-usd",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "tether-gold",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "uniswap",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "near",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "blackrock-usd-institutional-digital-liquidity-fund",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "memecore",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "okb",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "bittensor",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "aave",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "ondo-us-dollar-yield",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "ripple-usd",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "pax-gold",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "pump-fun",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "aster-2",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "world-liberty-financial",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "ondo-finance",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "morpho",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "mantle",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "pepe",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "sky",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "ethena",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "htx-dao",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "polkadot",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "usdd",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "worldcoin-wld",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "falcon-finance",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "internet-computer",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "bitget-token",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "bfusd",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "united-stables",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "ethereum-classic",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "spiko-amundi-overnight-swap-fund-eur",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "usdgo",
+      "reason": "Market capitalization has no headroom below 1000000000."
+    },
+    {
+      "id": "pi-network",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "blockchain-capital",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "eutbl",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "janus-henderson-anemoy-treasury-fund",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "gatechain-token",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "nexo",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "superstate-short-duration-us-government-securities-fund-ustb",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "janus-henderson-anemoy-aaa-clo-fund",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "gho",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "ylds",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "flare-networks",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "usual-usd",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "a7a5",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "hash-2",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "usx",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "ousg",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "kinesis-gold",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "gnosis",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "apxusd",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "sofiusd",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "usdtb",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "olympus",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "onyc",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "decred",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "ribbita-by-virtuals",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "re-protocol-reusd",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "frax",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "tradable-na-rent-financing-platform-sstn",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "kinesis-silver",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "apyusd",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "bnb48-club-token",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "telcoin",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "coco-2",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "swissborg",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "tradable-apac-diversified-finance-provider-sstn",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "spiko-us-t-bills-money-market-fund",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "gusd",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "safo",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "strategy-pp-variable-xstock",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "tradable-latam-fintech-sstn",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "shuffle-2",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "avant-usd",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "railgun",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "dai-on-pulsechain",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "rollbit-coin",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "jpysc",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "ozone-chain",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "grx-chain",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "zano",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "theo-short-duration-us-treasury-fund",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "circle-internet-group-ondo-tokenized-stock",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "tradable-singapore-fintech-ssl-2",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "alpha-bulgaria-warrants",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "astherus-usdf",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "cheems-token",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "meta-2-2",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "nxm",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "tradable-na-third-party-online-merchant-sstn",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "securitize-tokenized-aaa-clo-fund",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "tradable-latam-middle-market-lender-sstl",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "tradable-singapore-fintech-ssl",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "bermuda-shorts",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "wemix-token",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "newton-project",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "apollo-diversified-credit-securitize-fund",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "usda-2",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "tagger",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "goldfish-gold",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "baby-claw",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "safecoin",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "debridge",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "pleasing-gold",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "cap-usd",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "nexus-4",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "yzy",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "mag7-ssi",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "bending-spoons-xstock",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "usda-3",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "anvil",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "exod",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "na-post-settlement-legal-financing-receivables",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "stau",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "bitget-wrapped-btc",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "cygnus-finance-global-usd",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "targon",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "tradable-north-america-pos-lender-sstn",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "matrixdock-gold",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "helio-protocol-hay",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "tradable-na-neobank-sstl",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "felix-feusd",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "quantum-resistant-ledger",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "crown-brlv",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "nest-blackopal-liquidstone-ii-vault",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "midas-mf-one",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "ondo-u-s-dollar-token",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "ishares-core-s-p-500-etf-ondo-tokenized-etf",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "midas-fasanara-global",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "swop-2",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "midas-mtbill",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "pearl-2",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "mindwavedao",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "tradable-eu-latam-pos-financing-sstl",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "escoin-token",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "hydradx",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "cyberdex",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "fx-usd-saving",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "temple",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "standx-dusd",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "would",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "meme-horse",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "basedhype",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "vaneck-treasury-fund",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "tradable-na-legal-receivables-ssl",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "rekt-4",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "wiki-cat",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "flying-tulip",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "brz",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "jpycoin",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "prize-protocol",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "allunity-chf",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "memetoon",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "playnance",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "nano",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "apes-2-2",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "fonq",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "nusd-2",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "precious-metals-usd",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "usdu",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "concordium",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "unitywallet-token",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "anemoy-tokenized-apollo-diversified-credit-fund",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "fidelity-digital-interest-token",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "ishares-bitcoin-trust-ondo-tokenized",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "na-capital-as-a-service-sstn",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "blackrock-daily-reinvestment-stablecoin-reserve-vehicle",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "usdkg",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "alloy-tether",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "affine",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "ozapay",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "loaded-lions",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "xphere",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "infinifi-usd",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "sygnum-fiusd-liquidity-fund",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "bitcastle-token",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "mantis",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "bim-2",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "tradable-latam-bnpl-sstn",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "pentagon-chain",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "fidelity-usd-digital-liquidity-fund-acc",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "vvs-finance",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "bitkub-coin",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "pirate-chain",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "ebtc-2",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "frankencoin",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "america-party-5",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "midas-fasanara-global-open",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "reental",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "project-galaxy",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "steakhouse-confidential-prime-usdc",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "osk",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "gemini-dollar",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "pumpmeme",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "arcs",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "baseline",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "noon-usn",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "bitdca",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "midas-mhyper",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "gekko",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "latam-residential-sstl",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "hermez-network-token",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "opcode",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "chainflip",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "peoples-reserve-network",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "snowbank",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "novachargex-coin",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "hashkey-ecopoints",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "aegis-yusd",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "emerald-security-token",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "ai-powered-finance",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "elexium",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "binance-usd",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "fins",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "sai",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "changenow",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "spiko-amundi-overnight-swap-fund-gbp",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "ston-2",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "mango-markets",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "proprietary-trading-network",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "cargox",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "burnedfi",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "atoshi",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "hive_dollar",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "ocean-protocol",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "spiko-digital-assets-cash-carry-fund-euro-share-class",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "ustbl-tokenized-u-s-treasury-bill",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "moolah",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "brla-digital-brla",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "medxt",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "pathusd",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "nirvana-ana-2",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "universal-usd",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "mezo-usd",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "metya",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "backed-cspx-core-s-p-500",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "coinex-token",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "gold-park",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "unipoly",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "lido-earnusd",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "across-protocol",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "cortex-2",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "the-grays-currency",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "apex-4",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "deapcoin",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "tdccp",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "nkyc-token",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "ai-analysis-token",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "monerium-eur-money",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "geode-chain",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "stader-sftmx",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "tokenised-gbp",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "tcy",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "matrix-6",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "galaxy-usdt-quality",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "yfsx",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "uquid-coin",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "liquity-usd",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "openeden-open-dollar",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "nova-3",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "midas-m1-usd-market-neutral",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "tokenlon",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "obligate-trade-finance-yield",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "predictions",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "sodax",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "nyc-token",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "token-pocket",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "main-street-usd",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "energy-web-token",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "croatian-ff-fan-token",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "prospective",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "securitize-corp",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "auki-labs",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "hex-trust-usdx",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "zylo-ecosystem",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "whiteheart",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "everything",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "wyde-end-hunger",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "main-street-yield",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "mass-vehicle-ledger",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "fuzzybear",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "qanplatform",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "jpy-coin",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "octra",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "galaxy-usdc-quality",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "myonion-fun",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "galaxy-weth-quality",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "saffron-finance",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "sailout-royalty",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "hundred",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "qkacoin",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "ergo",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "avalaunch",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "abey",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "jpyc",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "venom",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "kekius-maximus-6",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "usdh-2",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "binaryx",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "atomone",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "lucidum",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "elephant-money",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "unicorn-3-2",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "palladium-network",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "bitcoin-pro",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "tronbank",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "songbird",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "faith-tribe",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "localcoinswap",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "ubs_umint_eth",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "wibx",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "scandic-coin",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "gaib-aid",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "orizon",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "gama-token",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "arcblock",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "dovu-2",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "re-protocol-reusde",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "ryze",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "gradients",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "oho-blockchain",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "bityuan",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "verse-world",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "nxusd",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "peapods-finance",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "backed-ib01-treasury-bond-0-1yr",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "chrema-coin",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "strikecoin",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "public-meme-token",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "nexst",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "morpheusai",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "idlemine",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "my-paqman-coin",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "verus-coin",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "mon-protocol",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "x-dol-x",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "bit2me",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "tx",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "keep-network",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "shardus",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "max-token",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "pinksale",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "singularitynet",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "spiko-uk-t-bills-money-market-fund",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "vin-2",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "moonwell-artemis",
+      "reason": "Volume-to-market-cap ratio is below 0.01."
+    },
+    {
+      "id": "delta-exchange-token",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "currenc-group-inc",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "kotai",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "degate",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "islamic-coin",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "kelp-gain",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "araracoin",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "striker",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "pond-coin",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "tokenos-ai",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "compounding-open-dollar",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "tree-capital",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "ao-computer",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "rujira",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "theros",
+      "reason": "Trading volume is below 100000."
+    },
+    {
+      "id": "fart-coin",
+      "reason": "Trading volume is below 100000."
+    }
+  ],
+  "requestedCandidateLimit": 1000
+}

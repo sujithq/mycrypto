@@ -89,6 +89,44 @@ for simulations; without it, the latest stored quote is used. Dated lookups use
 `data/market.json` first, then query CoinGecko when that asset and date are not
 cached. Online fallback results are returned without modifying the market file.
 
+### Rank assets by ATH potential
+
+The `top-ath-quantities` agent skill discovers CoinGecko-listed assets and
+ranks them by what an equal position would be worth at each asset's all-time
+high. It defaults to the top 10 results with EUR 50 invested per asset and
+searches the latest 1000 assets by market capitalization:
+
+```bash
+npm run top-ath-quantities
+npm run top-ath-quantities -- 50 10
+npm run top-ath-quantities -- 50 10 1000
+```
+
+The output includes profile-ready quantities, current and ATH prices, the ATH
+upside multiple, and the position's potential value at ATH. It ranks by ATH
+potential value rather than raw token count because units are not comparable
+across assets. New assets are only suggested when CoinGecko returns canonical
+metadata, positive market capitalization and volume, and a valid update time;
+they must be added to `supportedAssets` before profile use. ATH recovery is a
+historical scenario, not a forecast.
+
+### Find lower-cap diamond candidates
+
+The `diamond-quantities` agent skill searches the same live CoinGecko universe
+without using ATH data. It ranks liquid assets below a EUR 1 billion market cap
+using market-cap headroom, the quantity bought for EUR 50, 7-day and 30-day
+momentum, volume, and circulating-supply risk:
+
+```bash
+npm run diamond-quantities
+npm run diamond-quantities -- 50 10 1000
+```
+
+The output includes the five component scores and a EUR 1 billion market-cap
+scenario. New assets are marked as unsupported until their canonical metadata
+and thesis are added with the `supported-asset-entry` skill. The ranking is a
+quantitative research screen, not a price forecast.
+
 ### Resolve a supported asset entry
 
 The `supported-asset-entry` agent skill returns a `supportedAssets` JSON object

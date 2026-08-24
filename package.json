@@ -6,8 +6,10 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "build:manage": "node scripts/build.mjs --include-management",
+    "diamond-quantities": "node .github/skills/diamond-quantities/scripts/rank-diamond-quantities.mjs",
     "test": "node --test",
     "market-quantity": "node .github/skills/market-quantity/scripts/calculate-market-quantity.mjs",
+    "top-ath-quantities": "node .github/skills/top-ath-quantities/scripts/rank-ath-quantities.mjs",
     "supported-asset-entry": "node .github/skills/supported-asset-entry/scripts/resolve-supported-asset.mjs",
     "update-data": "node scripts/update-market-data.mjs",
     "update-data:force": "node scripts/update-market-data.mjs --force",
