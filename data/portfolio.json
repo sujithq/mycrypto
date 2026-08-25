@@ -63,6 +63,7 @@
     { "id": "chiliz", "symbol": "CHZ", "name": "Chiliz", "thesis": "Speculative exposure to Chiliz, which passed the workflow's lower-market-cap, liquidity, and momentum screens, with material volatility, liquidity, token-supply, and project-execution risk." },
     { "id": "avantis", "symbol": "AVNT", "name": "Avantis", "thesis": "Speculative exposure to Avantis, which passed the workflow's lower-market-cap, liquidity, and momentum screens, with material volatility, liquidity, token-supply, and project-execution risk." },
     { "id": "optimism", "symbol": "OP", "name": "Optimism", "thesis": "Speculative exposure to Optimism, which passed the workflow's lower-market-cap, liquidity, and momentum screens, with material volatility, liquidity, token-supply, and project-execution risk." },
-    { "id": "blockstack", "symbol": "STX", "name": "Stacks", "thesis": "Speculative exposure to Stacks, which passed the workflow's lower-market-cap, liquidity, and momentum screens, with material volatility, liquidity, token-supply, and project-execution risk." }
+    { "id": "blockstack", "symbol": "STX", "name": "Stacks", "thesis": "Speculative exposure to Stacks, which passed the workflow's lower-market-cap, liquidity, and momentum screens, with material volatility, liquidity, token-supply, and project-execution risk." },
+    { "id": "jasmycoin", "symbol": "JASMY", "name": "JasmyCoin", "thesis": "Speculative exposure to JasmyCoin, that passed the workflow's lower-market-cap, liquidity, and momentum screens, with material volatility, liquidity, token-supply, and project-execution risk." }
   ]
 }
