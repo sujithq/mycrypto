@@ -44,7 +44,7 @@ Research and identifier references:
 - The dashboard can opt into browser-only live prices every 1, 5, 15, 30, or 60 minutes. Selecting an asset's `1D` range lazily loads and caches its rolling 24-hour CoinGecko series; while live prices are enabled, the open intraday chart follows the selected refresh interval. Settings, quotes, and per-asset intraday caches stay in `localStorage`; they do not change repository data or trigger a deployment.
 - The local-only management build can create, rename, edit, and delete browser profiles stored in `localStorage`. It can also compose complete JSON for a file-based simulation or real portfolio without changing published profiles.
 - Standard builds omit `manage.html` and `src/manage.js`. Run `npm run build:manage` to include the owner tool locally. Publishing generated JSON still requires repository write access.
-- Real holdings can be entered row by row or pasted using an asset ID or symbol, `quantity`, `investedAmount`, and an optional `buyDate`. Legacy `amount`, `cost`, and `actualCost` fields are accepted on import. Assets may appear more than once with different buy dates. TARS AI (TAI) is included in the supported asset universe.
+- New timestamped real holdings store only `id`, `symbol`, `investedAmount`, `quantity`, and `buyTimestamp`. The dashboard derives `name` and `thesis` from `supportedAssets` and derives `buyDate` from the UTC timestamp, then displays the instant in `Europe/Brussels`, including DST. Date-only and verbose profiles remain supported; legacy `amount`, `cost`, and `actualCost` fields are also accepted on import. Assets may appear more than once with different buy dates or timestamps. TARS AI (TAI) is included in the supported asset universe.
 - `.github/workflows/deploy-pages.yml` validates and deploys every push to `main`.
 
 The market workflow deploys its own generated site because commits made with
@@ -192,6 +192,22 @@ npm run supported-asset-entry -- dogwifcoin
 The command exposes the local or CoinGecko source and supporting context. When
 a symbol belongs to multiple assets, it returns the canonical ID choices
 instead of guessing.
+
+### Validate a profile
+
+The `profile-validator` agent skill validates a profile by ID or JSON path
+against the repository model and supported asset registry. It reports structured
+checks for metadata, filenames, amounts, quantities, allocation totals, symbols,
+UTC timestamps, duplicate purchase lots, and runtime enrichment without making
+network requests or modifying the profile.
+
+```bash
+npm run validate-profile -- learn
+npm run validate-profile -- profiles/learn.json
+```
+
+Invalid profiles return actionable errors and a nonzero exit status. Accepted
+legacy or redundant fields are reported separately as warnings.
 
 ## GitHub Pages setup
 

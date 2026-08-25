@@ -4,6 +4,7 @@ import {
   normalizePortfolioInvestments,
   parseRealPortfolioJson,
   resolveProfilePortfolio,
+  serializePortfolioHolding,
 } from './model.js';
 
 const $ = (selector) => document.querySelector(selector);
@@ -70,12 +71,22 @@ function renderFields(fields, portfolio, investedAmountStep = '0.01', idPrefix =
     buyDate.value = item.buyDate ?? '';
     buyDate.setAttribute('aria-label', `Buy date ${index + 1}`);
 
+    const buyTimestamp = document.createElement('input');
+    buyTimestamp.name = 'buyTimestamp';
+    buyTimestamp.type = 'text';
+    buyTimestamp.value = item.buyTimestamp ?? '';
+    buyTimestamp.placeholder = 'UTC timestamp';
+    buyTimestamp.setAttribute('aria-label', `Buy timestamp UTC ${index + 1}`);
+
+    const purchaseTime = element('div', 'purchase-time-fields');
+    purchaseTime.append(buyDate, buyTimestamp);
+
     const remove = element('button', 'button button-quiet remove-asset', 'Remove');
     remove.type = 'button';
     remove.dataset.index = String(index);
     remove.setAttribute('aria-label', `Remove asset ${index + 1}`);
 
-    row.append(label, select, investedAmountWrap, quantity, buyDate, remove);
+    row.append(label, select, investedAmountWrap, quantity, purchaseTime, remove);
     fields.append(row);
   });
 }
@@ -94,30 +105,31 @@ function updateTotal(fieldsSelector, outputSelector) {
   }
 }
 
-function buildPortfolio(fieldsSelector, sourcePortfolio) {
+function buildPortfolio(fieldsSelector) {
   const fields = $(fieldsSelector);
-  const rows = [...fields.querySelectorAll('.portfolio-field')];
   const ids = [...fields.querySelectorAll('select[name="asset"]')].map(({ value }) => value);
   const investedAmounts = [...fields.querySelectorAll('input[name="investedAmount"]')]
     .map(({ value }) => Number(value));
   const buyDates = [...fields.querySelectorAll('input[name="buyDate"]')].map(({ value }) => value);
+  const buyTimestamps = [...fields.querySelectorAll('input[name="buyTimestamp"]')]
+    .map(({ value }) => value.trim());
   const quantities = [...fields.querySelectorAll('input[name="quantity"]')].map(({ value }) => value);
 
   return ids.map((id, index) => {
     const selected = config.supportedAssets.find((asset) => asset.id === id);
-    const existing = sourcePortfolio.find((asset) => asset.id === id);
-    return {
-      ...selected,
+    return serializePortfolioHolding({
+      id,
+      symbol: selected.symbol,
       investedAmount: investedAmounts[index],
-      ...(quantities[index] ? { quantity: Number(quantities[index]) } : {}),
-      buyDate: buyDates[index] || undefined,
-      thesis: existing?.thesis ?? rows[index]?.dataset.thesis ?? 'Managed default portfolio selection.',
-    };
+      quantity: quantities[index],
+      buyDate: buyDates[index],
+      buyTimestamp: buyTimestamps[index],
+    });
   });
 }
 
 function addAsset(fieldsSelector, totalSelector, idPrefix, investedAmountStep) {
-  const current = buildPortfolio(fieldsSelector, []);
+  const current = buildPortfolio(fieldsSelector);
   current.push({
     ...config.supportedAssets[0],
     investedAmount: 1,
@@ -129,7 +141,7 @@ function addAsset(fieldsSelector, totalSelector, idPrefix, investedAmountStep) {
 }
 
 function removeAsset(fieldsSelector, totalSelector, idPrefix, investedAmountStep, index) {
-  const current = buildPortfolio(fieldsSelector, []);
+  const current = buildPortfolio(fieldsSelector);
   current.splice(index, 1);
   const type = fieldsSelector === '#management-fields' ? $('#managed-profile-type').value : 'simulated';
   renderFields($(fieldsSelector), current, investedAmountStep, idPrefix, type);
@@ -251,7 +263,7 @@ function bindEvents() {
     loadManagedProfile(target.value);
   });
   $('#managed-profile-type').addEventListener('change', ({ target }) => {
-    const portfolio = buildPortfolio('#management-fields', []);
+    const portfolio = buildPortfolio('#management-fields');
     renderFields($('#management-fields'), portfolio, '0.01', 'managed-asset', target.value);
     $('#real-portfolio-import').hidden = target.value !== 'real';
     updateTotal('#management-fields', '#management-total');
@@ -290,8 +302,7 @@ function bindEvents() {
   });
   $('#portfolio-form').addEventListener('submit', (event) => {
     event.preventDefault();
-    const current = localProfiles.find(({ id }) => id === activeLocalId);
-    const portfolio = buildPortfolio('#portfolio-fields', current?.portfolio ?? config.defaultPortfolio);
+    const portfolio = buildPortfolio('#portfolio-fields');
     const name = $('#local-profile-name').value.trim();
     if (!isValidPortfolio(portfolio, supportedIds, config.totalInvestment)) {
       $('#form-error').textContent = 'Choose one or more valid purchases with positive values totalling the configured investment. Repeated assets need different buy dates.';
@@ -319,19 +330,17 @@ function bindEvents() {
   });
   $('#management-form').addEventListener('submit', (event) => {
     event.preventDefault();
-    const source = activeManagedId
-      ? resolveProfilePortfolio(managedProfile(activeManagedId), config.defaultPortfolio)
-      : config.defaultPortfolio;
-    const portfolio = buildPortfolio('#management-fields', source);
+    const portfolio = buildPortfolio('#management-fields');
     const profileId = $('#managed-profile-id').value.trim();
     const profileName = $('#managed-profile-name').value.trim();
     const profileBuyDate = $('#managed-profile-buy-date').value;
     const profileType = $('#managed-profile-type').value;
+    const hasExactTimestamps = portfolio.every(({ buyTimestamp }) => buyTimestamp);
     const candidate = {
       id: profileId,
       name: profileName,
       type: profileType,
-      ...(profileBuyDate ? { buyDate: profileBuyDate } : {}),
+      ...(profileBuyDate && !hasExactTimestamps ? { buyDate: profileBuyDate } : {}),
       portfolio,
     };
     const validProfile = isValidProfile(
@@ -346,8 +355,8 @@ function bindEvents() {
     }
     if (!validProfile) {
       $('#management-error').textContent = profileType === 'real'
-        ? 'Choose valid holdings with positive quantities and invested amounts. Repeated assets need different buy dates.'
-        : 'Choose one or more valid purchases with positive values totalling the configured investment. Repeated assets need different buy dates.';
+        ? 'Choose valid holdings with positive quantities and invested amounts. Use UTC timestamps ending in Z; repeated assets need different dates or timestamps.'
+        : 'Choose valid purchases totalling the configured investment. Use UTC timestamps ending in Z; repeated assets need different dates or timestamps.';
       return;
     }
     $('#management-error').textContent = '';

@@ -215,7 +215,7 @@ export function renderDailyGemsIssue(adoptionPackage) {
 Generated from live ${ranking.source} data at ${generatedAt}. Every candidate was also verified against an active ${quoteMarketDescription} market on ${ranking.tradingVenue.name} in ${ranking.tradingVenue.region}. This issue is an adoption package; it does not record a purchase or modify the repository.
 
 > [!IMPORTANT]
-> The quantities below are reference fills calculated from reported spot prices. Before publishing this as a real portfolio, replace them with actual executed quantities and adjust the buy date if needed. Fees, spread, and slippage are not included.
+> The quantities below are reference fills calculated from reported spot prices, and the per-asset UTC timestamps record the market snapshot rather than completed trades. Before publishing this as a real portfolio, replace them with actual executed quantities and UTC execution timestamps, then adjust the buy date if needed. Fees, spread, and slippage are not included.
 
 > [!WARNING]
 > Revolut X market availability and order limits can change. Recheck each pair immediately before placing an order; a listing verified at generation time is not an execution guarantee.
@@ -225,7 +225,7 @@ Generated from live ${ranking.source} data at ${generatedAt}. Every candidate wa
 - [ ] Review the candidates, score inputs, and risks.
 - [ ] Confirm a total allocation of ${currency} ${formatNumber(totalInvestment)}.
 - [ ] Reconfirm every listed ${ranking.tradingVenue.name} pair is active in ${ranking.tradingVenue.region} and accepts its listed quote-order amount; any USD order must remain worth no more than EUR ${MAX_USD_INVESTMENT_EUR}.
-- [ ] Replace reference quantities with actual filled quantities.
+- [ ] Replace reference quantities and UTC snapshot timestamps with actual fills.
 - [ ] Add the missing registry entries below to \`data/portfolio.json\`.
 - [ ] Save the profile below as \`${profilePath}\`.
 - [ ] Refresh market data and run all checks.
@@ -344,21 +344,12 @@ export function buildDailyGemsAdoptionPackage(
     id: profileId,
     name: profileNameInput ?? `Crypto Gems - ${date}`,
     type: 'real',
-    buyDate: date,
     portfolio: ranking.assets.map((asset, index) => ({
-      ...registryEntries[index],
+      id: asset.id,
+      symbol: registryEntries[index].symbol,
       investedAmount: Number(asset.investedAmount),
       quantity: Number(asset.quantity),
-      buyDate: date,
-      tradingVenue: asset.tradingVenue,
-      tradingRegion: asset.tradingRegion,
-      tradingPair: asset.tradingPair,
-      tradingPairStatus: asset.tradingPairStatus,
-      tradingCurrencyName: asset.tradingCurrencyName,
-      tradingQuoteCurrency: asset.tradingQuoteCurrency,
-      quoteOrderAmount: asset.quoteOrderAmount,
-      minOrderSizeQuote: asset.minOrderSizeQuote,
-      maxOrderSizeQuote: asset.maxOrderSizeQuote,
+      buyTimestamp: generatedAt,
     })),
   };
   const transientSupportedIds = new Set([
@@ -488,7 +479,7 @@ export function renderConsolidatedDailyGemsIssue(consolidatedPackage) {
 Generated from one shared live CoinGecko and Revolut X snapshot at ${generatedAt}. This issue compares three independently validated execution modes: EUR-only, USD-only, and mixed with EUR preferred. It does not record a purchase or modify the repository.
 
 > [!IMPORTANT]
-> Each option allocates ${currency} ${formatNumber(totalInvestmentPerProfile)} using reference fills. Choose one profile, then replace its quantities with actual fills before publishing it. Fees, spread, and slippage are not included.
+> Each option allocates ${currency} ${formatNumber(totalInvestmentPerProfile)} using reference fills. Its per-asset UTC timestamps identify the shared market snapshot, not completed trades. Choose one profile, then replace its quantities and timestamps with actual fills before publishing it. Fees, spread, and slippage are not included.
 
 > [!WARNING]
 > Revolut X market availability, exchange rates, and order limits can change. Recheck each selected pair immediately before ordering. Every USD order is capped at a EUR ${MAX_USD_INVESTMENT_EUR} equivalent.
@@ -498,7 +489,7 @@ Generated from one shared live CoinGecko and Revolut X snapshot at ${generatedAt
 - [ ] Compare the EUR-only, USD-only, and mixed rankings below.
 - [ ] Choose one profile; do not combine the three ${currency} ${formatNumber(totalInvestmentPerProfile)} allocations unless separately intended.
 - [ ] Reconfirm every selected Revolut X pair and quote-order amount.
-- [ ] Replace reference quantities with actual filled quantities.
+- [ ] Replace reference quantities and UTC snapshot timestamps with actual fills.
 - [ ] Add the required registry entries below to \`data/portfolio.json\`.
 - [ ] Save only the chosen profile at its listed path.
 - [ ] Refresh market data and run all checks.

@@ -107,6 +107,7 @@ export function rankAthQuantities(marketRows, portfolioConfig, {
       investedAmount,
       quantity,
       buyDate: observedAt.slice(0, 10),
+      buyTimestamp: observedAt,
       currentPrice,
       ath,
       athDate: quote.ath_date ?? null,

@@ -64,6 +64,13 @@ export function canUseIntradayMarketSnapshot(snapshot, assetId, currency) {
       && (index === 0 || point.timestamp > prices[index - 1]?.timestamp));
 }
 
+function isBeforePurchase(timestamp, holding) {
+  const buyTimestamp = Date.parse(holding?.buyTimestamp);
+  if (Number.isFinite(buyTimestamp)) return timestamp < buyTimestamp;
+  return Boolean(holding?.buyDate
+    && new Date(timestamp).toISOString().slice(0, 10) < holding.buyDate);
+}
+
 export function calculateIntradayAssetSeries(snapshot, holding) {
   const quantity = Number(holding?.quantity);
   const investedAmount = Number(holding?.investedAmount);
@@ -73,7 +80,7 @@ export function calculateIntradayAssetSeries(snapshot, holding) {
     : investedAmount / startPrice;
   if (!Number.isFinite(units) || units <= 0) return [];
   return snapshot.prices.flatMap(({ timestamp, price }) => (
-    holding?.buyDate && new Date(timestamp).toISOString().slice(0, 10) < holding.buyDate
+    isBeforePurchase(timestamp, holding)
       ? []
       : [{ timestamp, value: Math.round(units * price * 100) / 100 }]
   ));
@@ -81,7 +88,7 @@ export function calculateIntradayAssetSeries(snapshot, holding) {
 
 export function calculateIntradayPriceSeries(snapshot, holding) {
   return snapshot.prices.flatMap(({ timestamp, price }) => (
-    holding?.buyDate && new Date(timestamp).toISOString().slice(0, 10) < holding.buyDate
+    isBeforePurchase(timestamp, holding)
       ? []
       : [{ timestamp, value: price }]
   ));

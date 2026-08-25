@@ -2,48 +2,97 @@
   "id": "learn",
   "name": "Learn - 2026-08-18",
   "type": "real",
-  "buyDate": "2026-08-18",
   "portfolio": [
+    {
+      "id": "vechain",
+      "symbol": "VET",
+      "investedAmount": 0.75,
+      "quantity": 194.20,
+      "buyTimestamp": "2026-08-18T07:48:00.000Z"
+    },
+    {
+      "id": "cat-in-a-dogs-world",
+      "symbol": "MEW",
+      "investedAmount": 0.5,
+      "quantity": 1805.05,
+      "buyTimestamp": "2026-08-18T07:47:00.000Z"
+    },
+    {
+      "id": "cat-in-a-dogs-world",
+      "symbol": "MEW",
+      "investedAmount": 0.5,
+      "quantity": 1804.88,
+      "buyTimestamp": "2026-08-18T07:47:10.000Z"
+    },
+    {
+      "id": "polyhedra-network",
+      "symbol": "ZKJ",
+      "investedAmount": 0.5,
+      "quantity": 104.75,
+      "buyTimestamp": "2026-08-18T07:11:00.000Z"
+    },
+    {
+      "id": "polyhedra-network",
+      "symbol": "ZKJ",
+      "investedAmount": 0.5,
+      "quantity": 103.80,
+      "buyTimestamp": "2026-08-18T07:10:00.000Z"
+    },
+    {
+      "id": "vechain",
+      "symbol": "VET",
+      "investedAmount": 0.75,
+      "quantity": 193.47,
+      "buyTimestamp": "2026-08-18T07:05:00.000Z"
+    },
+    {
+      "id": "vechain",
+      "symbol": "VET",
+      "investedAmount": 0.75,
+      "quantity": 193.42,
+      "buyTimestamp": "2026-08-18T07:03:00.000Z"
+    },
     {
       "id": "flare-networks",
       "symbol": "FLR",
-      "name": "Flare",
-      "thesis": "EVM-compatible layer-one exposure built around native decentralized data protocols, with adoption, oracle-security, token-supply, and project-execution risk.",
-      "investedAmount": 1.5,
-      "quantity": 289.32,
-      "buyDate": "2026-08-18"
-    },{
+      "investedAmount": 0.5,
+      "quantity": 96.45,
+      "buyTimestamp": "2026-08-18T06:59:00.000Z"
+    },
+    {
+      "id": "flare-networks",
+      "symbol": "FLR",
+      "investedAmount": 0.5,
+      "quantity": 96.44,
+      "buyTimestamp": "2026-08-18T06:57:00.000Z"
+    },
+    {
+      "id": "flare-networks",
+      "symbol": "FLR",
+      "investedAmount": 0.5,
+      "quantity": 96.43,
+      "buyTimestamp": "2026-08-18T06:54:00.000Z"
+    },
+    {
       "id": "monad",
       "symbol": "MON",
-      "name": "Monad",
-      "thesis": "EVM-compatible layer-one exposure using parallel execution and a purpose-built database for higher throughput, with adoption, decentralization, token-supply, and project-execution risk.",
-      "investedAmount": 1.5,
-      "quantity": 79.99,
-      "buyDate": "2026-08-18"
-    },{
-      "id": "vechain",
-      "symbol": "VET",
-      "name": "VeChain",
-      "thesis": "Enterprise-focused layer-one exposure for supply-chain provenance, sustainability, and other real-world data applications, with adoption and execution risk.",
-      "investedAmount": 2.25,
-      "quantity": 581.09,
-      "buyDate": "2026-08-18"
-    },{
-      "id": "polyhedra-network",
-      "symbol": "ZKJ",
-      "name": "Polyhedra Network",
-      "thesis": "Zero-knowledge infrastructure exposure through interoperability and proof systems, with adoption, bridge-security, liquidity, token-supply, and execution risk.",
-      "investedAmount": 1.0,
-      "quantity": 208.55,
-      "buyDate": "2026-08-18"
-    },{
-      "id": "cat-in-a-dogs-world",
-      "symbol": "MEW",
-      "name": "cat in a dogs world",
-      "thesis": "Purely speculative Solana meme-token exposure built around the MEW cat brand, with demand driven primarily by attention and liquidity rather than fundamental utility.",
-      "investedAmount": 1.0,
-      "quantity": 3609.93,
-      "buyDate": "2026-08-18"
+      "investedAmount": 0.5,
+      "quantity": 26.62,
+      "buyTimestamp": "2026-08-18T06:31:00.000Z"
+    },
+    {
+      "id": "monad",
+      "symbol": "MON",
+      "investedAmount": 0.5,
+      "quantity": 26.62,
+      "buyTimestamp": "2026-08-18T06:29:00.000Z"
+    },
+    {
+      "id": "monad",
+      "symbol": "MON",
+      "investedAmount": 0.5,
+      "quantity": 26.75,
+      "buyTimestamp": "2026-08-18T06:27:00.000Z"
     }
   ]
 }

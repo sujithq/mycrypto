@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
+  aggregateAssetChanges,
   calculateAssetPriceSeries,
   calculateAssetSeries,
   calculateHoldings,
@@ -16,6 +17,7 @@ import {
   isValidRealPortfolio,
   parseRealPortfolioJson,
   resolveProfilePortfolio,
+  serializePortfolioHolding,
 } from '../src/model.js';
 import {
   combineHistoricalPrices,
@@ -292,6 +294,17 @@ test('accepts repeated assets only with different buy dates', () => {
   assert.equal(isValidPortfolio(repeated.map(({ buyDate, ...item }) => item), supportedIds), false);
 });
 
+test('validates UTC buy timestamps and distinguishes same-day purchases', () => {
+  const repeated = [
+    { ...portfolio[0], investedAmount: 250, buyDate: '2026-08-11', buyTimestamp: '2026-08-11T08:30:00.000Z' },
+    { ...portfolio[0], investedAmount: 250, buyDate: '2026-08-11', buyTimestamp: '2026-08-11T14:45:00.000Z' },
+  ];
+  assert.equal(isValidPortfolio(repeated, supportedIds), true);
+  assert.equal(isValidPortfolio(repeated.map((item) => ({ ...item, buyTimestamp: '2026-08-11T08:30:00.000Z' })), supportedIds), false);
+  assert.equal(isValidPortfolio(repeated.map((item) => ({ ...item, buyTimestamp: '2026-08-11T10:30:00+02:00' })), supportedIds), false);
+  assert.equal(isValidPortfolio(repeated.map((item) => ({ ...item, buyTimestamp: 0 })), supportedIds), false);
+});
+
 test('resolves and validates a profile-wide buy date', () => {
   const profile = { id: '2026-03', name: 'March 2026', buyDate: '2026-03-01' };
   const resolved = resolveProfilePortfolio(profile, portfolio);
@@ -299,6 +312,100 @@ test('resolves and validates a profile-wide buy date', () => {
   assert.equal(isValidProfile(profile, supportedIds, portfolio), true);
   assert.equal(isValidProfile({ ...profile, id: 'March 2026' }, supportedIds, portfolio), false);
   assert.equal(isValidProfile({ ...profile, buyDate: '2026-02-31' }, supportedIds, portfolio), false);
+});
+
+test('derives a UTC buy date from an exact timestamp when no date is supplied', () => {
+  const profile = {
+    id: 'timestamped',
+    name: 'Timestamped',
+    portfolio: portfolio.map((item) => ({
+      ...item,
+      buyTimestamp: '2026-08-24T22:30:00.000Z',
+    })),
+  };
+  const resolved = resolveProfilePortfolio(profile, portfolio);
+  assert.equal(resolved.every(({ buyDate }) => buyDate === '2026-08-24'), true);
+  assert.equal(isValidProfile(profile, supportedIds, portfolio), true);
+});
+
+test('serializes holdings without derived or audit fields', () => {
+  assert.deepEqual(serializePortfolioHolding({
+    id: 'bitcoin',
+    symbol: 'BTC',
+    name: 'Bitcoin',
+    thesis: 'Derived from the registry.',
+    investedAmount: '125',
+    quantity: '0.002',
+    buyDate: '2026-08-24',
+    buyTimestamp: '2026-08-24T22:30:00.000Z',
+    tradingVenue: 'Legacy venue',
+  }), {
+    id: 'bitcoin',
+    symbol: 'BTC',
+    investedAmount: 125,
+    quantity: 0.002,
+    buyTimestamp: '2026-08-24T22:30:00.000Z',
+  });
+  assert.deepEqual(serializePortfolioHolding({
+    id: 'bitcoin',
+    symbol: 'BTC',
+    investedAmount: 125,
+    buyDate: '2026-08-24',
+  }), {
+    id: 'bitcoin',
+    symbol: 'BTC',
+    investedAmount: 125,
+    buyDate: '2026-08-24',
+  });
+});
+
+test('enriches compact timestamped holdings and accepts verbose date-only holdings', () => {
+  const supportedAssets = [{
+    id: 'bitcoin',
+    symbol: 'BTC',
+    name: 'Bitcoin',
+    thesis: 'Registry thesis.',
+  }];
+  const compactHolding = {
+    id: 'bitcoin',
+    symbol: 'BTC',
+    investedAmount: 125,
+    quantity: 0.002,
+    buyTimestamp: '2026-08-24T22:30:00.000Z',
+  };
+  const compactProfile = {
+    id: 'compact-real',
+    name: 'Compact real portfolio',
+    type: 'real',
+    portfolio: [compactHolding],
+  };
+  const [resolved] = resolveProfilePortfolio(compactProfile, [], supportedAssets);
+
+  assert.deepEqual(Object.keys(compactHolding), [
+    'id',
+    'symbol',
+    'investedAmount',
+    'quantity',
+    'buyTimestamp',
+  ]);
+  assert.equal(isValidProfile(compactProfile, new Set(['bitcoin']), []), true);
+  assert.equal(resolved.name, 'Bitcoin');
+  assert.equal(resolved.thesis, 'Registry thesis.');
+  assert.equal(resolved.buyDate, '2026-08-24');
+
+  const legacyProfile = {
+    id: 'legacy-real',
+    name: 'Legacy real portfolio',
+    type: 'real',
+    buyDate: '2026-08-20',
+    portfolio: [{
+      ...supportedAssets[0],
+      investedAmount: 125,
+      quantity: 0.002,
+      buyDate: '2026-08-20',
+    }],
+  };
+  assert.equal(isValidProfile(legacyProfile, new Set(['bitcoin']), []), true);
 });
 
 test('validates profiles with custom portfolios', () => {
@@ -321,12 +428,13 @@ test('validates real portfolios without requiring the simulated €500 total', (
 test('parses pasted real holdings by symbol or asset id', () => {
   const supportedAssets = portfolio.map(({ id, symbol }) => ({ id, symbol, name: id }));
   assert.deepEqual(parseRealPortfolioJson(JSON.stringify([
-    { symbol: 'A0', quantity: 2, cost: 100, buyDate: '2026-08-11' },
+    { symbol: 'A0', quantity: 2, cost: 100, buyDate: '2026-08-11', buyTimestamp: '2026-08-11T08:30:00.000Z' },
   ]), supportedAssets), [{
     ...supportedAssets[0],
     investedAmount: 100,
     quantity: 2,
     buyDate: '2026-08-11',
+    buyTimestamp: '2026-08-11T08:30:00.000Z',
     thesis: 'Manually managed real portfolio holding.',
   }]);
   assert.throws(() => parseRealPortfolioJson('[{"symbol":"NOPE"}]', supportedAssets), /Unsupported asset/);
@@ -493,6 +601,51 @@ test('creates an allocation-weighted trailing report', () => {
     { symbol: 'A8', changePct: 10 },
     { symbol: 'A7', changePct: 10 },
   ]);
+});
+
+test('averages repeated asset lots and fills performer rankings with unique assets', () => {
+  assert.deepEqual(aggregateAssetChanges([
+    { id: 'asset-a', symbol: 'AAA', investedAmount: 25, changePct: 40 },
+    { id: 'asset-a', symbol: 'AAA', investedAmount: 75, changePct: 0 },
+  ]), [
+    { id: 'asset-a', symbol: 'AAA', investedAmount: 100, changePct: 10 },
+  ]);
+
+  const repeatedPortfolio = [
+    { id: 'asset-a', symbol: 'AAA', investedAmount: 25 },
+    { id: 'asset-a', symbol: 'AAA', investedAmount: 75 },
+    { id: 'asset-b', symbol: 'BBB', investedAmount: 100 },
+    { id: 'asset-c', symbol: 'CCC', investedAmount: 100 },
+    { id: 'asset-d', symbol: 'DDD', investedAmount: 100 },
+  ];
+  const repeatedHistory = [
+    {
+      date: '2026-08-11',
+      prices: { 'asset-a': 100, 'asset-b': 100, 'asset-c': 100, 'asset-d': 100 },
+    },
+    {
+      date: '2026-08-18',
+      prices: { 'asset-a': 140, 'asset-b': 130, 'asset-c': 120, 'asset-d': 110 },
+    },
+  ];
+
+  const result = createAnalysisReport(
+    repeatedHistory,
+    repeatedPortfolio,
+    '2026-08-19T00:00:00.000Z',
+  );
+
+  assert.deepEqual(result.leadingPerformers, [
+    { symbol: 'AAA', changePct: 40 },
+    { symbol: 'BBB', changePct: 30 },
+    { symbol: 'CCC', changePct: 20 },
+  ]);
+  assert.deepEqual(result.laggingPerformers, [
+    { symbol: 'DDD', changePct: 10 },
+    { symbol: 'CCC', changePct: 20 },
+    { symbol: 'BBB', changePct: 30 },
+  ]);
+  assert.equal(result.portfolioChangePct, 25);
 });
 
 test('creates an identified report for every published profile', () => {

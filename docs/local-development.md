@@ -101,14 +101,24 @@ application.
 ## Portfolio profiles
 
 The dashboard includes file-based monthly profiles beginning with January 2026.
-Each profile can define its own assets, allocations, and per-asset buy dates.
+Each profile can define its own assets, allocations, per-asset buy dates, and
+optional exact buy timestamps. Store `buyTimestamp` as an ISO-8601 UTC instant
+ending in `Z`, for example `2026-08-24T12:00:00.000Z`. The dashboard renders
+that instant in `Europe/Brussels`, so CET/CEST follows Brussels DST.
 An optional profile buy date acts as the default for custom portfolio items
 without an individual buy date. Profiles without custom portfolio content keep
 the original behavior: their profile buy date applies to every default asset.
 File-based profiles may also use the `real` type. Real holdings record their current
 quantity and `investedAmount` instead of requiring a €500 allocation. They can be
 entered manually or pasted into the management page as a JSON array containing
-`id` or `symbol`, `quantity`, `investedAmount`, and an optional `buyDate`.
+`id` or `symbol`, `quantity`, `investedAmount`, and optional `buyDate` and
+`buyTimestamp` fields.
+New timestamped real holdings are serialized with exactly `id`, `symbol`,
+`investedAmount`, `quantity`, and `buyTimestamp`. The asset `name` and `thesis`
+come from `supportedAssets`, and the UTC `buyDate` is derived from the timestamp
+at runtime. Existing verbose profiles remain valid. When an older profile records
+only a date, retain its holding-level or profile-level `buyDate` rather than
+inventing an exact timestamp.
 Legacy `amount`, `cost`, and `actualCost` fields are accepted when importing.
 Switching profiles does not modify historical prices. Browser-local profiles can
 be created, edited, and deleted with the local-only management build.
@@ -139,15 +149,16 @@ EUR is the default quote mode; `usd` uses direct-USD pairs, while `mixed`
 prefers direct-EUR pairs and falls back to direct-USD pairs. Candidates must
 have a verified Revolut currency identity and order limits that accept the
 proposed quote amount. USD orders use CoinGecko's live EUR/USD rate and cannot
-exceed a EUR 50 equivalent. Quantities are CoinGecko reference fills, not
-evidence of completed trades.
+exceed a EUR 50 equivalent. Quantities are CoinGecko reference fills, and each
+generated `buyTimestamp` records the shared snapshot time. Neither is evidence
+of a completed trade.
 
 Use `all` to match the workflow. It creates one body with three mode-qualified
 profile paths, one deduplicated registry-addition set, and one daily issue
 marker for the publisher.
 Reconfirm each pair immediately before trading, replace reference quantities
-with actual fills before saving the profile, append only the missing registry
-entries to `data/portfolio.json`, then run:
+and snapshot timestamps with actual fills before saving the profile, append only
+the missing registry entries to `data/portfolio.json`, then run:
 
 ```bash
 npm run update-data:force

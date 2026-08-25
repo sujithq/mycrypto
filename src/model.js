@@ -4,6 +4,23 @@ export function isValidDate(date) {
   return Number.isFinite(parsed.getTime()) && parsed.toISOString().slice(0, 10) === date;
 }
 
+export function isValidTimestamp(timestamp) {
+  if (typeof timestamp !== 'string') return false;
+  const match = /^(\d{4}-\d{2}-\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d{1,3})?Z$/.exec(timestamp);
+  if (!match || !isValidDate(match[1])) return false;
+  const [, , hours, minutes, seconds] = match;
+  return Number(hours) < 24 && Number(minutes) < 60 && Number(seconds) < 60
+    && Number.isFinite(Date.parse(timestamp));
+}
+
+function purchaseKey({ id, buyDate, buyTimestamp }) {
+  return `${id}:${buyTimestamp ?? buyDate ?? ''}`;
+}
+
+function purchaseDate({ buyDate, buyTimestamp }) {
+  return buyDate ?? (isValidTimestamp(buyTimestamp) ? buyTimestamp.slice(0, 10) : undefined);
+}
+
 export function normalizePortfolioInvestments(portfolio) {
   if (!Array.isArray(portfolio)) return portfolio;
   return portfolio.map(({ amount, ...item }) => ({
@@ -12,46 +29,74 @@ export function normalizePortfolioInvestments(portfolio) {
   }));
 }
 
+export function serializePortfolioHolding({
+  id,
+  symbol,
+  investedAmount,
+  quantity,
+  buyDate,
+  buyTimestamp,
+}) {
+  const hasQuantity = quantity !== undefined && quantity !== null && quantity !== '';
+  return {
+    id,
+    symbol,
+    investedAmount: Number(investedAmount),
+    ...(hasQuantity ? { quantity: Number(quantity) } : {}),
+    ...(buyTimestamp ? { buyTimestamp } : buyDate ? { buyDate } : {}),
+  };
+}
+
 export function isValidPortfolio(portfolio, supportedIds, target = 500) {
   if (!Array.isArray(portfolio) || portfolio.length === 0) return false;
   const ids = portfolio.map(({ id }) => id);
   if (ids.some((id) => !supportedIds.has(id))) return false;
   const investedAmounts = portfolio.map(({ investedAmount }) => Number(investedAmount));
   const dates = portfolio.map(({ buyDate }) => buyDate).filter(Boolean);
-  const purchases = portfolio.map(({ id, buyDate }) => `${id}:${buyDate ?? ''}`);
+  const purchases = portfolio.map(purchaseKey);
   const repeatedIds = ids.filter((id, index) => ids.indexOf(id) !== index);
   if (repeatedIds.some((id) =>
-    portfolio.some((item) => item.id === id && !item.buyDate))
+    portfolio.some((item) => item.id === id && !purchaseDate(item)))
     || new Set(purchases).size !== purchases.length) return false;
   return investedAmounts.every((investedAmount) =>
     Number.isFinite(investedAmount) && investedAmount > 0)
     && dates.every(isValidDate)
+    && portfolio.every(({ buyTimestamp }) =>
+      buyTimestamp === undefined || isValidTimestamp(buyTimestamp))
     && Math.abs(investedAmounts.reduce((sum, investedAmount) => sum + investedAmount, 0) - target) < 0.01;
 }
 
 export function isValidRealPortfolio(portfolio, supportedIds) {
   if (!Array.isArray(portfolio) || portfolio.length === 0) return false;
   const ids = portfolio.map(({ id }) => id);
-  const purchases = portfolio.map(({ id, buyDate }) => `${id}:${buyDate ?? ''}`);
+  const purchases = portfolio.map(purchaseKey);
   const dates = portfolio.map(({ buyDate }) => buyDate).filter(Boolean);
   return ids.every((id) => supportedIds.has(id))
     && portfolio.every(({ investedAmount, quantity }) =>
       Number.isFinite(Number(investedAmount)) && Number(investedAmount) > 0
       && Number.isFinite(Number(quantity)) && Number(quantity) > 0)
     && dates.every(isValidDate)
+    && portfolio.every(({ buyTimestamp }) =>
+      buyTimestamp === undefined || isValidTimestamp(buyTimestamp))
     && new Set(purchases).size === purchases.length;
 }
 
 export function resolveProfilePortfolio(profile, defaultPortfolio, supportedAssets = []) {
   const source = profile?.portfolio ?? defaultPortfolio;
-  return source.map((item) => ({
-    ...supportedAssets.find(({ id }) => id === item.id),
-    ...defaultPortfolio.find(({ id }) => id === item.id),
-    ...item,
-    ...(profile?.buyDate && (!profile.portfolio || !item.buyDate)
-      ? { buyDate: profile.buyDate }
-      : {}),
-  }));
+  return source.map((item) => {
+    const profileBuyDate = profile?.buyDate && (!profile.portfolio || !item.buyDate)
+      ? profile.buyDate
+      : undefined;
+    const buyDate = profileBuyDate
+      ?? item.buyDate
+      ?? (isValidTimestamp(item.buyTimestamp) ? item.buyTimestamp.slice(0, 10) : undefined);
+    return {
+      ...supportedAssets.find(({ id }) => id === item.id),
+      ...defaultPortfolio.find(({ id }) => id === item.id),
+      ...item,
+      ...(buyDate ? { buyDate } : {}),
+    };
+  });
 }
 
 export function isValidProfile(profile, supportedIds, defaultPortfolio, target = 500) {
@@ -91,7 +136,8 @@ export function parseRealPortfolioJson(raw, supportedAssets) {
       ...asset,
       investedAmount,
       quantity,
-      ...(item.buyDate ? { buyDate: item.buyDate } : {}),
+      ...(purchaseDate(item) ? { buyDate: purchaseDate(item) } : {}),
+      ...(item.buyTimestamp ? { buyTimestamp: item.buyTimestamp } : {}),
       thesis: typeof item.thesis === 'string' && item.thesis.trim()
         ? item.thesis.trim()
         : 'Manually managed real portfolio holding.',
@@ -230,6 +276,26 @@ export function calculateRealHoldings(portfolio, assets) {
   });
 }
 
+export function aggregateAssetChanges(changes) {
+  const assets = new Map();
+  changes.forEach(({ id, symbol, investedAmount, changePct }) => {
+    const amount = Number(investedAmount);
+    const current = assets.get(id) ?? {
+      id,
+      symbol,
+      investedAmount: 0,
+      weightedChange: 0,
+    };
+    current.investedAmount += amount;
+    current.weightedChange += changePct * amount;
+    assets.set(id, current);
+  });
+  return [...assets.values()].map(({ weightedChange, ...asset }) => ({
+    ...asset,
+    changePct: weightedChange / asset.investedAmount,
+  }));
+}
+
 export function createAnalysisReport(history, portfolio, generatedAt = new Date().toISOString(), timeframeDays = 7) {
   const latestBuyDate = portfolio.map(({ buyDate }) => buyDate).filter(Boolean).sort().at(-1);
   const recent = filterHistoryByTimeframe(history, timeframeDays)
@@ -260,6 +326,7 @@ export function createAnalysisReport(history, portfolio, generatedAt = new Date(
     const endPrice = end.prices[asset.id];
     if (!Number.isFinite(startPrice) || !Number.isFinite(endPrice) || startPrice <= 0) return [];
     return [{
+      id: asset.id,
       symbol: asset.symbol,
       investedAmount: asset.investedAmount,
       changePct: ((endPrice - startPrice) / startPrice) * 100,
@@ -280,11 +347,12 @@ export function createAnalysisReport(history, portfolio, generatedAt = new Date(
       observations: ['The report will be published when every portfolio asset has comparable prices.'],
     };
   }
-  const totalInvestedAmount = changes.reduce((sum, asset) => sum + asset.investedAmount, 0);
+  const assetChanges = aggregateAssetChanges(changes);
+  const totalInvestedAmount = assetChanges.reduce((sum, asset) => sum + asset.investedAmount, 0);
   const portfolioChangePct = totalInvestedAmount
-    ? changes.reduce((sum, asset) => sum + asset.changePct * asset.investedAmount, 0) / totalInvestedAmount
+    ? assetChanges.reduce((sum, asset) => sum + asset.changePct * asset.investedAmount, 0) / totalInvestedAmount
     : null;
-  const ranked = [...changes].sort((a, b) => b.changePct - a.changePct);
+  const ranked = [...assetChanges].sort((a, b) => b.changePct - a.changePct);
   const best = ranked[0] ?? null;
   const worst = ranked.at(-1) ?? null;
   const performanceSummary = ({ symbol, changePct }) => ({

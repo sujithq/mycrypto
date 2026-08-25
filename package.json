@@ -13,6 +13,7 @@
     "market-quantity": "node .github/skills/market-quantity/scripts/calculate-market-quantity.mjs",
     "top-ath-quantities": "node .github/skills/top-ath-quantities/scripts/rank-ath-quantities.mjs",
     "supported-asset-entry": "node .github/skills/supported-asset-entry/scripts/resolve-supported-asset.mjs",
+    "validate-profile": "node .github/skills/profile-validator/scripts/validate-profile.mjs",
     "update-data": "node scripts/update-market-data.mjs",
     "update-data:force": "node scripts/update-market-data.mjs --force",
     "check": "npm test && npm run build"

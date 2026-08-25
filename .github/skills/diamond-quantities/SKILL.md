@@ -147,6 +147,8 @@ this core information:
   "maxOrderSizeQuote": 1000000,
   "investedAmount": 50,
   "quantity": 50000,
+  "buyDate": "2026-08-24",
+  "buyTimestamp": "2026-08-24T12:00:00.000Z",
   "currentPrice": 0.001,
   "marketCap": 10000000,
   "totalVolume": 2000000,
