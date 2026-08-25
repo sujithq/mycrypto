@@ -387,6 +387,7 @@ export function rankDiamondQuantities(marketRows, portfolioConfig, {
       investedAmount,
       quantity,
       buyDate: observedAt.slice(0, 10),
+      buyTimestamp: observedAt,
       currentPrice,
       marketCap,
       marketCapRank: Number.isFinite(Number(quote.market_cap_rank))

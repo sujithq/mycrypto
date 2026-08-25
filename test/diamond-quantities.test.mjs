@@ -56,6 +56,7 @@ test('ranks liquid low-price candidates with market-cap headroom', () => {
 
   assert.deepEqual(result.assets.map(({ id }) => id), ['cheap-growth', 'established']);
   assert.equal(result.assets[0].quantity, 50_000);
+  assert.equal(result.assets[0].buyTimestamp, '2026-08-24T12:00:00.000Z');
   assert.equal(result.assets[0].growthMultipleToReferenceMarketCap, 100);
   assert.equal(result.assets[0].potentialValueAtReferenceMarketCap, 5_000);
   assert.equal(result.assets[0].diamondScore, 92.625);

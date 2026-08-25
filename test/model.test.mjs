@@ -292,6 +292,17 @@ test('accepts repeated assets only with different buy dates', () => {
   assert.equal(isValidPortfolio(repeated.map(({ buyDate, ...item }) => item), supportedIds), false);
 });
 
+test('validates UTC buy timestamps and distinguishes same-day purchases', () => {
+  const repeated = [
+    { ...portfolio[0], investedAmount: 250, buyDate: '2026-08-11', buyTimestamp: '2026-08-11T08:30:00.000Z' },
+    { ...portfolio[0], investedAmount: 250, buyDate: '2026-08-11', buyTimestamp: '2026-08-11T14:45:00.000Z' },
+  ];
+  assert.equal(isValidPortfolio(repeated, supportedIds), true);
+  assert.equal(isValidPortfolio(repeated.map((item) => ({ ...item, buyTimestamp: '2026-08-11T08:30:00.000Z' })), supportedIds), false);
+  assert.equal(isValidPortfolio(repeated.map((item) => ({ ...item, buyTimestamp: '2026-08-11T10:30:00+02:00' })), supportedIds), false);
+  assert.equal(isValidPortfolio(repeated.map((item) => ({ ...item, buyTimestamp: 0 })), supportedIds), false);
+});
+
 test('resolves and validates a profile-wide buy date', () => {
   const profile = { id: '2026-03', name: 'March 2026', buyDate: '2026-03-01' };
   const resolved = resolveProfilePortfolio(profile, portfolio);
@@ -299,6 +310,20 @@ test('resolves and validates a profile-wide buy date', () => {
   assert.equal(isValidProfile(profile, supportedIds, portfolio), true);
   assert.equal(isValidProfile({ ...profile, id: 'March 2026' }, supportedIds, portfolio), false);
   assert.equal(isValidProfile({ ...profile, buyDate: '2026-02-31' }, supportedIds, portfolio), false);
+});
+
+test('derives a UTC buy date from an exact timestamp when no date is supplied', () => {
+  const profile = {
+    id: 'timestamped',
+    name: 'Timestamped',
+    portfolio: portfolio.map((item) => ({
+      ...item,
+      buyTimestamp: '2026-08-24T22:30:00.000Z',
+    })),
+  };
+  const resolved = resolveProfilePortfolio(profile, portfolio);
+  assert.equal(resolved.every(({ buyDate }) => buyDate === '2026-08-24'), true);
+  assert.equal(isValidProfile(profile, supportedIds, portfolio), true);
 });
 
 test('validates profiles with custom portfolios', () => {
@@ -321,12 +346,13 @@ test('validates real portfolios without requiring the simulated €500 total', (
 test('parses pasted real holdings by symbol or asset id', () => {
   const supportedAssets = portfolio.map(({ id, symbol }) => ({ id, symbol, name: id }));
   assert.deepEqual(parseRealPortfolioJson(JSON.stringify([
-    { symbol: 'A0', quantity: 2, cost: 100, buyDate: '2026-08-11' },
+    { symbol: 'A0', quantity: 2, cost: 100, buyDate: '2026-08-11', buyTimestamp: '2026-08-11T08:30:00.000Z' },
   ]), supportedAssets), [{
     ...supportedAssets[0],
     investedAmount: 100,
     quantity: 2,
     buyDate: '2026-08-11',
+    buyTimestamp: '2026-08-11T08:30:00.000Z',
     thesis: 'Manually managed real portfolio holding.',
   }]);
   assert.throws(() => parseRealPortfolioJson('[{"symbol":"NOPE"}]', supportedAssets), /Unsupported asset/);

@@ -69,7 +69,8 @@ multiple.
   economically comparable across assets with different supplies and denominations.
 - Preserve enough precision in `quantity` to reconstruct the invested amount.
 - Include `id`, `symbol`, `name`, support status, `investedAmount`, `quantity`,
-  and `buyDate`. Supported results also include their local thesis.
+  `buyDate`, and the UTC `buyTimestamp` for the market observation. Supported
+  results also include their local thesis.
 - Include the current price, ATH, ATH date, upside multiple, upside percentage,
   potential value at ATH, market capitalization, rank, volume, and quote update
   time so the ranking and existence check are auditable.
@@ -97,6 +98,7 @@ asset has this shape:
   "investedAmount": 50,
   "quantity": 1000,
   "buyDate": "2026-08-24",
+  "buyTimestamp": "2026-08-24T12:00:00.000Z",
   "currentPrice": 0.05,
   "ath": 1,
   "athDate": "2024-01-01T00:00:00.000Z",

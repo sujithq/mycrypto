@@ -61,6 +61,17 @@ const compactPrice = new Intl.NumberFormat('en-IE', {
 const quantity = new Intl.NumberFormat('en-IE', { maximumSignificantDigits: 8 });
 const shortDate = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', timeZone: 'UTC' });
 const detailDate = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' });
+const brusselsDateTime = new Intl.DateTimeFormat('en-GB', {
+  day: '2-digit',
+  month: 'short',
+  year: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+  hour12: false,
+  timeZone: 'Europe/Brussels',
+  timeZoneName: 'short',
+});
 const intradayDate = new Intl.DateTimeFormat('en-GB', {
   day: '2-digit',
   month: 'short',
@@ -200,7 +211,8 @@ function normalizeSavedPortfolio(saved) {
     return {
       ...asset,
       investedAmount: Number(item.investedAmount),
-      buyDate: item.buyDate,
+      buyDate: item.buyDate ?? item.buyTimestamp?.slice(0, 10),
+      buyTimestamp: item.buyTimestamp,
       thesis: item.thesis ?? 'Custom selection from the tracked asset universe.',
     };
   });
@@ -488,8 +500,13 @@ function renderAssetRange() {
   const isIntraday = assetRange === '1d';
   const intradaySnapshot = isIntraday && item ? getIntradayMarketSnapshot(item.id) : null;
   const intradayPosition = activeProfile.type === 'real'
-    ? { quantity: item?.quantity, buyDate: item?.buyDate }
-    : { investedAmount: item?.investedAmount, startPrice: item?.startPrice, buyDate: item?.buyDate };
+    ? { quantity: item?.quantity, buyDate: item?.buyDate, buyTimestamp: item?.buyTimestamp }
+    : {
+        investedAmount: item?.investedAmount,
+        startPrice: item?.startPrice,
+        buyDate: item?.buyDate,
+        buyTimestamp: item?.buyTimestamp,
+      };
   const visibleSeries = isIntraday
     ? intradaySnapshot
       ? calculateIntradayAssetSeries(intradaySnapshot, intradayPosition)
@@ -497,7 +514,10 @@ function renderAssetRange() {
     : filterSeriesByRange(assetSeries, assetRange);
   const visiblePriceSeries = isIntraday
     ? intradaySnapshot
-      ? calculateIntradayPriceSeries(intradaySnapshot, { buyDate: item?.buyDate })
+      ? calculateIntradayPriceSeries(intradaySnapshot, {
+          buyDate: item?.buyDate,
+          buyTimestamp: item?.buyTimestamp,
+        })
       : []
     : filterSeriesByRange(assetPriceSeries, assetRange);
   document.querySelectorAll('#asset-range-control [data-range]').forEach((button) => {
@@ -585,7 +605,9 @@ function renderAssetDetail(index) {
       : 'Latest market point unavailable';
   setTrend($('#asset-total-return'), item.returnPct);
   $('#asset-buy-date').textContent = firstDate
-    ? `Purchased ${detailDate.format(new Date(`${firstDate}T00:00:00Z`))}`
+    ? portfolioItem.buyTimestamp
+      ? `Purchased ${brusselsDateTime.format(Date.parse(portfolioItem.buyTimestamp))} (Brussels)`
+      : `Purchased ${detailDate.format(new Date(`${firstDate}T00:00:00Z`))}`
     : 'Purchase date unavailable';
   $('#asset-invested-value').textContent = euro.format(item.investedAmount);
   $('#asset-quantity').textContent = Number.isFinite(Number(item.quantity))

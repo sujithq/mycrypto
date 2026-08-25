@@ -40,6 +40,7 @@ test('ranks live CoinGecko assets including verified assets outside the local re
     investedAmount: 50,
     quantity: 500,
     buyDate: '2026-08-24',
+    buyTimestamp: '2026-08-24T12:00:00.000Z',
     currentPrice: 0.1,
     ath: 2,
     athDate: '2022-01-01T00:00:00.000Z',

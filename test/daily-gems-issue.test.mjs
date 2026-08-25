@@ -39,6 +39,7 @@ function rankedAsset(overrides) {
     investedAmount: 50,
     quantity: 50_000,
     buyDate: '2026-08-24',
+    buyTimestamp: '2026-08-24T12:00:00.000Z',
     currentPrice: 0.001,
     marketCap: 10_000_000,
     marketCapRank: 500,
@@ -169,6 +170,10 @@ test('builds a complete adoption package for a valid real profile', () => {
   assert.equal(result.profilePath, 'profiles/gems-2026-08-24.json');
   assert.equal(result.profile.type, 'real');
   assert.equal(result.profile.portfolio.length, 2);
+  assert.deepEqual(
+    result.profile.portfolio.map(({ buyTimestamp }) => buyTimestamp),
+    ['2026-08-24T12:00:00.000Z', '2026-08-24T12:00:00.000Z'],
+  );
   assert.equal(result.totalInvestment, 100);
   assert.equal(result.validation.repositorySchema, true);
   assert.equal(result.validation.revolutXEligibleQuoteMarkets, true);
@@ -189,6 +194,7 @@ test('builds a complete adoption package for a valid real profile', () => {
   assert.match(result.issueBody, /data\/portfolio\.json/);
   assert.match(result.issueBody, /profiles\/gems-2026-08-24\.json/);
   assert.match(result.issueBody, /"type": "real"/);
+  assert.match(result.issueBody, /snapshot rather than completed trades/);
   assert.match(result.issueBody, /Machine-readable adoption manifest/);
   assert.match(result.issueBody, /active direct-EUR market on Revolut X in EEA/);
   assert.match(result.issueBody, /NEW\/EUR \(active, EEA\)/);

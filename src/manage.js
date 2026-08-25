@@ -70,12 +70,22 @@ function renderFields(fields, portfolio, investedAmountStep = '0.01', idPrefix =
     buyDate.value = item.buyDate ?? '';
     buyDate.setAttribute('aria-label', `Buy date ${index + 1}`);
 
+    const buyTimestamp = document.createElement('input');
+    buyTimestamp.name = 'buyTimestamp';
+    buyTimestamp.type = 'text';
+    buyTimestamp.value = item.buyTimestamp ?? '';
+    buyTimestamp.placeholder = 'UTC timestamp';
+    buyTimestamp.setAttribute('aria-label', `Buy timestamp UTC ${index + 1}`);
+
+    const purchaseTime = element('div', 'purchase-time-fields');
+    purchaseTime.append(buyDate, buyTimestamp);
+
     const remove = element('button', 'button button-quiet remove-asset', 'Remove');
     remove.type = 'button';
     remove.dataset.index = String(index);
     remove.setAttribute('aria-label', `Remove asset ${index + 1}`);
 
-    row.append(label, select, investedAmountWrap, quantity, buyDate, remove);
+    row.append(label, select, investedAmountWrap, quantity, purchaseTime, remove);
     fields.append(row);
   });
 }
@@ -101,6 +111,8 @@ function buildPortfolio(fieldsSelector, sourcePortfolio) {
   const investedAmounts = [...fields.querySelectorAll('input[name="investedAmount"]')]
     .map(({ value }) => Number(value));
   const buyDates = [...fields.querySelectorAll('input[name="buyDate"]')].map(({ value }) => value);
+  const buyTimestamps = [...fields.querySelectorAll('input[name="buyTimestamp"]')]
+    .map(({ value }) => value.trim());
   const quantities = [...fields.querySelectorAll('input[name="quantity"]')].map(({ value }) => value);
 
   return ids.map((id, index) => {
@@ -111,6 +123,7 @@ function buildPortfolio(fieldsSelector, sourcePortfolio) {
       investedAmount: investedAmounts[index],
       ...(quantities[index] ? { quantity: Number(quantities[index]) } : {}),
       buyDate: buyDates[index] || undefined,
+      buyTimestamp: buyTimestamps[index] || undefined,
       thesis: existing?.thesis ?? rows[index]?.dataset.thesis ?? 'Managed default portfolio selection.',
     };
   });
@@ -346,8 +359,8 @@ function bindEvents() {
     }
     if (!validProfile) {
       $('#management-error').textContent = profileType === 'real'
-        ? 'Choose valid holdings with positive quantities and invested amounts. Repeated assets need different buy dates.'
-        : 'Choose one or more valid purchases with positive values totalling the configured investment. Repeated assets need different buy dates.';
+        ? 'Choose valid holdings with positive quantities and invested amounts. Use UTC timestamps ending in Z; repeated assets need different dates or timestamps.'
+        : 'Choose valid purchases totalling the configured investment. Use UTC timestamps ending in Z; repeated assets need different dates or timestamps.';
       return;
     }
     $('#management-error').textContent = '';
