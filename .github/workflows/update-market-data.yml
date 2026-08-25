@@ -3,7 +3,7 @@ name: Update market data
 on:
   schedule:
     # Refresh the daily fallback and history before the 07:15 UTC gems scan.
-    - cron: "45 5 * * *"
+    - cron: "45 */3 * * *"
   workflow_dispatch:
 
 permissions:
