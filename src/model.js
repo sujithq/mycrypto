@@ -244,6 +244,8 @@ export function createAnalysisReport(history, portfolio, generatedAt = new Date(
       portfolioChangePct: null,
       bestPerformer: null,
       worstPerformer: null,
+      leadingPerformers: [],
+      laggingPerformers: [],
       observations: [`The report will become more reliable after ${timeframeDays + 1} daily closes.`],
     };
   }
@@ -273,6 +275,8 @@ export function createAnalysisReport(history, portfolio, generatedAt = new Date(
       portfolioChangePct: null,
       bestPerformer: null,
       worstPerformer: null,
+      leadingPerformers: [],
+      laggingPerformers: [],
       observations: ['The report will be published when every portfolio asset has comparable prices.'],
     };
   }
@@ -283,6 +287,12 @@ export function createAnalysisReport(history, portfolio, generatedAt = new Date(
   const ranked = [...changes].sort((a, b) => b.changePct - a.changePct);
   const best = ranked[0] ?? null;
   const worst = ranked.at(-1) ?? null;
+  const performanceSummary = ({ symbol, changePct }) => ({
+    symbol,
+    changePct: Number(changePct.toFixed(4)),
+  });
+  const leadingPerformers = ranked.slice(0, 3).map(performanceSummary);
+  const laggingPerformers = ranked.slice(-3).reverse().map(performanceSummary);
   const status = portfolioChangePct === null
     ? 'Insufficient data'
     : portfolioChangePct >= 5
@@ -300,8 +310,10 @@ export function createAnalysisReport(history, portfolio, generatedAt = new Date(
       ? 'No comparable prices were available.'
       : `The portfolio moved ${portfolioChangePct >= 0 ? '+' : ''}${portfolioChangePct.toFixed(2)}% over a ${timeframeDays}-day trailing window (${recent.length} closes).`,
     portfolioChangePct: portfolioChangePct === null ? null : Number(portfolioChangePct.toFixed(4)),
-    bestPerformer: best ? { symbol: best.symbol, changePct: Number(best.changePct.toFixed(4)) } : null,
-    worstPerformer: worst ? { symbol: worst.symbol, changePct: Number(worst.changePct.toFixed(4)) } : null,
+    bestPerformer: leadingPerformers[0] ?? null,
+    worstPerformer: laggingPerformers[0] ?? null,
+    leadingPerformers,
+    laggingPerformers,
     observations: [
       best ? `${best.symbol} led the portfolio at ${best.changePct >= 0 ? '+' : ''}${best.changePct.toFixed(2)}%.` : 'No leader could be calculated.',
       worst ? `${worst.symbol} was weakest at ${worst.changePct >= 0 ? '+' : ''}${worst.changePct.toFixed(2)}%.` : 'No laggard could be calculated.',

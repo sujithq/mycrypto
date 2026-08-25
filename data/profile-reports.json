@@ -21,6 +21,34 @@
         "symbol": "OP",
         "changePct": -2.3627
       },
+      "leadingPerformers": [
+        {
+          "symbol": "STX",
+          "changePct": 19.3724
+        },
+        {
+          "symbol": "WIF",
+          "changePct": 11.1284
+        },
+        {
+          "symbol": "PENGU",
+          "changePct": 5.9972
+        }
+      ],
+      "laggingPerformers": [
+        {
+          "symbol": "OP",
+          "changePct": -2.3627
+        },
+        {
+          "symbol": "FLOKI",
+          "changePct": 0.2545
+        },
+        {
+          "symbol": "CHZ",
+          "changePct": 0.5551
+        }
+      ],
       "observations": [
         "STX led the portfolio at +19.37%.",
         "OP was weakest at -2.36%.",
@@ -48,6 +76,34 @@
         "symbol": "ZKJ",
         "changePct": 5.4338
       },
+      "leadingPerformers": [
+        {
+          "symbol": "MEW",
+          "changePct": 43.8992
+        },
+        {
+          "symbol": "MON",
+          "changePct": 39.4741
+        },
+        {
+          "symbol": "VET",
+          "changePct": 30.4731
+        }
+      ],
+      "laggingPerformers": [
+        {
+          "symbol": "ZKJ",
+          "changePct": 5.4338
+        },
+        {
+          "symbol": "FLR",
+          "changePct": 15.8401
+        },
+        {
+          "symbol": "VET",
+          "changePct": 30.4731
+        }
+      ],
       "observations": [
         "MEW led the portfolio at +43.90%.",
         "ZKJ was weakest at +5.43%.",
@@ -75,6 +131,34 @@
         "symbol": "TAI",
         "changePct": -9.6341
       },
+      "leadingPerformers": [
+        {
+          "symbol": "HYPE",
+          "changePct": 43.8551
+        },
+        {
+          "symbol": "LINK",
+          "changePct": 34.131
+        },
+        {
+          "symbol": "ETH",
+          "changePct": 31.8451
+        }
+      ],
+      "laggingPerformers": [
+        {
+          "symbol": "TAI",
+          "changePct": -9.6341
+        },
+        {
+          "symbol": "SUI",
+          "changePct": 19.2329
+        },
+        {
+          "symbol": "TAO",
+          "changePct": 19.3277
+        }
+      ],
       "observations": [
         "HYPE led the portfolio at +43.86%.",
         "TAI was weakest at -9.63%.",
@@ -102,6 +186,34 @@
         "symbol": "TAI",
         "changePct": -91.6167
       },
+      "leadingPerformers": [
+        {
+          "symbol": "HYPE",
+          "changePct": 82.5423
+        },
+        {
+          "symbol": "BTC",
+          "changePct": -29.7755
+        },
+        {
+          "symbol": "TAO",
+          "changePct": -33.5059
+        }
+      ],
+      "laggingPerformers": [
+        {
+          "symbol": "TAI",
+          "changePct": -91.6167
+        },
+        {
+          "symbol": "ARB",
+          "changePct": -84.0308
+        },
+        {
+          "symbol": "SUI",
+          "changePct": -77.9356
+        }
+      ],
       "observations": [
         "HYPE led the portfolio at +82.54%.",
         "TAI was weakest at -91.62%.",
@@ -129,6 +241,34 @@
         "symbol": "FLOKI",
         "changePct": 0.2545
       },
+      "leadingPerformers": [
+        {
+          "symbol": "WIF",
+          "changePct": 11.1284
+        },
+        {
+          "symbol": "POPCAT",
+          "changePct": 10.7277
+        },
+        {
+          "symbol": "BRETT",
+          "changePct": 6.9761
+        }
+      ],
+      "laggingPerformers": [
+        {
+          "symbol": "FLOKI",
+          "changePct": 0.2545
+        },
+        {
+          "symbol": "DOGE",
+          "changePct": 0.8827
+        },
+        {
+          "symbol": "MOG",
+          "changePct": 1.3065
+        }
+      ],
       "observations": [
         "WIF led the portfolio at +11.13%.",
         "FLOKI was weakest at +0.25%.",
@@ -156,6 +296,34 @@
         "symbol": "MOG",
         "changePct": 20.1922
       },
+      "leadingPerformers": [
+        {
+          "symbol": "WIF",
+          "changePct": 62.8326
+        },
+        {
+          "symbol": "PENGU",
+          "changePct": 60.4531
+        },
+        {
+          "symbol": "PEPE",
+          "changePct": 54.3048
+        }
+      ],
+      "laggingPerformers": [
+        {
+          "symbol": "MOG",
+          "changePct": 20.1922
+        },
+        {
+          "symbol": "SHIB",
+          "changePct": 26.3102
+        },
+        {
+          "symbol": "DOGE",
+          "changePct": 31.1508
+        }
+      ],
       "observations": [
         "WIF led the portfolio at +62.83%.",
         "MOG was weakest at +20.19%.",

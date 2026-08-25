@@ -483,6 +483,16 @@ test('creates an allocation-weighted trailing report', () => {
   assert.equal(result.portfolioChangePct, 10);
   assert.equal(result.periodStart, '2026-08-11');
   assert.equal(result.periodEnd, '2026-08-18');
+  assert.deepEqual(result.leadingPerformers, [
+    { symbol: 'A0', changePct: 10 },
+    { symbol: 'A1', changePct: 10 },
+    { symbol: 'A2', changePct: 10 },
+  ]);
+  assert.deepEqual(result.laggingPerformers, [
+    { symbol: 'A9', changePct: 10 },
+    { symbol: 'A8', changePct: 10 },
+    { symbol: 'A7', changePct: 10 },
+  ]);
 });
 
 test('creates an identified report for every published profile', () => {

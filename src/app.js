@@ -350,10 +350,23 @@ function renderReport() {
   $('#report-period').textContent = `${start.toUpperCase()}—${end.toUpperCase()}`;
   $('#report-signal').textContent = report.status;
   $('#report-summary').textContent = report.summary;
-  const best = report.bestPerformer;
-  const worst = report.worstPerformer;
-  $('#report-best').textContent = best ? `${best.symbol} ${best.changePct >= 0 ? '+' : ''}${best.changePct.toFixed(2)}%` : '—';
-  $('#report-worst').textContent = worst ? `${worst.symbol} ${worst.changePct >= 0 ? '+' : ''}${worst.changePct.toFixed(2)}%` : '—';
+  const renderPerformers = (output, performers, fallback) => {
+    const ranked = Array.isArray(performers) && performers.length > 0
+      ? performers
+      : fallback ? [fallback] : [];
+    output.replaceChildren(...ranked.map((performer, index) => {
+      const row = element('span', 'performer-row');
+      row.append(
+        element('span', 'performer-rank', String(index + 1).padStart(2, '0')),
+        element('span', 'performer-symbol', performer.symbol),
+        element('span', 'performer-change', `${performer.changePct >= 0 ? '+' : ''}${performer.changePct.toFixed(2)}%`),
+      );
+      return row;
+    }));
+    if (ranked.length === 0) output.textContent = '—';
+  };
+  renderPerformers($('#report-best'), report.leadingPerformers, report.bestPerformer);
+  renderPerformers($('#report-worst'), report.laggingPerformers, report.worstPerformer);
   const list = $('#report-observations');
   list.replaceChildren(...report.observations.map((observation) => element('li', '', observation)));
 }
