@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
+  aggregateAssetChanges,
   calculateAssetPriceSeries,
   calculateAssetSeries,
   calculateHoldings,
@@ -600,6 +601,51 @@ test('creates an allocation-weighted trailing report', () => {
     { symbol: 'A8', changePct: 10 },
     { symbol: 'A7', changePct: 10 },
   ]);
+});
+
+test('averages repeated asset lots and fills performer rankings with unique assets', () => {
+  assert.deepEqual(aggregateAssetChanges([
+    { id: 'asset-a', symbol: 'AAA', investedAmount: 25, changePct: 40 },
+    { id: 'asset-a', symbol: 'AAA', investedAmount: 75, changePct: 0 },
+  ]), [
+    { id: 'asset-a', symbol: 'AAA', investedAmount: 100, changePct: 10 },
+  ]);
+
+  const repeatedPortfolio = [
+    { id: 'asset-a', symbol: 'AAA', investedAmount: 25 },
+    { id: 'asset-a', symbol: 'AAA', investedAmount: 75 },
+    { id: 'asset-b', symbol: 'BBB', investedAmount: 100 },
+    { id: 'asset-c', symbol: 'CCC', investedAmount: 100 },
+    { id: 'asset-d', symbol: 'DDD', investedAmount: 100 },
+  ];
+  const repeatedHistory = [
+    {
+      date: '2026-08-11',
+      prices: { 'asset-a': 100, 'asset-b': 100, 'asset-c': 100, 'asset-d': 100 },
+    },
+    {
+      date: '2026-08-18',
+      prices: { 'asset-a': 140, 'asset-b': 130, 'asset-c': 120, 'asset-d': 110 },
+    },
+  ];
+
+  const result = createAnalysisReport(
+    repeatedHistory,
+    repeatedPortfolio,
+    '2026-08-19T00:00:00.000Z',
+  );
+
+  assert.deepEqual(result.leadingPerformers, [
+    { symbol: 'AAA', changePct: 40 },
+    { symbol: 'BBB', changePct: 30 },
+    { symbol: 'CCC', changePct: 20 },
+  ]);
+  assert.deepEqual(result.laggingPerformers, [
+    { symbol: 'DDD', changePct: 10 },
+    { symbol: 'CCC', changePct: 20 },
+    { symbol: 'BBB', changePct: 30 },
+  ]);
+  assert.equal(result.portfolioChangePct, 25);
 });
 
 test('creates an identified report for every published profile', () => {

@@ -276,6 +276,26 @@ export function calculateRealHoldings(portfolio, assets) {
   });
 }
 
+export function aggregateAssetChanges(changes) {
+  const assets = new Map();
+  changes.forEach(({ id, symbol, investedAmount, changePct }) => {
+    const amount = Number(investedAmount);
+    const current = assets.get(id) ?? {
+      id,
+      symbol,
+      investedAmount: 0,
+      weightedChange: 0,
+    };
+    current.investedAmount += amount;
+    current.weightedChange += changePct * amount;
+    assets.set(id, current);
+  });
+  return [...assets.values()].map(({ weightedChange, ...asset }) => ({
+    ...asset,
+    changePct: weightedChange / asset.investedAmount,
+  }));
+}
+
 export function createAnalysisReport(history, portfolio, generatedAt = new Date().toISOString(), timeframeDays = 7) {
   const latestBuyDate = portfolio.map(({ buyDate }) => buyDate).filter(Boolean).sort().at(-1);
   const recent = filterHistoryByTimeframe(history, timeframeDays)
@@ -306,6 +326,7 @@ export function createAnalysisReport(history, portfolio, generatedAt = new Date(
     const endPrice = end.prices[asset.id];
     if (!Number.isFinite(startPrice) || !Number.isFinite(endPrice) || startPrice <= 0) return [];
     return [{
+      id: asset.id,
       symbol: asset.symbol,
       investedAmount: asset.investedAmount,
       changePct: ((endPrice - startPrice) / startPrice) * 100,
@@ -326,11 +347,12 @@ export function createAnalysisReport(history, portfolio, generatedAt = new Date(
       observations: ['The report will be published when every portfolio asset has comparable prices.'],
     };
   }
-  const totalInvestedAmount = changes.reduce((sum, asset) => sum + asset.investedAmount, 0);
+  const assetChanges = aggregateAssetChanges(changes);
+  const totalInvestedAmount = assetChanges.reduce((sum, asset) => sum + asset.investedAmount, 0);
   const portfolioChangePct = totalInvestedAmount
-    ? changes.reduce((sum, asset) => sum + asset.changePct * asset.investedAmount, 0) / totalInvestedAmount
+    ? assetChanges.reduce((sum, asset) => sum + asset.changePct * asset.investedAmount, 0) / totalInvestedAmount
     : null;
-  const ranked = [...changes].sort((a, b) => b.changePct - a.changePct);
+  const ranked = [...assetChanges].sort((a, b) => b.changePct - a.changePct);
   const best = ranked[0] ?? null;
   const worst = ranked.at(-1) ?? null;
   const performanceSummary = ({ symbol, changePct }) => ({
