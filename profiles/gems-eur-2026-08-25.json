@@ -2,67 +2,76 @@
   "id": "gems-eur-2026-08-25",
   "name": "Crypto Gems EUR - 2026-08-25",
   "type": "real",
-  "buyDate": "2026-08-25",
   "portfolio": [
     {
       "id": "bonfida",
       "symbol": "FIDA",
       "investedAmount": 50,
-      "quantity": 2979.261545035208
+      "quantity": 3025.2188292040105,
+      "buyTimestamp": "2026-08-25T09:29:48.396Z"
     },
     {
       "id": "bonk",
       "symbol": "BONK",
       "investedAmount": 50,
-      "quantity": 17844475.494403426
+      "quantity": 18050541.516245488,
+      "buyTimestamp": "2026-08-25T09:29:48.396Z"
     },
     {
       "id": "avantis",
       "symbol": "AVNT",
       "investedAmount": 50,
-      "quantity": 551.8084311031254
+      "quantity": 554.7296247808817,
+      "buyTimestamp": "2026-08-25T09:29:48.396Z"
     },
     {
       "id": "chiliz",
       "symbol": "CHZ",
       "investedAmount": 50,
-      "quantity": 3977.7760697348094
+      "quantity": 4019.819317161332,
+      "buyTimestamp": "2026-08-25T09:29:48.396Z"
     },
     {
       "id": "dogwifcoin",
       "symbol": "WIF",
       "investedAmount": 50,
-      "quantity": 261.094983294931
+      "quantity": 269.3123916017624,
+      "buyTimestamp": "2026-08-25T09:29:48.396Z"
     },
     {
       "id": "floki",
       "symbol": "FLOKI",
       "investedAmount": 50,
-      "quantity": 2116443.5689938394
+      "quantity": 2150537.634408602,
+      "buyTimestamp": "2026-08-25T09:29:48.396Z"
     },
     {
       "id": "pudgy-penguins",
       "symbol": "PENGU",
       "investedAmount": 50,
-      "quantity": 5810.305451789493
+      "quantity": 5817.315355501959,
+      "buyTimestamp": "2026-08-25T09:29:48.396Z"
     },
     {
       "id": "jasmycoin",
       "symbol": "JASMY",
       "investedAmount": 50,
-      "quantity": 11595.400138945273
+      "quantity": 11518.932517485739,
+      "buyTimestamp": "2026-08-25T09:29:48.396Z"
     },
     {
       "id": "blockstack",
       "symbol": "STX",
       "investedAmount": 50,
-      "quantity": 207.24774660230608
+      "quantity": 217.8924569989236,
+      "buyTimestamp": "2026-08-25T09:29:48.396Z"
     },
     {
       "id": "optimism",
       "symbol": "OP",
       "investedAmount": 50,
-      "quantity": 550.8584033065335
+      "quantity": 555.0806532189126,
+      "buyTimestamp": "2026-08-25T09:29:48.396Z"
     }
   ]
 }
