@@ -2,7 +2,7 @@
   "currency": "eur",
   "totalInvestment": 500,
   "timeframeDays": 366,
-  "defaultProfileId": "test",
+  "defaultProfileId": "learn",
   "defaultPortfolio": [
     { "id": "bitcoin", "symbol": "BTC", "name": "Bitcoin", "investedAmount": 60, "buyDate": "2026-01-01", "thesis": "Liquid macro anchor intended to moderate the higher-beta satellite positions." },
     { "id": "ethereum", "symbol": "ETH", "name": "Ethereum", "investedAmount": 115, "buyDate": "2026-01-01", "thesis": "Largest allocation: settlement-layer exposure to DeFi, stablecoins and layer twos." },
