@@ -113,6 +113,12 @@ quantity and `investedAmount` instead of requiring a €500 allocation. They can
 entered manually or pasted into the management page as a JSON array containing
 `id` or `symbol`, `quantity`, `investedAmount`, and optional `buyDate` and
 `buyTimestamp` fields.
+New timestamped real holdings are serialized with exactly `id`, `symbol`,
+`investedAmount`, `quantity`, and `buyTimestamp`. The asset `name` and `thesis`
+come from `supportedAssets`, and the UTC `buyDate` is derived from the timestamp
+at runtime. Existing verbose profiles remain valid. When an older profile records
+only a date, retain its holding-level or profile-level `buyDate` rather than
+inventing an exact timestamp.
 Legacy `amount`, `cost`, and `actualCost` fields are accepted when importing.
 Switching profiles does not modify historical prices. Browser-local profiles can
 be created, edited, and deleted with the local-only management build.

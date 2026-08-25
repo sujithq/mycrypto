@@ -4,6 +4,7 @@ import {
   normalizePortfolioInvestments,
   parseRealPortfolioJson,
   resolveProfilePortfolio,
+  serializePortfolioHolding,
 } from './model.js';
 
 const $ = (selector) => document.querySelector(selector);
@@ -104,9 +105,8 @@ function updateTotal(fieldsSelector, outputSelector) {
   }
 }
 
-function buildPortfolio(fieldsSelector, sourcePortfolio) {
+function buildPortfolio(fieldsSelector) {
   const fields = $(fieldsSelector);
-  const rows = [...fields.querySelectorAll('.portfolio-field')];
   const ids = [...fields.querySelectorAll('select[name="asset"]')].map(({ value }) => value);
   const investedAmounts = [...fields.querySelectorAll('input[name="investedAmount"]')]
     .map(({ value }) => Number(value));
@@ -117,20 +117,19 @@ function buildPortfolio(fieldsSelector, sourcePortfolio) {
 
   return ids.map((id, index) => {
     const selected = config.supportedAssets.find((asset) => asset.id === id);
-    const existing = sourcePortfolio.find((asset) => asset.id === id);
-    return {
-      ...selected,
+    return serializePortfolioHolding({
+      id,
+      symbol: selected.symbol,
       investedAmount: investedAmounts[index],
-      ...(quantities[index] ? { quantity: Number(quantities[index]) } : {}),
-      buyDate: buyDates[index] || undefined,
-      buyTimestamp: buyTimestamps[index] || undefined,
-      thesis: existing?.thesis ?? rows[index]?.dataset.thesis ?? 'Managed default portfolio selection.',
-    };
+      quantity: quantities[index],
+      buyDate: buyDates[index],
+      buyTimestamp: buyTimestamps[index],
+    });
   });
 }
 
 function addAsset(fieldsSelector, totalSelector, idPrefix, investedAmountStep) {
-  const current = buildPortfolio(fieldsSelector, []);
+  const current = buildPortfolio(fieldsSelector);
   current.push({
     ...config.supportedAssets[0],
     investedAmount: 1,
@@ -142,7 +141,7 @@ function addAsset(fieldsSelector, totalSelector, idPrefix, investedAmountStep) {
 }
 
 function removeAsset(fieldsSelector, totalSelector, idPrefix, investedAmountStep, index) {
-  const current = buildPortfolio(fieldsSelector, []);
+  const current = buildPortfolio(fieldsSelector);
   current.splice(index, 1);
   const type = fieldsSelector === '#management-fields' ? $('#managed-profile-type').value : 'simulated';
   renderFields($(fieldsSelector), current, investedAmountStep, idPrefix, type);
@@ -264,7 +263,7 @@ function bindEvents() {
     loadManagedProfile(target.value);
   });
   $('#managed-profile-type').addEventListener('change', ({ target }) => {
-    const portfolio = buildPortfolio('#management-fields', []);
+    const portfolio = buildPortfolio('#management-fields');
     renderFields($('#management-fields'), portfolio, '0.01', 'managed-asset', target.value);
     $('#real-portfolio-import').hidden = target.value !== 'real';
     updateTotal('#management-fields', '#management-total');
@@ -303,8 +302,7 @@ function bindEvents() {
   });
   $('#portfolio-form').addEventListener('submit', (event) => {
     event.preventDefault();
-    const current = localProfiles.find(({ id }) => id === activeLocalId);
-    const portfolio = buildPortfolio('#portfolio-fields', current?.portfolio ?? config.defaultPortfolio);
+    const portfolio = buildPortfolio('#portfolio-fields');
     const name = $('#local-profile-name').value.trim();
     if (!isValidPortfolio(portfolio, supportedIds, config.totalInvestment)) {
       $('#form-error').textContent = 'Choose one or more valid purchases with positive values totalling the configured investment. Repeated assets need different buy dates.';
@@ -332,19 +330,17 @@ function bindEvents() {
   });
   $('#management-form').addEventListener('submit', (event) => {
     event.preventDefault();
-    const source = activeManagedId
-      ? resolveProfilePortfolio(managedProfile(activeManagedId), config.defaultPortfolio)
-      : config.defaultPortfolio;
-    const portfolio = buildPortfolio('#management-fields', source);
+    const portfolio = buildPortfolio('#management-fields');
     const profileId = $('#managed-profile-id').value.trim();
     const profileName = $('#managed-profile-name').value.trim();
     const profileBuyDate = $('#managed-profile-buy-date').value;
     const profileType = $('#managed-profile-type').value;
+    const hasExactTimestamps = portfolio.every(({ buyTimestamp }) => buyTimestamp);
     const candidate = {
       id: profileId,
       name: profileName,
       type: profileType,
-      ...(profileBuyDate ? { buyDate: profileBuyDate } : {}),
+      ...(profileBuyDate && !hasExactTimestamps ? { buyDate: profileBuyDate } : {}),
       portfolio,
     };
     const validProfile = isValidProfile(

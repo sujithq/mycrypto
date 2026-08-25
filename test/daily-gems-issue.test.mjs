@@ -170,23 +170,28 @@ test('builds a complete adoption package for a valid real profile', () => {
   assert.equal(result.profilePath, 'profiles/gems-2026-08-24.json');
   assert.equal(result.profile.type, 'real');
   assert.equal(result.profile.portfolio.length, 2);
-  assert.deepEqual(
-    result.profile.portfolio.map(({ buyTimestamp }) => buyTimestamp),
-    ['2026-08-24T12:00:00.000Z', '2026-08-24T12:00:00.000Z'],
-  );
+  assert.equal(Object.hasOwn(result.profile, 'buyDate'), false);
+  assert.deepEqual(result.profile.portfolio[0], {
+    id: 'new-coin',
+    symbol: 'NEW',
+    investedAmount: 50,
+    quantity: 50_000,
+    buyTimestamp: '2026-08-24T12:00:00.000Z',
+  });
+  assert.deepEqual(Object.keys(result.profile.portfolio[1]), [
+    'id',
+    'symbol',
+    'investedAmount',
+    'quantity',
+    'buyTimestamp',
+  ]);
   assert.equal(result.totalInvestment, 100);
   assert.equal(result.validation.repositorySchema, true);
   assert.equal(result.validation.revolutXEligibleQuoteMarkets, true);
   assert.equal(result.validation.usdOrdersCappedAtEur50, true);
   assert.deepEqual(result.supportedAssetsToAdd.map(({ id }) => id), ['new-coin']);
   assert.match(result.supportedAssetsToAdd[0].thesis, /Layer 1 and Smart Contract Platform/);
-  assert.equal(result.profile.portfolio[1].name, 'Established');
-  assert.equal(result.profile.portfolio[1].thesis, 'Existing registry thesis.');
-  assert.equal(result.profile.portfolio[0].tradingPair, 'NEW/EUR');
-  assert.equal(result.profile.portfolio[0].tradingPairStatus, 'active');
-  assert.equal(result.profile.portfolio[0].tradingCurrencyName, 'New Coin');
-  assert.equal(result.profile.portfolio[0].tradingQuoteCurrency, 'EUR');
-  assert.equal(result.profile.portfolio[0].quoteOrderAmount, 50);
+  assert.equal(result.ranking.assets[0].tradingPair, 'NEW/EUR');
   assert.equal(result.ranking.investedAmountPerAsset, 50);
   assert.deepEqual(result.exclusionSummary, [
     { reason: 'Trading volume is below 100000.', count: 2 },
@@ -286,9 +291,9 @@ test('publishes mixed EUR and USD quote orders with the EUR 50 USD cap', () => {
   );
 
   assert.equal(result.schemaVersion, 3);
-  assert.equal(result.profile.portfolio[0].tradingPair, 'NEW/USD');
-  assert.equal(result.profile.portfolio[0].tradingQuoteCurrency, 'USD');
-  assert.equal(result.profile.portfolio[0].quoteOrderAmount, 60);
+  assert.equal(result.ranking.assets[0].tradingPair, 'NEW/USD');
+  assert.equal(result.ranking.assets[0].tradingQuoteCurrency, 'USD');
+  assert.equal(result.ranking.assets[0].quoteOrderAmount, 60);
   assert.match(result.issueBody, /active direct EUR or USD market/);
   assert.match(result.issueBody, /EUR\/USD conversion: 1.2 USD per EUR/);
   assert.match(result.issueBody, /NEW\/USD \(active, EEA\) \| USD 60/);
@@ -310,7 +315,7 @@ test('builds one compact issue for EUR, USD, and mixed profile options', () => {
     'profiles/gems-mixed-2026-08-24.json',
   ]);
   assert.equal(result.supportedAssetsToAdd.length, 1);
-  assert.equal(result.modePackages[1].profile.portfolio[0].quoteOrderAmount, 60);
+  assert.equal(result.modePackages[1].ranking.assets[0].quoteOrderAmount, 60);
   assert.equal(result.validation.oneDailyIssue, true);
   assert.equal(result.validation.sharedMarketSnapshot, true);
   assert.equal(result.issueBody.match(/<!-- daily-gems:2026-08-24 -->/g).length, 1);

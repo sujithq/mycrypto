@@ -29,6 +29,24 @@ export function normalizePortfolioInvestments(portfolio) {
   }));
 }
 
+export function serializePortfolioHolding({
+  id,
+  symbol,
+  investedAmount,
+  quantity,
+  buyDate,
+  buyTimestamp,
+}) {
+  const hasQuantity = quantity !== undefined && quantity !== null && quantity !== '';
+  return {
+    id,
+    symbol,
+    investedAmount: Number(investedAmount),
+    ...(hasQuantity ? { quantity: Number(quantity) } : {}),
+    ...(buyTimestamp ? { buyTimestamp } : buyDate ? { buyDate } : {}),
+  };
+}
+
 export function isValidPortfolio(portfolio, supportedIds, target = 500) {
   if (!Array.isArray(portfolio) || portfolio.length === 0) return false;
   const ids = portfolio.map(({ id }) => id);

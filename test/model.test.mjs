@@ -16,6 +16,7 @@ import {
   isValidRealPortfolio,
   parseRealPortfolioJson,
   resolveProfilePortfolio,
+  serializePortfolioHolding,
 } from '../src/model.js';
 import {
   combineHistoricalPrices,
@@ -324,6 +325,86 @@ test('derives a UTC buy date from an exact timestamp when no date is supplied', 
   const resolved = resolveProfilePortfolio(profile, portfolio);
   assert.equal(resolved.every(({ buyDate }) => buyDate === '2026-08-24'), true);
   assert.equal(isValidProfile(profile, supportedIds, portfolio), true);
+});
+
+test('serializes holdings without derived or audit fields', () => {
+  assert.deepEqual(serializePortfolioHolding({
+    id: 'bitcoin',
+    symbol: 'BTC',
+    name: 'Bitcoin',
+    thesis: 'Derived from the registry.',
+    investedAmount: '125',
+    quantity: '0.002',
+    buyDate: '2026-08-24',
+    buyTimestamp: '2026-08-24T22:30:00.000Z',
+    tradingVenue: 'Legacy venue',
+  }), {
+    id: 'bitcoin',
+    symbol: 'BTC',
+    investedAmount: 125,
+    quantity: 0.002,
+    buyTimestamp: '2026-08-24T22:30:00.000Z',
+  });
+  assert.deepEqual(serializePortfolioHolding({
+    id: 'bitcoin',
+    symbol: 'BTC',
+    investedAmount: 125,
+    buyDate: '2026-08-24',
+  }), {
+    id: 'bitcoin',
+    symbol: 'BTC',
+    investedAmount: 125,
+    buyDate: '2026-08-24',
+  });
+});
+
+test('enriches compact timestamped holdings and accepts verbose date-only holdings', () => {
+  const supportedAssets = [{
+    id: 'bitcoin',
+    symbol: 'BTC',
+    name: 'Bitcoin',
+    thesis: 'Registry thesis.',
+  }];
+  const compactHolding = {
+    id: 'bitcoin',
+    symbol: 'BTC',
+    investedAmount: 125,
+    quantity: 0.002,
+    buyTimestamp: '2026-08-24T22:30:00.000Z',
+  };
+  const compactProfile = {
+    id: 'compact-real',
+    name: 'Compact real portfolio',
+    type: 'real',
+    portfolio: [compactHolding],
+  };
+  const [resolved] = resolveProfilePortfolio(compactProfile, [], supportedAssets);
+
+  assert.deepEqual(Object.keys(compactHolding), [
+    'id',
+    'symbol',
+    'investedAmount',
+    'quantity',
+    'buyTimestamp',
+  ]);
+  assert.equal(isValidProfile(compactProfile, new Set(['bitcoin']), []), true);
+  assert.equal(resolved.name, 'Bitcoin');
+  assert.equal(resolved.thesis, 'Registry thesis.');
+  assert.equal(resolved.buyDate, '2026-08-24');
+
+  const legacyProfile = {
+    id: 'legacy-real',
+    name: 'Legacy real portfolio',
+    type: 'real',
+    buyDate: '2026-08-20',
+    portfolio: [{
+      ...supportedAssets[0],
+      investedAmount: 125,
+      quantity: 0.002,
+      buyDate: '2026-08-20',
+    }],
+  };
+  assert.equal(isValidProfile(legacyProfile, new Set(['bitcoin']), []), true);
 });
 
 test('validates profiles with custom portfolios', () => {
