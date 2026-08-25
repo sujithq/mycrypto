@@ -314,8 +314,7 @@ test('builds one compact issue for EUR, USD, and mixed profile options', () => {
   assert.ok(result.issueBody.length < 65_536);
 });
 
-test('generates consolidated rankings and resolves missing assets once', async () => {
-  const resolvedIds = [];
+test('generates consolidated rankings using canonical metadata from the shared snapshot', async () => {
   const progress = [];
   let requestedModes;
   const result = await generateConsolidatedDailyGemsIssue(portfolioConfig, {
@@ -324,16 +323,18 @@ test('generates consolidated rankings and resolves missing assets once', async (
       requestedModes = modes;
       return modes.map(rankingForMode);
     },
-    resolveByIds: async (ids) => {
-      resolvedIds.push(...ids);
-      return [resolvedNewCoin];
-    },
     onProgress: (message) => progress.push(message),
   });
 
   assert.deepEqual(requestedModes, ['EUR', 'USD', 'MIXED']);
-  assert.deepEqual(resolvedIds, ['new-coin']);
+  assert.deepEqual(result.supportedAssetsToAdd, [{
+    id: 'new-coin',
+    symbol: 'NEW',
+    name: 'New Coin',
+    thesis: "Speculative exposure to New Coin, that passed the workflow's lower-market-cap, liquidity, and momentum screens, with material volatility, liquidity, token-supply, and project-execution risk.",
+  }]);
   assert.equal(result.modePackages.length, 3);
+  assert.match(progress[2], /Reusing canonical metadata.*shared live CoinGecko snapshot/);
   assert.match(progress.at(-1), /Consolidated three validated profiles into one/);
 });
 

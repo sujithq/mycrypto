@@ -5,7 +5,6 @@ import {
   getDiamondQuantities,
   getDiamondQuantitiesForQuoteModes,
 } from '../.github/skills/diamond-quantities/scripts/rank-diamond-quantities.mjs';
-import { resolveSupportedAssetsByIds } from '../.github/skills/supported-asset-entry/scripts/resolve-supported-asset.mjs';
 import { isValidProfile } from '../src/model.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -116,6 +115,52 @@ export function createAssetThesis(entry, context, rankedAsset) {
     ? `classified by CoinGecko under ${categories.join(' and ')}`
     : 'that passed the workflow\'s lower-market-cap, liquidity, and momentum screens';
   return `Speculative exposure to ${entry.name}, ${focus}, with material volatility, liquidity, token-supply, and project-execution risk.`;
+}
+
+function resolveRankedAssetMetadata(rankings, missingIds) {
+  const missingIdSet = new Set(missingIds);
+  const resolvedById = new Map();
+  for (const ranking of rankings) {
+    if (ranking?.source !== 'CoinGecko') {
+      throw new Error('Diamond ranking must use canonical CoinGecko market data.');
+    }
+    for (const asset of ranking.assets ?? []) {
+      if (!missingIdSet.has(asset.id)) continue;
+      const entry = {
+        id: String(asset.id ?? '').trim(),
+        symbol: String(asset.symbol ?? '').trim().toUpperCase(),
+        name: String(asset.name ?? '').trim(),
+      };
+      if (!entry.id || !entry.symbol || !entry.name) {
+        throw new Error(`CoinGecko ranking returned incomplete metadata for ${entry.id || 'an unregistered asset'}.`);
+      }
+      const existing = resolvedById.get(entry.id)?.entry;
+      if (existing && (existing.symbol !== entry.symbol || existing.name !== entry.name)) {
+        throw new Error(`CoinGecko rankings returned conflicting metadata for ${entry.id}.`);
+      }
+      resolvedById.set(entry.id, {
+        entry,
+        source: 'CoinGecko',
+        context: { categories: [], description: '' },
+      });
+    }
+  }
+  return missingIds.map((id) => {
+    const resolved = resolvedById.get(id);
+    if (!resolved) throw new Error(`Missing ranked CoinGecko metadata for ${id}.`);
+    return resolved;
+  });
+}
+
+async function resolveMissingAssetMetadata(rankings, missingIds, resolveByIds, onProgress) {
+  if (resolveByIds) {
+    onProgress(`Verifying ${missingIds.length} unregistered ${missingIds.length === 1 ? 'asset' : 'assets'} in one CoinGecko request.`);
+    const resolvedAssets = await resolveByIds(missingIds);
+    onProgress(`Verified ${resolvedAssets.length} canonical CoinGecko ${resolvedAssets.length === 1 ? 'entry' : 'entries'}.`);
+    return resolvedAssets;
+  }
+  onProgress(`Reusing canonical metadata for ${missingIds.length} unique unregistered ${missingIds.length === 1 ? 'asset' : 'assets'} from the shared live CoinGecko snapshot.`);
+  return resolveRankedAssetMetadata(rankings, missingIds);
 }
 
 function renderRankingTable(assets, currency) {
@@ -576,7 +621,7 @@ export async function generateConsolidatedDailyGemsIssue(portfolioConfig, {
   limit = DEFAULT_LIMIT,
   candidateLimit = DEFAULT_CANDIDATE_LIMIT,
   getRankings = getDiamondQuantitiesForQuoteModes,
-  resolveByIds = resolveSupportedAssetsByIds,
+  resolveByIds,
   onProgress = () => {},
 } = {}) {
   onProgress(`Screening one live snapshot for EUR, USD, and MIXED modes with ${limit} positions each.`);
@@ -594,9 +639,12 @@ export async function generateConsolidatedDailyGemsIssue(portfolioConfig, {
   const missingIds = [...new Set(rankings
     .flatMap(({ assets }) => assets.map(({ id }) => id))
     .filter((id) => !supportedIds.has(id)))];
-  onProgress(`Verifying ${missingIds.length} unique unregistered ${missingIds.length === 1 ? 'asset' : 'assets'} in one CoinGecko request.`);
-  const resolvedAssets = await resolveByIds(missingIds);
-  onProgress(`Verified ${resolvedAssets.length} canonical CoinGecko ${resolvedAssets.length === 1 ? 'entry' : 'entries'}.`);
+  const resolvedAssets = await resolveMissingAssetMetadata(
+    rankings,
+    missingIds,
+    resolveByIds,
+    onProgress,
+  );
   const result = buildConsolidatedDailyGemsAdoptionPackage(
     rankings,
     portfolioConfig,
@@ -613,7 +661,7 @@ export async function generateDailyGemsIssue(portfolioConfig, {
   candidateLimit = DEFAULT_CANDIDATE_LIMIT,
   quoteCurrencyMode = DEFAULT_QUOTE_CURRENCY_MODE,
   getRanking = getDiamondQuantities,
-  resolveByIds = resolveSupportedAssetsByIds,
+  resolveByIds,
   onProgress = () => {},
 } = {}) {
   const requestedQuoteMode = String(quoteCurrencyMode).trim().toUpperCase();
@@ -637,9 +685,12 @@ export async function generateDailyGemsIssue(portfolioConfig, {
   onProgress(`Selected ${ranking.assets.length} assets from ${ranking.eligibleCount} candidates with verified direct ${quoteDescription} markets.`);
   const supportedIds = new Set((portfolioConfig.supportedAssets ?? []).map(({ id }) => id));
   const missingIds = ranking.assets.map(({ id }) => id).filter((id) => !supportedIds.has(id));
-  onProgress(`Verifying ${missingIds.length} unregistered ${missingIds.length === 1 ? 'asset' : 'assets'} in one CoinGecko request.`);
-  const resolvedAssets = await resolveByIds(missingIds);
-  onProgress(`Verified ${resolvedAssets.length} canonical CoinGecko ${resolvedAssets.length === 1 ? 'entry' : 'entries'}.`);
+  const resolvedAssets = await resolveMissingAssetMetadata(
+    [ranking],
+    missingIds,
+    resolveByIds,
+    onProgress,
+  );
   const result = buildDailyGemsAdoptionPackage(ranking, portfolioConfig, resolvedAssets, {
     expectedAssetCount: Number(limit),
   });
