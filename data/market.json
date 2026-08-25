@@ -1,342 +1,349 @@
 {
-  "updatedAt": "2026-08-25T07:30:09.657Z",
+  "updatedAt": "2026-08-25T07:51:54.689Z",
   "currency": "eur",
   "source": "CoinGecko",
   "assets": {
     "bitcoin": {
-      "price": 69159,
-      "change24hPct": 4.08482,
-      "marketCap": 1388249429971,
+      "price": 68693,
+      "change24hPct": 3.36133,
+      "marketCap": 1379818619475,
       "rank": 1,
       "image": "https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png?1696501400"
     },
     "ethereum": {
-      "price": 2147.5,
-      "change24hPct": 1.8572,
-      "marketCap": 259153294372,
+      "price": 2133.64,
+      "change24hPct": 1.06001,
+      "marketCap": 257597896618,
       "rank": 2,
       "image": "https://coin-images.coingecko.com/coins/images/279/large/ethereum.png?1696501628"
     },
     "solana": {
-      "price": 87.23,
-      "change24hPct": 7.86225,
-      "marketCap": 50862838038,
+      "price": 86.71,
+      "change24hPct": 7.11148,
+      "marketCap": 50653452447,
       "rank": 7,
       "image": "https://coin-images.coingecko.com/coins/images/4128/large/solana.png?1718769756"
     },
     "hyperliquid": {
-      "price": 69.92,
-      "change24hPct": 2.26649,
-      "marketCap": 15557436455,
+      "price": 69.4,
+      "change24hPct": 1.49919,
+      "marketCap": 15455666431,
       "rank": 10,
       "image": "https://coin-images.coingecko.com/coins/images/50882/large/hyperliquid.jpg?1729431300"
     },
     "dogecoin": {
-      "price": 0.079201,
-      "change24hPct": 0.60535,
-      "marketCap": 12325025948,
+      "price": 0.0783,
+      "change24hPct": -0.52706,
+      "marketCap": 12214732400,
       "rank": 12,
       "image": "https://coin-images.coingecko.com/coins/images/5/large/dogecoin.png?1696501409"
     },
     "chainlink": {
-      "price": 10.08,
-      "change24hPct": 1.88139,
-      "marketCap": 7539313755,
-      "rank": 15,
+      "price": 10,
+      "change24hPct": 0.72856,
+      "marketCap": 7485825641,
+      "rank": 16,
       "image": "https://coin-images.coingecko.com/coins/images/877/large/Chainlink_Logo_500.png?1760023405"
     },
     "sui": {
-      "price": 0.704229,
-      "change24hPct": -0.06009,
-      "marketCap": 2868711937,
+      "price": 0.695546,
+      "change24hPct": -1.10815,
+      "marketCap": 2837473074,
       "rank": 30,
       "image": "https://coin-images.coingecko.com/coins/images/26375/large/sui-ocean-square.png?1727791290"
     },
     "shiba-inu": {
-      "price": 0.00000481,
-      "change24hPct": 3.78349,
-      "marketCap": 2836477868,
-      "rank": 31,
+      "price": 0.00000475,
+      "change24hPct": 1.86638,
+      "marketCap": 2804326082,
+      "rank": 32,
       "image": "https://coin-images.coingecko.com/coins/images/11939/large/shiba.png?1696511800"
     },
     "avalanche-2": {
-      "price": 6.53,
-      "change24hPct": 1.78091,
-      "marketCap": 2819307166,
-      "rank": 32,
+      "price": 6.48,
+      "change24hPct": 0.95127,
+      "marketCap": 2800613723,
+      "rank": 31,
       "image": "https://coin-images.coingecko.com/coins/images/12559/large/Avalanche_Circle_RedWhite_Trans.png?1696512369"
     },
     "uniswap": {
-      "price": 3.79,
-      "change24hPct": 0.31657,
-      "marketCap": 2361891715,
+      "price": 3.73,
+      "change24hPct": -1.37618,
+      "marketCap": 2326170150,
       "rank": 37,
       "image": "https://coin-images.coingecko.com/coins/images/12504/large/uniswap-logo.png?1720676669"
     },
     "near": {
-      "price": 1.67,
-      "change24hPct": -1.476,
-      "marketCap": 2183757747,
+      "price": 1.66,
+      "change24hPct": -3.36252,
+      "marketCap": 2167176825,
       "rank": 40,
       "image": "https://coin-images.coingecko.com/coins/images/10365/large/near.jpg?1696510367"
     },
     "bittensor": {
-      "price": 206.85,
-      "change24hPct": 2.79449,
-      "marketCap": 1985512549,
+      "price": 204.25,
+      "change24hPct": 1.35847,
+      "marketCap": 1963836695,
       "rank": 42,
       "image": "https://coin-images.coingecko.com/coins/images/28452/large/ARUsPeNQ_400x400.jpeg?1696527447"
     },
     "aave": {
-      "price": 112.85,
-      "change24hPct": -7.2638,
-      "marketCap": 1740758700,
+      "price": 111.9,
+      "change24hPct": -7.46539,
+      "marketCap": 1726128384,
       "rank": 45,
       "image": "https://coin-images.coingecko.com/coins/images/12645/large/aave-token-round.png?1720472354"
     },
     "ondo-finance": {
-      "price": 0.333887,
-      "change24hPct": 4.11885,
-      "marketCap": 1625305105,
+      "price": 0.330275,
+      "change24hPct": 2.73729,
+      "marketCap": 1612721067,
       "rank": 48,
       "image": "https://coin-images.coingecko.com/coins/images/26580/large/ONDO.png?1696525656"
     },
     "pepe": {
-      "price": 0.00000358,
-      "change24hPct": 3.24851,
-      "marketCap": 1504137647,
+      "price": 0.00000353,
+      "change24hPct": 1.83037,
+      "marketCap": 1485718044,
       "rank": 52,
       "image": "https://coin-images.coingecko.com/coins/images/29850/large/pepe-token.jpeg?1696528776"
     },
     "render-token": {
-      "price": 1.33,
-      "change24hPct": 5.00679,
-      "marketCap": 687687379,
+      "price": 1.31,
+      "change24hPct": 3.45856,
+      "marketCap": 679985456,
       "rank": 85,
       "image": "https://coin-images.coingecko.com/coins/images/11636/large/rndr.png?1696511529"
     },
     "arbitrum": {
-      "price": 0.08378,
-      "change24hPct": -1.77088,
-      "marketCap": 559485077,
+      "price": 0.083055,
+      "change24hPct": -2.84584,
+      "marketCap": 555240878,
       "rank": 92,
       "image": "https://coin-images.coingecko.com/coins/images/16547/large/arb.jpg?1721358242"
     },
     "pudgy-penguins": {
-      "price": 0.00863562,
-      "change24hPct": 3.59849,
-      "marketCap": 542760970,
+      "price": 0.00859503,
+      "change24hPct": 3.16758,
+      "marketCap": 542221584,
       "rank": 93,
       "image": "https://coin-images.coingecko.com/coins/images/52622/large/PUDGY_PENGUINS_PENGU_PFP.png?1733809110"
     },
     "flare-networks": {
-      "price": 0.00594857,
-      "change24hPct": -1.70358,
-      "marketCap": 517080888,
+      "price": 0.00594025,
+      "change24hPct": -1.65486,
+      "marketCap": 516485330,
       "rank": 98,
       "image": "https://coin-images.coingecko.com/coins/images/28624/large/FLR-icon200x200.png?1696527609"
     },
     "injective-protocol": {
-      "price": 5.12,
-      "change24hPct": 10.96698,
-      "marketCap": 511016114,
+      "price": 5.06,
+      "change24hPct": 9.52836,
+      "marketCap": 506464003,
       "rank": 99,
       "image": "https://coin-images.coingecko.com/coins/images/12882/large/Other_200x200.png?1738782212"
     },
     "blockstack": {
-      "price": 0.241396,
-      "change24hPct": 20.54487,
-      "marketCap": 449101145,
-      "rank": 106,
+      "price": 0.229471,
+      "change24hPct": 15.76842,
+      "marketCap": 427887673,
+      "rank": 108,
       "image": "https://coin-images.coingecko.com/coins/images/2069/large/Stacks_Logo_png.png?1709979332"
     },
     "vechain": {
-      "price": 0.00500835,
-      "change24hPct": 2.99529,
-      "marketCap": 430743118,
+      "price": 0.0049603,
+      "change24hPct": 2.25537,
+      "marketCap": 427682079,
       "rank": 109,
       "image": "https://coin-images.coingecko.com/coins/images/1167/large/VET.png?1742383283"
     },
     "monad": {
-      "price": 0.02609512,
-      "change24hPct": 0.37939,
-      "marketCap": 308075509,
+      "price": 0.02600918,
+      "change24hPct": 0.94492,
+      "marketCap": 307955608,
       "rank": 121,
       "image": "https://coin-images.coingecko.com/coins/images/38927/large/mon.png?1766029057"
     },
     "bonk": {
-      "price": 0.00000281,
-      "change24hPct": 2.88819,
-      "marketCap": 246870700,
-      "rank": 139,
+      "price": 0.00000277,
+      "change24hPct": 1.27549,
+      "marketCap": 244567745,
+      "rank": 140,
       "image": "https://coin-images.coingecko.com/coins/images/28600/large/bonk.jpg?1696527587"
     },
     "floki": {
-      "price": 0.00002364,
-      "change24hPct": 1.6753,
-      "marketCap": 227945468,
-      "rank": 148,
+      "price": 0.00002325,
+      "change24hPct": -0.44885,
+      "marketCap": 224717584,
+      "rank": 149,
       "image": "https://coin-images.coingecko.com/coins/images/16746/large/PNG_image.png?1696516318"
     },
+    "jasmycoin": {
+      "price": 0.00434068,
+      "change24hPct": 16.4867,
+      "marketCap": 215524245,
+      "rank": 152,
+      "image": "https://coin-images.coingecko.com/coins/images/13876/large/JASMY200x200.jpg?1696513620"
+    },
     "optimism": {
-      "price": 0.090912,
-      "change24hPct": -3.13835,
-      "marketCap": 207947867,
-      "rank": 156,
+      "price": 0.090077,
+      "change24hPct": -3.87862,
+      "marketCap": 206215358,
+      "rank": 157,
       "image": "https://coin-images.coingecko.com/coins/images/25244/large/Token.png?1774456081"
     },
     "dogwifcoin": {
-      "price": 0.191901,
-      "change24hPct": 13.73813,
-      "marketCap": 191874828,
-      "rank": 162,
+      "price": 0.185658,
+      "change24hPct": 9.70418,
+      "marketCap": 186489875,
+      "rank": 165,
       "image": "https://coin-images.coingecko.com/coins/images/33566/large/dogwifhat.jpg?1702499428"
     },
     "the-graph": {
-      "price": 0.01648431,
-      "change24hPct": 11.32891,
-      "marketCap": 180426668,
-      "rank": 167,
+      "price": 0.01629901,
+      "change24hPct": 9.7565,
+      "marketCap": 178463435,
+      "rank": 168,
       "image": "https://coin-images.coingecko.com/coins/images/13397/large/Graph_Token.png?1696513159"
     },
     "fartcoin": {
-      "price": 0.159198,
-      "change24hPct": 4.54203,
-      "marketCap": 159123225,
-      "rank": 181,
+      "price": 0.157597,
+      "change24hPct": 3.31767,
+      "marketCap": 157711913,
+      "rank": 183,
       "image": "https://coin-images.coingecko.com/coins/images/50891/large/fart.jpg?1729503972"
     },
     "chiliz": {
-      "price": 0.01257552,
-      "change24hPct": 1.47612,
-      "marketCap": 132039329,
-      "rank": 198,
+      "price": 0.01243837,
+      "change24hPct": 0.16251,
+      "marketCap": 130922204,
+      "rank": 200,
       "image": "https://coin-images.coingecko.com/coins/images/8834/large/CHZ_Token_updated.png?1696508986"
     },
     "popcat": {
-      "price": 0.053761,
-      "change24hPct": 11.01955,
-      "marketCap": 52696066,
-      "rank": 384,
+      "price": 0.052872,
+      "change24hPct": 9.76064,
+      "marketCap": 51847417,
+      "rank": 389,
       "image": "https://coin-images.coingecko.com/coins/images/33760/large/image.jpg?1702964227"
     },
     "based-brett": {
-      "price": 0.00487396,
-      "change24hPct": 7.10108,
-      "marketCap": 48296964,
-      "rank": 407,
+      "price": 0.00476282,
+      "change24hPct": 3.91028,
+      "marketCap": 47505793,
+      "rank": 415,
       "image": "https://coin-images.coingecko.com/coins/images/35529/large/1000050750.png?1709031995"
     },
     "mog-coin": {
-      "price": 1.02744e-7,
-      "change24hPct": 2.14646,
-      "marketCap": 40111374,
-      "rank": 472,
+      "price": 1.02075e-7,
+      "change24hPct": 1.38132,
+      "marketCap": 39867130,
+      "rank": 477,
       "image": "https://coin-images.coingecko.com/coins/images/31059/large/MOG_LOGO_200x200.png?1696529893"
     },
     "cat-in-a-dogs-world": {
-      "price": 0.0003958,
-      "change24hPct": 8.97487,
-      "marketCap": 35183198,
-      "rank": 519,
+      "price": 0.00038703,
+      "change24hPct": 6.72566,
+      "marketCap": 34447725,
+      "rank": 525,
       "image": "https://coin-images.coingecko.com/coins/images/36440/large/MEW.png?1711442286"
     },
     "neiro-3": {
-      "price": 0.00007782,
-      "change24hPct": 0.13356,
-      "marketCap": 32739607,
-      "rank": 543,
+      "price": 0.00007685,
+      "change24hPct": -1.87809,
+      "marketCap": 32433199,
+      "rank": 549,
       "image": "https://coin-images.coingecko.com/coins/images/39488/large/neiro.jpg?1731449567"
     },
     "avantis": {
-      "price": 0.090556,
-      "change24hPct": 6.53642,
-      "marketCap": 30880561,
-      "rank": 570,
+      "price": 0.090134,
+      "change24hPct": 6.60917,
+      "marketCap": 30796484,
+      "rank": 571,
       "image": "https://coin-images.coingecko.com/coins/images/68972/large/avnt-token.png?1757134448"
     },
     "wink": {
-      "price": 0.00002973,
-      "change24hPct": 0.14929,
-      "marketCap": 29543885,
+      "price": 0.00002968,
+      "change24hPct": -0.15203,
+      "marketCap": 29489147,
       "rank": 591,
       "image": "https://coin-images.coingecko.com/coins/images/9129/large/WinK.png?1696509252"
     },
     "mubarak": {
-      "price": 0.02089298,
-      "change24hPct": 2.36298,
-      "marketCap": 20907067,
-      "rank": 737,
+      "price": 0.02063828,
+      "change24hPct": -0.2403,
+      "marketCap": 20711470,
+      "rank": 740,
       "image": "https://coin-images.coingecko.com/coins/images/54857/large/DKjv3dc6_400x400.jpg?1742107486"
     },
     "dogs-2": {
-      "price": 0.00003482,
-      "change24hPct": 1.6338,
-      "marketCap": 17993957,
-      "rank": 811,
+      "price": 0.00003456,
+      "change24hPct": 0.92234,
+      "marketCap": 17900921,
+      "rank": 814,
       "image": "https://coin-images.coingecko.com/coins/images/39699/large/dogs_logo_200x200.png?1723687163"
     },
     "bonfida": {
-      "price": 0.01673204,
-      "change24hPct": 3.57357,
-      "marketCap": 16580950,
-      "rank": 847,
+      "price": 0.01652773,
+      "change24hPct": 1.90683,
+      "marketCap": 16418477,
+      "rank": 851,
       "image": "https://coin-images.coingecko.com/coins/images/13395/large/bonfida.png?1696513157"
     },
     "celer-network": {
-      "price": 0.00200636,
-      "change24hPct": 6.47502,
-      "marketCap": 15864045,
-      "rank": 871,
+      "price": 0.00200606,
+      "change24hPct": 5.04101,
+      "marketCap": 15865979,
+      "rank": 869,
       "image": "https://coin-images.coingecko.com/coins/images/4379/large/Celr.png?1696504978"
     },
     "czs-dog": {
-      "price": 0.01505988,
-      "change24hPct": 1.70949,
-      "marketCap": 14561594,
-      "rank": 907,
+      "price": 0.01486614,
+      "change24hPct": -1.64103,
+      "marketCap": 14418793,
+      "rank": 911,
       "image": "https://coin-images.coingecko.com/coins/images/54400/large/broccoli.jpg?1739504145"
     },
     "the-index": {
-      "price": 0.0141868,
-      "change24hPct": -7.1972,
-      "marketCap": 13906259,
-      "rank": 932,
+      "price": 0.0140153,
+      "change24hPct": -6.89871,
+      "marketCap": 13742746,
+      "rank": 937,
       "image": "https://coin-images.coingecko.com/coins/images/102174740/large/qffiSdBd_400x400_%281%29.jpg?1784708104"
     },
     "coin98": {
-      "price": 0.01371864,
-      "change24hPct": 3.95938,
-      "marketCap": 13720588,
-      "rank": 942,
+      "price": 0.0135969,
+      "change24hPct": 2.83738,
+      "marketCap": 13593648,
+      "rank": 943,
       "image": "https://coin-images.coingecko.com/coins/images/17117/large/logo.png?1696516677"
     },
     "test-3": {
-      "price": 0.0133478,
-      "change24hPct": -3.57857,
-      "marketCap": 12517257,
-      "rank": 984,
+      "price": 0.01319261,
+      "change24hPct": -6.18849,
+      "marketCap": 12412112,
+      "rank": 986,
       "image": "https://coin-images.coingecko.com/coins/images/54274/large/Test.png?1738997629"
     },
     "portal-2": {
-      "price": 0.01375427,
-      "change24hPct": 2.8282,
-      "marketCap": 12258711,
-      "rank": 996,
+      "price": 0.01353644,
+      "change24hPct": -0.18119,
+      "marketCap": 12077083,
+      "rank": 1002,
       "image": "https://coin-images.coingecko.com/coins/images/35436/large/portal.jpeg?1708590254"
     },
     "tars-protocol": {
-      "price": 0.00513166,
-      "change24hPct": -1.68531,
-      "marketCap": 4592382,
-      "rank": 1586,
+      "price": 0.00511094,
+      "change24hPct": -1.60431,
+      "marketCap": 4576869,
+      "rank": 1585,
       "image": "https://coin-images.coingecko.com/coins/images/37538/large/image_6.png?1736608965"
     },
     "polyhedra-network": {
-      "price": 0.00474472,
-      "change24hPct": -2.74592,
-      "marketCap": 2916267,
-      "rank": 1884,
+      "price": 0.00474073,
+      "change24hPct": -2.3547,
+      "marketCap": 2913393,
+      "rank": 1886,
       "image": "https://coin-images.coingecko.com/coins/images/36198/large/Polyhedra_Symbol_Black_on_White.png?1747150504"
     }
   },
@@ -558,7 +565,8 @@
         "monero": 228.67232887397535,
         "vechain": 0.02079545416485243,
         "polyhedra-network": 0.15505544540890365,
-        "cat-in-a-dogs-world": 0.0023749393249063314
+        "cat-in-a-dogs-world": 0.0023749393249063314,
+        "jasmycoin": 0.01254115427479666
       }
     },
     {
@@ -609,7 +617,8 @@
         "monero": 239.82047754177992,
         "vechain": 0.02162284097616888,
         "polyhedra-network": 0.15670552054532938,
-        "cat-in-a-dogs-world": 0.0024863821487112908
+        "cat-in-a-dogs-world": 0.0024863821487112908,
+        "jasmycoin": 0.013144250312719673
       }
     },
     {
@@ -660,7 +669,8 @@
         "monero": 234.77446273023665,
         "vechain": 0.021294535997173434,
         "polyhedra-network": 0.15409961710053746,
-        "cat-in-a-dogs-world": 0.002462001989228337
+        "cat-in-a-dogs-world": 0.002462001989228337,
+        "jasmycoin": 0.01285048585227986
       }
     },
     {
@@ -711,7 +721,8 @@
         "monero": 228.69119825726645,
         "vechain": 0.021942061858022645,
         "polyhedra-network": 0.1648545558094461,
-        "cat-in-a-dogs-world": 0.002587835738610622
+        "cat-in-a-dogs-world": 0.002587835738610622,
+        "jasmycoin": 0.013049718549864992
       }
     },
     {
@@ -762,7 +773,8 @@
         "monero": 225.02962261103644,
         "vechain": 0.020745833299749744,
         "polyhedra-network": 0.15894383150711042,
-        "cat-in-a-dogs-world": 0.002446265547610849
+        "cat-in-a-dogs-world": 0.002446265547610849,
+        "jasmycoin": 0.012339636031842858
       }
     },
     {
@@ -813,7 +825,8 @@
         "monero": 221.93274669770548,
         "vechain": 0.021134572098416526,
         "polyhedra-network": 0.1708867364307524,
-        "cat-in-a-dogs-world": 0.0024672734767914135
+        "cat-in-a-dogs-world": 0.0024672734767914135,
+        "jasmycoin": 0.012545181341564137
       }
     },
     {
@@ -864,7 +877,8 @@
         "monero": 224.02556471303444,
         "vechain": 0.020577435869924127,
         "polyhedra-network": 0.16856774089525808,
-        "cat-in-a-dogs-world": 0.0023824965582154743
+        "cat-in-a-dogs-world": 0.0023824965582154743,
+        "jasmycoin": 0.012212473881014785
       }
     },
     {
@@ -915,7 +929,8 @@
         "monero": 223.65769166068466,
         "vechain": 0.020217311429230844,
         "polyhedra-network": 0.1599188447739793,
-        "cat-in-a-dogs-world": 0.002312991259351609
+        "cat-in-a-dogs-world": 0.002312991259351609,
+        "jasmycoin": 0.012127687956122088
       }
     },
     {
@@ -966,7 +981,8 @@
         "monero": 231.76776902955152,
         "vechain": 0.02044105455854437,
         "polyhedra-network": 0.16046188099472208,
-        "cat-in-a-dogs-world": 0.0023756480786614213
+        "cat-in-a-dogs-world": 0.0023756480786614213,
+        "jasmycoin": 0.01242507363835385
       }
     },
     {
@@ -1017,7 +1033,8 @@
         "monero": 232.00613695567216,
         "vechain": 0.02053449517691989,
         "polyhedra-network": 0.16016928279387602,
-        "cat-in-a-dogs-world": 0.0023966889773322305
+        "cat-in-a-dogs-world": 0.0023966889773322305,
+        "jasmycoin": 0.012328328224219223
       }
     },
     {
@@ -1068,7 +1085,8 @@
         "monero": 230.43680439713245,
         "vechain": 0.019752425612572587,
         "polyhedra-network": 0.15099840856585697,
-        "cat-in-a-dogs-world": 0.0022944123148367036
+        "cat-in-a-dogs-world": 0.0022944123148367036,
+        "jasmycoin": 0.011807956950780966
       }
     },
     {
@@ -1119,7 +1137,8 @@
         "monero": 230.19031246027646,
         "vechain": 0.020135143699103526,
         "polyhedra-network": 0.1534916989871335,
-        "cat-in-a-dogs-world": 0.0023120552817574454
+        "cat-in-a-dogs-world": 0.0023120552817574454,
+        "jasmycoin": 0.011920876291718188
       }
     },
     {
@@ -1170,7 +1189,8 @@
         "monero": 229.47240044955544,
         "vechain": 0.019910108654819687,
         "polyhedra-network": 0.1547573322781428,
-        "cat-in-a-dogs-world": 0.0023056936436935327
+        "cat-in-a-dogs-world": 0.0023056936436935327,
+        "jasmycoin": 0.011808967597964671
       }
     },
     {
@@ -1221,7 +1241,8 @@
         "monero": 231.21508654486937,
         "vechain": 0.019998829538505108,
         "polyhedra-network": 0.15568790824924275,
-        "cat-in-a-dogs-world": 0.0023584138085309203
+        "cat-in-a-dogs-world": 0.0023584138085309203,
+        "jasmycoin": 0.01192549383510525
       }
     },
     {
@@ -1273,7 +1294,8 @@
         "monero": 227.6175244155609,
         "vechain": 0.020857171731051987,
         "polyhedra-network": 0.15844516179589677,
-        "cat-in-a-dogs-world": 0.0025391588931308246
+        "cat-in-a-dogs-world": 0.0025391588931308246,
+        "jasmycoin": 0.012299866875651258
       }
     },
     {
@@ -1325,7 +1347,8 @@
         "monero": 228.1172326808044,
         "vechain": 0.020691335576383196,
         "polyhedra-network": 0.14974733389869785,
-        "cat-in-a-dogs-world": 0.0024901291989993034
+        "cat-in-a-dogs-world": 0.0024901291989993034,
+        "jasmycoin": 0.012023045228722239
       }
     },
     {
@@ -1377,7 +1400,8 @@
         "monero": 229.37091524644867,
         "vechain": 0.020801799359790013,
         "polyhedra-network": 0.14975234434423862,
-        "cat-in-a-dogs-world": 0.0025189329655510738
+        "cat-in-a-dogs-world": 0.0025189329655510738,
+        "jasmycoin": 0.012257738935617412
       }
     },
     {
@@ -1429,7 +1453,8 @@
         "monero": 230.63079776429217,
         "vechain": 0.021288209544487704,
         "polyhedra-network": 0.1502772825131941,
-        "cat-in-a-dogs-world": 0.0025736964451156977
+        "cat-in-a-dogs-world": 0.0025736964451156977,
+        "jasmycoin": 0.012519668189911121
       }
     },
     {
@@ -1481,7 +1506,8 @@
         "monero": 242.23097156734354,
         "vechain": 0.02162631838488252,
         "polyhedra-network": 0.1515067726832442,
-        "cat-in-a-dogs-world": 0.0027152231349442434
+        "cat-in-a-dogs-world": 0.0027152231349442434,
+        "jasmycoin": 0.012754257162743629
       }
     },
     {
@@ -1533,7 +1559,8 @@
         "monero": 244.2925610245179,
         "vechain": 0.02188063919839093,
         "polyhedra-network": 0.15784750969247374,
-        "cat-in-a-dogs-world": 0.0028720689451656877
+        "cat-in-a-dogs-world": 0.0028720689451656877,
+        "jasmycoin": 0.013151355054733221
       }
     },
     {
@@ -1585,7 +1612,8 @@
         "monero": 260.6023554025583,
         "vechain": 0.02093343504559723,
         "polyhedra-network": 0.1951580882674203,
-        "cat-in-a-dogs-world": 0.0027046718743318483
+        "cat-in-a-dogs-world": 0.0027046718743318483,
+        "jasmycoin": 0.012439314484769417
       }
     },
     {
@@ -1637,7 +1665,8 @@
         "monero": 257.6966778712957,
         "vechain": 0.02031743247867865,
         "polyhedra-network": 0.15317841977384852,
-        "cat-in-a-dogs-world": 0.002543602191885955
+        "cat-in-a-dogs-world": 0.002543602191885955,
+        "jasmycoin": 0.011895585577531639
       }
     },
     {
@@ -1689,7 +1718,8 @@
         "monero": 270.30256644934894,
         "vechain": 0.020715845638778856,
         "polyhedra-network": 0.1506236311710165,
-        "cat-in-a-dogs-world": 0.002632368644202935
+        "cat-in-a-dogs-world": 0.002632368644202935,
+        "jasmycoin": 0.012131257584666235
       }
     },
     {
@@ -1741,7 +1771,8 @@
         "monero": 255.76950583773385,
         "vechain": 0.021497669813245836,
         "polyhedra-network": 0.15276313617924067,
-        "cat-in-a-dogs-world": 0.0027620689559006524
+        "cat-in-a-dogs-world": 0.0027620689559006524,
+        "jasmycoin": 0.01248788805393368
       }
     },
     {
@@ -1793,7 +1824,8 @@
         "monero": 254.80932602530586,
         "vechain": 0.022094895997869877,
         "polyhedra-network": 0.15358422230294,
-        "cat-in-a-dogs-world": 0.0027997886491271363
+        "cat-in-a-dogs-world": 0.0027997886491271363,
+        "jasmycoin": 0.01262160424818418
       }
     },
     {
@@ -1845,7 +1877,8 @@
         "monero": 250.4752370583367,
         "vechain": 0.02123316973538438,
         "polyhedra-network": 0.14919413520168145,
-        "cat-in-a-dogs-world": 0.0026272674845873294
+        "cat-in-a-dogs-world": 0.0026272674845873294,
+        "jasmycoin": 0.01211248673185828
       }
     },
     {
@@ -1897,7 +1930,8 @@
         "monero": 254.8058268263818,
         "vechain": 0.021040706460655933,
         "polyhedra-network": 0.14572099609817082,
-        "cat-in-a-dogs-world": 0.0026104144312291454
+        "cat-in-a-dogs-world": 0.0026104144312291454,
+        "jasmycoin": 0.012116132238195697
       }
     },
     {
@@ -1949,7 +1983,8 @@
         "monero": 248.12765142091462,
         "vechain": 0.020646662242843512,
         "polyhedra-network": 0.13979635735897897,
-        "cat-in-a-dogs-world": 0.0025264057719691776
+        "cat-in-a-dogs-world": 0.0025264057719691776,
+        "jasmycoin": 0.011801447126142072
       }
     },
     {
@@ -2001,7 +2036,8 @@
         "monero": 245.4991170412656,
         "vechain": 0.019396538061415107,
         "polyhedra-network": 0.12440673554193586,
-        "cat-in-a-dogs-world": 0.00231321069373696
+        "cat-in-a-dogs-world": 0.00231321069373696,
+        "jasmycoin": 0.010882683454908549
       }
     },
     {
@@ -2053,7 +2089,8 @@
         "monero": 248.31906024500842,
         "vechain": 0.019200749072794086,
         "polyhedra-network": 0.11904631122699443,
-        "cat-in-a-dogs-world": 0.002304332174450834
+        "cat-in-a-dogs-world": 0.002304332174450834,
+        "jasmycoin": 0.010957664434060066
       }
     },
     {
@@ -2105,7 +2142,8 @@
         "monero": 250.85730590810803,
         "vechain": 0.01941690813179213,
         "polyhedra-network": 0.1222855580713804,
-        "cat-in-a-dogs-world": 0.002320670240168076
+        "cat-in-a-dogs-world": 0.002320670240168076,
+        "jasmycoin": 0.010912773235609775
       }
     },
     {
@@ -2157,7 +2195,8 @@
         "monero": 247.015608044962,
         "vechain": 0.018387431785577505,
         "polyhedra-network": 0.11063457547278513,
-        "cat-in-a-dogs-world": 0.0021339442150816548
+        "cat-in-a-dogs-world": 0.0021339442150816548,
+        "jasmycoin": 0.010201599460742622
       }
     },
     {
@@ -2209,7 +2248,8 @@
         "monero": 245.87236865827094,
         "vechain": 0.019073479874994713,
         "polyhedra-network": 0.112821019033881,
-        "cat-in-a-dogs-world": 0.002211986925396837
+        "cat-in-a-dogs-world": 0.002211986925396837,
+        "jasmycoin": 0.010532415892844971
       }
     },
     {
@@ -2261,7 +2301,8 @@
         "monero": 244.78648996359965,
         "vechain": 0.018643678022552734,
         "polyhedra-network": 0.10987697193546943,
-        "cat-in-a-dogs-world": 0.0022068727441726097
+        "cat-in-a-dogs-world": 0.0022068727441726097,
+        "jasmycoin": 0.010447156023615125
       }
     },
     {
@@ -2313,7 +2354,8 @@
         "monero": 247.6836792828509,
         "vechain": 0.01884649063830221,
         "polyhedra-network": 0.11228472442835402,
-        "cat-in-a-dogs-world": 0.002250655837138323
+        "cat-in-a-dogs-world": 0.002250655837138323,
+        "jasmycoin": 0.010547641440155322
       }
     },
     {
@@ -2365,7 +2407,8 @@
         "monero": 249.54679539534615,
         "vechain": 0.0187799009535575,
         "polyhedra-network": 0.11077358313012287,
-        "cat-in-a-dogs-world": 0.002216430708523796
+        "cat-in-a-dogs-world": 0.002216430708523796,
+        "jasmycoin": 0.010395797234772377
       }
     },
     {
@@ -2417,7 +2460,8 @@
         "monero": 251.68230290014557,
         "vechain": 0.018510290109305792,
         "polyhedra-network": 0.1079749453581682,
-        "cat-in-a-dogs-world": 0.002219710678510398
+        "cat-in-a-dogs-world": 0.002219710678510398,
+        "jasmycoin": 0.010623023617797381
       }
     },
     {
@@ -2469,7 +2513,8 @@
         "monero": 266.67407340724054,
         "vechain": 0.019778565520966133,
         "polyhedra-network": 0.11357937759400631,
-        "cat-in-a-dogs-world": 0.002363531673553292
+        "cat-in-a-dogs-world": 0.002363531673553292,
+        "jasmycoin": 0.011181993226718673
       }
     },
     {
@@ -2521,7 +2566,8 @@
         "monero": 283.8705881295939,
         "vechain": 0.020206112392332297,
         "polyhedra-network": 0.11876937393782137,
-        "cat-in-a-dogs-world": 0.002426321246785242
+        "cat-in-a-dogs-world": 0.002426321246785242,
+        "jasmycoin": 0.01137836495199997
       }
     },
     {
@@ -2573,7 +2619,8 @@
         "monero": 275.9385909835432,
         "vechain": 0.020202362052002116,
         "polyhedra-network": 0.11907094388959841,
-        "cat-in-a-dogs-world": 0.002457244758765393
+        "cat-in-a-dogs-world": 0.002457244758765393,
+        "jasmycoin": 0.011357030950550991
       }
     },
     {
@@ -2625,7 +2672,8 @@
         "monero": 282.1448839876573,
         "vechain": 0.019612642938592363,
         "polyhedra-network": 0.11685958409098735,
-        "cat-in-a-dogs-world": 0.002384134979316325
+        "cat-in-a-dogs-world": 0.002384134979316325,
+        "jasmycoin": 0.011074494315812576
       }
     },
     {
@@ -2677,7 +2725,8 @@
         "monero": 274.8145327043401,
         "vechain": 0.01950992118874752,
         "polyhedra-network": 0.11474265895914944,
-        "cat-in-a-dogs-world": 0.002361256594898163
+        "cat-in-a-dogs-world": 0.002361256594898163,
+        "jasmycoin": 0.010864510986535094
       }
     },
     {
@@ -2729,7 +2778,8 @@
         "monero": 266.36552732777744,
         "vechain": 0.02034018592877498,
         "polyhedra-network": 0.11990822142241243,
-        "cat-in-a-dogs-world": 0.0024567313719466447
+        "cat-in-a-dogs-world": 0.0024567313719466447,
+        "jasmycoin": 0.011446157915461252
       }
     },
     {
@@ -2781,7 +2831,8 @@
         "monero": 273.89665697738155,
         "vechain": 0.019370372653455637,
         "polyhedra-network": 0.11199409260590609,
-        "cat-in-a-dogs-world": 0.0022774027545258663
+        "cat-in-a-dogs-world": 0.0022774027545258663,
+        "jasmycoin": 0.010781337909712085
       }
     },
     {
@@ -2833,7 +2884,8 @@
         "monero": 288.6214515765694,
         "vechain": 0.01968928027448914,
         "polyhedra-network": 0.11534315912811999,
-        "cat-in-a-dogs-world": 0.0023792264510690353
+        "cat-in-a-dogs-world": 0.0023792264510690353,
+        "jasmycoin": 0.011158981788493262
       }
     },
     {
@@ -2885,7 +2937,8 @@
         "monero": 294.305278433592,
         "vechain": 0.018966279439894273,
         "polyhedra-network": 0.11020171346564916,
-        "cat-in-a-dogs-world": 0.0022464536269739925
+        "cat-in-a-dogs-world": 0.0022464536269739925,
+        "jasmycoin": 0.010674250484666751
       }
     },
     {
@@ -2937,7 +2990,8 @@
         "monero": 253.1605109193767,
         "vechain": 0.013641040743900492,
         "polyhedra-network": 0.0729461649449021,
-        "cat-in-a-dogs-world": 0.0016741944874677968
+        "cat-in-a-dogs-world": 0.0016741944874677968,
+        "jasmycoin": 0.00805580651411006
       }
     },
     {
@@ -2989,7 +3043,8 @@
         "monero": 257.5142822045751,
         "vechain": 0.014453867966166408,
         "polyhedra-network": 0.06744162799675592,
-        "cat-in-a-dogs-world": 0.0016544688758577328
+        "cat-in-a-dogs-world": 0.0016544688758577328,
+        "jasmycoin": 0.008493975687035393
       }
     },
     {
@@ -3041,7 +3096,8 @@
         "monero": 262.79754193875584,
         "vechain": 0.016651003674096745,
         "polyhedra-network": 0.07654025774474765,
-        "cat-in-a-dogs-world": 0.0018341803438172144
+        "cat-in-a-dogs-world": 0.0018341803438172144,
+        "jasmycoin": 0.009505293006440929
       }
     },
     {
@@ -3093,7 +3149,8 @@
         "monero": 268.1290487138171,
         "vechain": 0.017154707825192083,
         "polyhedra-network": 0.08309909700752453,
-        "cat-in-a-dogs-world": 0.0019279319581047272
+        "cat-in-a-dogs-world": 0.0019279319581047272,
+        "jasmycoin": 0.00977787788457262
       }
     },
     {
@@ -3145,7 +3202,8 @@
         "monero": 268.4311381849767,
         "vechain": 0.016434592072262055,
         "polyhedra-network": 0.07890648442438422,
-        "cat-in-a-dogs-world": 0.0018280408981503629
+        "cat-in-a-dogs-world": 0.0018280408981503629,
+        "jasmycoin": 0.009303622193274415
       }
     },
     {
@@ -3197,7 +3255,8 @@
         "monero": 272.1544693880198,
         "vechain": 0.015659781853692586,
         "polyhedra-network": 0.07464744246481622,
-        "cat-in-a-dogs-world": 0.0017213134699508605
+        "cat-in-a-dogs-world": 0.0017213134699508605,
+        "jasmycoin": 0.008821278281818112
       }
     },
     {
@@ -3249,7 +3308,8 @@
         "monero": 258.8441270651422,
         "vechain": 0.014865199774189743,
         "polyhedra-network": 0.06796654947107335,
-        "cat-in-a-dogs-world": 0.0016435372221714482
+        "cat-in-a-dogs-world": 0.0016435372221714482,
+        "jasmycoin": 0.008648451516039709
       }
     },
     {
@@ -3301,7 +3361,8 @@
         "monero": 250.1268147641518,
         "vechain": 0.014715959456267951,
         "polyhedra-network": 0.06513076561443293,
-        "cat-in-a-dogs-world": 0.0015839070212566493
+        "cat-in-a-dogs-world": 0.0015839070212566493,
+        "jasmycoin": 0.008321341402409702
       }
     },
     {
@@ -3353,7 +3414,8 @@
         "monero": 264.3669919281914,
         "vechain": 0.014706119059408688,
         "polyhedra-network": 0.06501869071808106,
-        "cat-in-a-dogs-world": 0.001611230499445594
+        "cat-in-a-dogs-world": 0.001611230499445594,
+        "jasmycoin": 0.008618677669653142
       }
     },
     {
@@ -3405,7 +3467,8 @@
         "monero": 271.04609091912647,
         "vechain": 0.015159216500192108,
         "polyhedra-network": 0.06351237345637466,
-        "cat-in-a-dogs-world": 0.0016548883435930025
+        "cat-in-a-dogs-world": 0.0016548883435930025,
+        "jasmycoin": 0.008662735155823545
       }
     },
     {
@@ -3457,7 +3520,8 @@
         "monero": 267.2785280873271,
         "vechain": 0.01536999419020811,
         "polyhedra-network": 0.06299191965177413,
-        "cat-in-a-dogs-world": 0.001678885153267104
+        "cat-in-a-dogs-world": 0.001678885153267104,
+        "jasmycoin": 0.009040805467112938
       }
     },
     {
@@ -3509,7 +3573,8 @@
         "monero": 262.65961482826964,
         "vechain": 0.014829334847667169,
         "polyhedra-network": 0.05899281815246683,
-        "cat-in-a-dogs-world": 0.001604987882479299
+        "cat-in-a-dogs-world": 0.001604987882479299,
+        "jasmycoin": 0.00858521437207133
       }
     },
     {
@@ -3561,7 +3626,8 @@
         "monero": 268.7958143103843,
         "vechain": 0.014608693605889905,
         "polyhedra-network": 0.05899728942519125,
-        "cat-in-a-dogs-world": 0.001515521393087675
+        "cat-in-a-dogs-world": 0.001515521393087675,
+        "jasmycoin": 0.00849256034607738
       }
     },
     {
@@ -3613,7 +3679,8 @@
         "monero": 278.30946835207334,
         "vechain": 0.0147942516198071,
         "polyhedra-network": 0.06298399080735151,
-        "cat-in-a-dogs-world": 0.0015959639396756627
+        "cat-in-a-dogs-world": 0.0015959639396756627,
+        "jasmycoin": 0.009218192176695525
       }
     },
     {
@@ -3665,7 +3732,8 @@
         "monero": 281.5081383491685,
         "vechain": 0.014937486221974858,
         "polyhedra-network": 0.06257463207588515,
-        "cat-in-a-dogs-world": 0.0016261467700573594
+        "cat-in-a-dogs-world": 0.0016261467700573594,
+        "jasmycoin": 0.009138726674531845
       }
     },
     {
@@ -3717,7 +3785,8 @@
         "monero": 286.8779068612606,
         "vechain": 0.014913922896228678,
         "polyhedra-network": 0.06258968013879514,
-        "cat-in-a-dogs-world": 0.001639154972045141
+        "cat-in-a-dogs-world": 0.001639154972045141,
+        "jasmycoin": 0.009156196837374342
       }
     },
     {
@@ -3769,7 +3838,8 @@
         "monero": 297.9544993816486,
         "vechain": 0.015355103379040867,
         "polyhedra-network": 0.06598326454234525,
-        "cat-in-a-dogs-world": 0.0017073185711891708
+        "cat-in-a-dogs-world": 0.0017073185711891708,
+        "jasmycoin": 0.00932468984624812
       }
     },
     {
@@ -3821,7 +3891,8 @@
         "monero": 292.9632505868491,
         "vechain": 0.01482573774872673,
         "polyhedra-network": 0.0595211800055636,
-        "cat-in-a-dogs-world": 0.001659861058403161
+        "cat-in-a-dogs-world": 0.001659861058403161,
+        "jasmycoin": 0.008900915232417716
       }
     },
     {
@@ -3873,7 +3944,8 @@
         "monero": 288.95098620759893,
         "vechain": 0.014454490809829487,
         "polyhedra-network": 0.05709939916342147,
-        "cat-in-a-dogs-world": 0.0016111348333798347
+        "cat-in-a-dogs-world": 0.0016111348333798347,
+        "jasmycoin": 0.008780178167028788
       }
     },
     {
@@ -3925,7 +3997,8 @@
         "monero": 292.105097884658,
         "vechain": 0.014530975976476835,
         "polyhedra-network": 0.05852051805800985,
-        "cat-in-a-dogs-world": 0.0016081640055080814
+        "cat-in-a-dogs-world": 0.0016081640055080814,
+        "jasmycoin": 0.00897467479679905
       }
     },
     {
@@ -3977,7 +4050,8 @@
         "monero": 279.1835396571894,
         "vechain": 0.013428235934058202,
         "polyhedra-network": 0.05398761529275188,
-        "cat-in-a-dogs-world": 0.001486619344844742
+        "cat-in-a-dogs-world": 0.001486619344844742,
+        "jasmycoin": 0.00864960983431855
       }
     },
     {
@@ -4029,7 +4103,8 @@
         "monero": 288.8224703556452,
         "vechain": 0.013434633470946242,
         "polyhedra-network": 0.0543534614173714,
-        "cat-in-a-dogs-world": 0.0015250317715563904
+        "cat-in-a-dogs-world": 0.0015250317715563904,
+        "jasmycoin": 0.008618691233286563
       }
     },
     {
@@ -4081,7 +4156,8 @@
         "monero": 302.3172211078587,
         "vechain": 0.014134549612420786,
         "polyhedra-network": 0.057855533612970064,
-        "cat-in-a-dogs-world": 0.0015620413992922593
+        "cat-in-a-dogs-world": 0.0015620413992922593,
+        "jasmycoin": 0.008787908387538134
       }
     },
     {
@@ -4133,7 +4209,8 @@
         "monero": 301.37632148157206,
         "vechain": 0.01416444035403435,
         "polyhedra-network": 0.06145950417833829,
-        "cat-in-a-dogs-world": 0.0015424639970520197
+        "cat-in-a-dogs-world": 0.0015424639970520197,
+        "jasmycoin": 0.008798993589746359
       }
     },
     {
@@ -4185,7 +4262,8 @@
         "monero": 300.5457642227281,
         "vechain": 0.012734833837005972,
         "polyhedra-network": 0.05172197895294037,
-        "cat-in-a-dogs-world": 0.001334666250995683
+        "cat-in-a-dogs-world": 0.001334666250995683,
+        "jasmycoin": 0.00786313899945981
       }
     },
     {
@@ -4237,7 +4315,8 @@
         "monero": 294.64515027868305,
         "vechain": 0.0122020523215964,
         "polyhedra-network": 0.04796696339939224,
-        "cat-in-a-dogs-world": 0.0012480564928789946
+        "cat-in-a-dogs-world": 0.0012480564928789946,
+        "jasmycoin": 0.007337704929432573
       }
     },
     {
@@ -4289,7 +4368,8 @@
         "monero": 296.8564344418435,
         "vechain": 0.013123111113450815,
         "polyhedra-network": 0.053829669669743015,
-        "cat-in-a-dogs-world": 0.0012840359375322354
+        "cat-in-a-dogs-world": 0.0012840359375322354,
+        "jasmycoin": 0.007904408109936591
       }
     },
     {
@@ -4341,7 +4421,8 @@
         "monero": 310.52504506835226,
         "vechain": 0.012665629508466732,
         "polyhedra-network": 0.0638403936245569,
-        "cat-in-a-dogs-world": 0.001234797073709838
+        "cat-in-a-dogs-world": 0.001234797073709838,
+        "jasmycoin": 0.007757803952407997
       }
     },
     {
@@ -4393,7 +4474,8 @@
         "monero": 318.55483640074254,
         "vechain": 0.01472806381126199,
         "polyhedra-network": 0.06292401900039568,
-        "cat-in-a-dogs-world": 0.0013806371569943998
+        "cat-in-a-dogs-world": 0.0013806371569943998,
+        "jasmycoin": 0.008853606796879762
       }
     },
     {
@@ -4445,7 +4527,8 @@
         "monero": 318.2832042570327,
         "vechain": 0.014934527061213738,
         "polyhedra-network": 0.06259001312715942,
-        "cat-in-a-dogs-world": 0.0013688509297655129
+        "cat-in-a-dogs-world": 0.0013688509297655129,
+        "jasmycoin": 0.008678108652188465
       }
     },
     {
@@ -4497,7 +4580,8 @@
         "monero": 361.08825272054804,
         "vechain": 0.014822320177050645,
         "polyhedra-network": 0.060970942340652604,
-        "cat-in-a-dogs-world": 0.0014052484229347408
+        "cat-in-a-dogs-world": 0.0014052484229347408,
+        "jasmycoin": 0.00872377120239431
       }
     },
     {
@@ -4549,7 +4633,8 @@
         "monero": 334.32632468183914,
         "vechain": 0.01497978532897155,
         "polyhedra-network": 0.059493439270766814,
-        "cat-in-a-dogs-world": 0.0014445240855105027
+        "cat-in-a-dogs-world": 0.0014445240855105027,
+        "jasmycoin": 0.008601552048018282
       }
     },
     {
@@ -4601,7 +4686,8 @@
         "monero": 319.49766774557963,
         "vechain": 0.014607091381173056,
         "polyhedra-network": 0.0544023974304027,
-        "cat-in-a-dogs-world": 0.0013354017675742183
+        "cat-in-a-dogs-world": 0.0013354017675742183,
+        "jasmycoin": 0.008002461695733367
       }
     },
     {
@@ -4653,7 +4739,8 @@
         "monero": 333.4798898946743,
         "vechain": 0.014136188008013261,
         "polyhedra-network": 0.05154261315939742,
-        "cat-in-a-dogs-world": 0.0012998372482168135
+        "cat-in-a-dogs-world": 0.0012998372482168135,
+        "jasmycoin": 0.007883310141496907
       }
     },
     {
@@ -4705,7 +4792,8 @@
         "monero": 332.0217502287301,
         "vechain": 0.01374444994879655,
         "polyhedra-network": 0.04928122703202788,
-        "cat-in-a-dogs-world": 0.0012343198796109455
+        "cat-in-a-dogs-world": 0.0012343198796109455,
+        "jasmycoin": 0.00780744176394756
       }
     },
     {
@@ -4757,7 +4845,8 @@
         "monero": 337.1192199534989,
         "vechain": 0.013331108736692314,
         "polyhedra-network": 0.047489897058401176,
-        "cat-in-a-dogs-world": 0.001176414721505123
+        "cat-in-a-dogs-world": 0.001176414721505123,
+        "jasmycoin": 0.00739786663985466
       }
     },
     {
@@ -4809,7 +4898,8 @@
         "monero": 363.46647430427214,
         "vechain": 0.013465306273985012,
         "polyhedra-network": 0.04926958077012206,
-        "cat-in-a-dogs-world": 0.0011881802839580117
+        "cat-in-a-dogs-world": 0.0011881802839580117,
+        "jasmycoin": 0.007567738801107559
       }
     },
     {
@@ -4861,7 +4951,8 @@
         "monero": 350.31106360851265,
         "vechain": 0.013003490893933078,
         "polyhedra-network": 0.047818768616826685,
-        "cat-in-a-dogs-world": 0.0011763489447154593
+        "cat-in-a-dogs-world": 0.0011763489447154593,
+        "jasmycoin": 0.007204150081849136
       }
     },
     {
@@ -4913,7 +5004,8 @@
         "monero": 350.7508098364716,
         "vechain": 0.012454411666706737,
         "polyhedra-network": 0.04615391588955368,
-        "cat-in-a-dogs-world": 0.0011203077330096602
+        "cat-in-a-dogs-world": 0.0011203077330096602,
+        "jasmycoin": 0.0068023541801045615
       }
     },
     {
@@ -4965,7 +5057,8 @@
         "monero": 349.57373620309943,
         "vechain": 0.012889393705824611,
         "polyhedra-network": 0.047024089451178024,
-        "cat-in-a-dogs-world": 0.0011611778811012068
+        "cat-in-a-dogs-world": 0.0011611778811012068,
+        "jasmycoin": 0.0070970913034863106
       }
     },
     {
@@ -5017,7 +5110,8 @@
         "monero": 317.54795322448405,
         "vechain": 0.012421145417443066,
         "polyhedra-network": 0.04553599824018552,
-        "cat-in-a-dogs-world": 0.0011136777713235762
+        "cat-in-a-dogs-world": 0.0011136777713235762,
+        "jasmycoin": 0.006896553797750009
       }
     },
     {
@@ -5069,7 +5163,8 @@
         "monero": 294.5992506981785,
         "vechain": 0.011621730457643588,
         "polyhedra-network": 0.043552694957289674,
-        "cat-in-a-dogs-world": 0.0010746785377356409
+        "cat-in-a-dogs-world": 0.0010746785377356409,
+        "jasmycoin": 0.00644581005500141
       }
     },
     {
@@ -5121,7 +5216,8 @@
         "monero": 291.4769742061467,
         "vechain": 0.011133350214800015,
         "polyhedra-network": 0.04088517823013084,
-        "cat-in-a-dogs-world": 0.0009852750298273104
+        "cat-in-a-dogs-world": 0.0009852750298273104,
+        "jasmycoin": 0.006287717093303755
       }
     },
     {
@@ -5173,7 +5269,8 @@
         "monero": 321.0950245332197,
         "vechain": 0.011115910279891143,
         "polyhedra-network": 0.04026617741579996,
-        "cat-in-a-dogs-world": 0.0009709165590191836
+        "cat-in-a-dogs-world": 0.0009709165590191836,
+        "jasmycoin": 0.006431290171712462
       }
     },
     {
@@ -5226,7 +5323,8 @@
         "vechain": 0.011239903278807084,
         "polyhedra-network": 0.03994490464439719,
         "cat-in-a-dogs-world": 0.0009889103361981973,
-        "monad": 0.022541336720000003
+        "monad": 0.022541336720000003,
+        "jasmycoin": 0.0061996845979143235
       }
     },
     {
@@ -5279,7 +5377,8 @@
         "vechain": 0.011852238392375222,
         "polyhedra-network": 0.04198716854611104,
         "cat-in-a-dogs-world": 0.001042621726502965,
-        "monad": 0.026170884553793367
+        "monad": 0.026170884553793367,
+        "jasmycoin": 0.006421214731500774
       }
     },
     {
@@ -5332,7 +5431,8 @@
         "vechain": 0.011732082698025946,
         "polyhedra-network": 0.04369676961681718,
         "cat-in-a-dogs-world": 0.001033408178263446,
-        "monad": 0.04002557496419345
+        "monad": 0.04002557496419345,
+        "jasmycoin": 0.006486026995772447
       }
     },
     {
@@ -5385,7 +5485,8 @@
         "vechain": 0.011968883745377096,
         "polyhedra-network": 0.04365246143104643,
         "cat-in-a-dogs-world": 0.001066834951664266,
-        "monad": 0.0405185271967178
+        "monad": 0.0405185271967178,
+        "jasmycoin": 0.00668848222670529
       }
     },
     {
@@ -5438,7 +5539,8 @@
         "vechain": 0.011898737665257586,
         "polyhedra-network": 0.04319978631573308,
         "cat-in-a-dogs-world": 0.0010596125162196162,
-        "monad": 0.03516074121063829
+        "monad": 0.03516074121063829,
+        "jasmycoin": 0.0065718536965307765
       }
     },
     {
@@ -5491,7 +5593,8 @@
         "vechain": 0.011752526564976579,
         "polyhedra-network": 0.042033108165709085,
         "cat-in-a-dogs-world": 0.0010480545538748838,
-        "monad": 0.030551568113133105
+        "monad": 0.030551568113133105,
+        "jasmycoin": 0.006352589972019944
       }
     },
     {
@@ -5544,7 +5647,8 @@
         "vechain": 0.011551114891087524,
         "polyhedra-network": 0.041122234190737884,
         "cat-in-a-dogs-world": 0.0010048324911831124,
-        "monad": 0.028259823962876424
+        "monad": 0.028259823962876424,
+        "jasmycoin": 0.0062191316899633305
       }
     },
     {
@@ -5597,7 +5701,8 @@
         "vechain": 0.011258490460546356,
         "polyhedra-network": 0.04126996282700058,
         "cat-in-a-dogs-world": 0.0009557761017213808,
-        "monad": 0.02418287190203141
+        "monad": 0.02418287190203141,
+        "jasmycoin": 0.006169791840643521
       }
     },
     {
@@ -5650,7 +5755,8 @@
         "vechain": 0.010682763423178426,
         "polyhedra-network": 0.038594283822007226,
         "cat-in-a-dogs-world": 0.0008987502901483383,
-        "monad": 0.02620551587257444
+        "monad": 0.02620551587257444,
+        "jasmycoin": 0.005808662347716043
       }
     },
     {
@@ -5703,7 +5809,8 @@
         "vechain": 0.01141626941396831,
         "polyhedra-network": 0.04101392794591594,
         "cat-in-a-dogs-world": 0.0010068037300724941,
-        "monad": 0.026896330283429852
+        "monad": 0.026896330283429852,
+        "jasmycoin": 0.006258514245454765
       }
     },
     {
@@ -5756,7 +5863,8 @@
         "vechain": 0.011748382952400207,
         "polyhedra-network": 0.04248485978329249,
         "cat-in-a-dogs-world": 0.0010184065595902707,
-        "monad": 0.02631278297289031
+        "monad": 0.02631278297289031,
+        "jasmycoin": 0.006296311855561258
       }
     },
     {
@@ -5809,7 +5917,8 @@
         "vechain": 0.011165753128118528,
         "polyhedra-network": 0.040595829689122495,
         "cat-in-a-dogs-world": 0.0009797266955317633,
-        "monad": 0.02379874832632178
+        "monad": 0.02379874832632178,
+        "jasmycoin": 0.006003164086905675
       }
     },
     {
@@ -5862,7 +5971,8 @@
         "vechain": 0.010845661624898167,
         "polyhedra-network": 0.038329416493471304,
         "cat-in-a-dogs-world": 0.0009144371610198312,
-        "monad": 0.023381223670955423
+        "monad": 0.023381223670955423,
+        "jasmycoin": 0.0058464781143051855
       }
     },
     {
@@ -5915,7 +6025,8 @@
         "vechain": 0.01085659427692175,
         "polyhedra-network": 0.03969303552876402,
         "cat-in-a-dogs-world": 0.0009534357723265477,
-        "monad": 0.023396515508848845
+        "monad": 0.023396515508848845,
+        "jasmycoin": 0.005893363852595856
       }
     },
     {
@@ -5968,7 +6079,8 @@
         "vechain": 0.010574280536386748,
         "polyhedra-network": 0.03875592502266122,
         "cat-in-a-dogs-world": 0.0009278950151152604,
-        "monad": 0.02194794603111433
+        "monad": 0.02194794603111433,
+        "jasmycoin": 0.00574467492612978
       }
     },
     {
@@ -6021,7 +6133,8 @@
         "vechain": 0.010806831170299245,
         "polyhedra-network": 0.03934161036788035,
         "cat-in-a-dogs-world": 0.0009643435971798236,
-        "monad": 0.024133606616046972
+        "monad": 0.024133606616046972,
+        "jasmycoin": 0.005957809261697111
       }
     },
     {
@@ -6074,7 +6187,8 @@
         "vechain": 0.010922564363416713,
         "polyhedra-network": 0.03991650318223721,
         "cat-in-a-dogs-world": 0.0010077327653681824,
-        "monad": 0.023474243312825892
+        "monad": 0.023474243312825892,
+        "jasmycoin": 0.006270572667068918
       }
     },
     {
@@ -6127,7 +6241,8 @@
         "vechain": 0.010483781145212822,
         "polyhedra-network": 0.03875537700116938,
         "cat-in-a-dogs-world": 0.0009396900308579526,
-        "monad": 0.022911043165341545
+        "monad": 0.022911043165341545,
+        "jasmycoin": 0.00598810166761449
       }
     },
     {
@@ -6180,7 +6295,8 @@
         "vechain": 0.01024524804433102,
         "polyhedra-network": 0.037810318788805065,
         "cat-in-a-dogs-world": 0.0008996293436418465,
-        "monad": 0.02235587164646886
+        "monad": 0.02235587164646886,
+        "jasmycoin": 0.005857544179421176
       }
     },
     {
@@ -6233,7 +6349,8 @@
         "vechain": 0.009870651565285007,
         "polyhedra-network": 0.03753644717536373,
         "cat-in-a-dogs-world": 0.0008632691336406214,
-        "monad": 0.020526534360615165
+        "monad": 0.020526534360615165,
+        "jasmycoin": 0.005690887206338682
       }
     },
     {
@@ -6286,7 +6403,8 @@
         "vechain": 0.009929557905527936,
         "polyhedra-network": 0.03753821546860683,
         "cat-in-a-dogs-world": 0.0008635749541014257,
-        "monad": 0.020012386131824544
+        "monad": 0.020012386131824544,
+        "jasmycoin": 0.005664929855708429
       }
     },
     {
@@ -6339,7 +6457,8 @@
         "vechain": 0.009586892626516151,
         "polyhedra-network": 0.03541495492386421,
         "cat-in-a-dogs-world": 0.0008144384236624504,
-        "monad": 0.0175655029817397
+        "monad": 0.0175655029817397,
+        "jasmycoin": 0.005234516064985065
       }
     },
     {
@@ -6392,7 +6511,8 @@
         "vechain": 0.00914504735693677,
         "polyhedra-network": 0.03420690913450084,
         "cat-in-a-dogs-world": 0.0007764558203699311,
-        "monad": 0.016900908058072282
+        "monad": 0.016900908058072282,
+        "jasmycoin": 0.005149968671855893
       }
     },
     {
@@ -6445,7 +6565,8 @@
         "vechain": 0.009242411869139959,
         "polyhedra-network": 0.03430331963316398,
         "cat-in-a-dogs-world": 0.0007693263897567971,
-        "monad": 0.01836455007130246
+        "monad": 0.01836455007130246,
+        "jasmycoin": 0.00519762548311787
       }
     },
     {
@@ -6498,7 +6619,8 @@
         "vechain": 0.008741927849854355,
         "polyhedra-network": 0.03254590207276027,
         "cat-in-a-dogs-world": 0.000719111966171446,
-        "monad": 0.015941564716667425
+        "monad": 0.015941564716667425,
+        "jasmycoin": 0.005075428532237563
       }
     },
     {
@@ -6551,7 +6673,8 @@
         "vechain": 0.00836237841639789,
         "polyhedra-network": 0.03193194594708027,
         "cat-in-a-dogs-world": 0.0006844446702699777,
-        "monad": 0.01444426296686368
+        "monad": 0.01444426296686368,
+        "jasmycoin": 0.004922937412935691
       }
     },
     {
@@ -6604,7 +6727,8 @@
         "vechain": 0.009163532968721324,
         "polyhedra-network": 0.03384914748688065,
         "cat-in-a-dogs-world": 0.0007432375410434304,
-        "monad": 0.01625834789896834
+        "monad": 0.01625834789896834,
+        "jasmycoin": 0.0052405502027726945
       }
     },
     {
@@ -6657,7 +6781,8 @@
         "vechain": 0.009085180660446321,
         "polyhedra-network": 0.03356350668178569,
         "cat-in-a-dogs-world": 0.0007392433558285462,
-        "monad": 0.016045379143526838
+        "monad": 0.016045379143526838,
+        "jasmycoin": 0.005250771855767034
       }
     },
     {
@@ -6710,7 +6835,8 @@
         "vechain": 0.008937176483854127,
         "polyhedra-network": 0.03181519769062079,
         "cat-in-a-dogs-world": 0.0007226485972010659,
-        "monad": 0.017389833263333727
+        "monad": 0.017389833263333727,
+        "jasmycoin": 0.0051270028718373405
       }
     },
     {
@@ -6763,7 +6889,8 @@
         "vechain": 0.008998929635024647,
         "polyhedra-network": 0.03198423533064429,
         "cat-in-a-dogs-world": 0.0007256060977300679,
-        "monad": 0.016272573170238565
+        "monad": 0.016272573170238565,
+        "jasmycoin": 0.005400353411293401
       }
     },
     {
@@ -6816,7 +6943,8 @@
         "vechain": 0.008931571316587025,
         "polyhedra-network": 0.032187669826996196,
         "cat-in-a-dogs-world": 0.0007123174252408776,
-        "monad": 0.01678811672952682
+        "monad": 0.01678811672952682,
+        "jasmycoin": 0.005349381457743054
       }
     },
     {
@@ -6869,7 +6997,8 @@
         "vechain": 0.008985011227199129,
         "polyhedra-network": 0.03376434396991119,
         "cat-in-a-dogs-world": 0.0007262379096212989,
-        "monad": 0.018456589618292506
+        "monad": 0.018456589618292506,
+        "jasmycoin": 0.005226966188898933
       }
     },
     {
@@ -6922,7 +7051,8 @@
         "vechain": 0.008822555613242326,
         "polyhedra-network": 0.032869029379917696,
         "cat-in-a-dogs-world": 0.0007347499236295469,
-        "monad": 0.01964910577145572
+        "monad": 0.01964910577145572,
+        "jasmycoin": 0.005022558419207359
       }
     },
     {
@@ -6975,7 +7105,8 @@
         "vechain": 0.008960212690405301,
         "polyhedra-network": 0.033085488039602366,
         "cat-in-a-dogs-world": 0.0007453750538926749,
-        "monad": 0.01992508016633468
+        "monad": 0.01992508016633468,
+        "jasmycoin": 0.0050930309900584555
       }
     },
     {
@@ -7028,7 +7159,8 @@
         "vechain": 0.00971197103262689,
         "polyhedra-network": 0.03334178480317097,
         "cat-in-a-dogs-world": 0.00076075732849013,
-        "monad": 0.019654830127504415
+        "monad": 0.019654830127504415,
+        "jasmycoin": 0.005191541357081718
       }
     },
     {
@@ -7081,7 +7213,8 @@
         "vechain": 0.009440092603863899,
         "polyhedra-network": 0.03253710677105697,
         "cat-in-a-dogs-world": 0.0007464027448933965,
-        "monad": 0.01905609447018983
+        "monad": 0.01905609447018983,
+        "jasmycoin": 0.005100631152062221
       }
     },
     {
@@ -7134,7 +7267,8 @@
         "vechain": 0.0092652860409117,
         "polyhedra-network": 0.0324836838442062,
         "cat-in-a-dogs-world": 0.0007134336799589084,
-        "monad": 0.018272244722692316
+        "monad": 0.018272244722692316,
+        "jasmycoin": 0.004988294068272869
       }
     },
     {
@@ -7187,7 +7321,8 @@
         "vechain": 0.009236549567639814,
         "polyhedra-network": 0.03251815833303884,
         "cat-in-a-dogs-world": 0.0007170178062620552,
-        "monad": 0.01927989843480252
+        "monad": 0.01927989843480252,
+        "jasmycoin": 0.004975489639745744
       }
     },
     {
@@ -7240,7 +7375,8 @@
         "vechain": 0.008844342380811866,
         "polyhedra-network": 0.03293043821666039,
         "cat-in-a-dogs-world": 0.0007020279052386752,
-        "monad": 0.01939617823066024
+        "monad": 0.01939617823066024,
+        "jasmycoin": 0.004787404743861015
       }
     },
     {
@@ -7293,7 +7429,8 @@
         "vechain": 0.009460229004558018,
         "polyhedra-network": 0.03357258864982922,
         "cat-in-a-dogs-world": 0.0007801825615782937,
-        "monad": 0.02021898266278992
+        "monad": 0.02021898266278992,
+        "jasmycoin": 0.005041130353892457
       }
     },
     {
@@ -7346,7 +7483,8 @@
         "vechain": 0.010051445378041104,
         "polyhedra-network": 0.03843745875618205,
         "cat-in-a-dogs-world": 0.0008374562343484489,
-        "monad": 0.023640832254535542
+        "monad": 0.023640832254535542,
+        "jasmycoin": 0.005353310940792784
       }
     },
     {
@@ -7399,7 +7537,8 @@
         "vechain": 0.0099918970839703,
         "polyhedra-network": 0.036843613892889406,
         "cat-in-a-dogs-world": 0.000846344687264507,
-        "monad": 0.025064813476627968
+        "monad": 0.025064813476627968,
+        "jasmycoin": 0.005636915715474094
       }
     },
     {
@@ -7452,7 +7591,8 @@
         "vechain": 0.010413775807554603,
         "polyhedra-network": 0.03785064458982376,
         "cat-in-a-dogs-world": 0.0009567161380062889,
-        "monad": 0.024711307142051817
+        "monad": 0.024711307142051817,
+        "jasmycoin": 0.005978030297797276
       }
     },
     {
@@ -7505,7 +7645,8 @@
         "vechain": 0.010780107758240263,
         "polyhedra-network": 0.03941213868814089,
         "cat-in-a-dogs-world": 0.0009501739573940757,
-        "monad": 0.02422362225588065
+        "monad": 0.02422362225588065,
+        "jasmycoin": 0.00641290800121077
       }
     },
     {
@@ -7558,7 +7699,8 @@
         "vechain": 0.010997014544729239,
         "polyhedra-network": 0.0379579243039499,
         "cat-in-a-dogs-world": 0.0009431406241543149,
-        "monad": 0.025424647141909954
+        "monad": 0.025424647141909954,
+        "jasmycoin": 0.008115329778176245
       }
     },
     {
@@ -7611,7 +7753,8 @@
         "vechain": 0.010383731459292932,
         "polyhedra-network": 0.037837179209522176,
         "cat-in-a-dogs-world": 0.0008984315358081272,
-        "monad": 0.022991145313381513
+        "monad": 0.022991145313381513,
+        "jasmycoin": 0.007193817957350076
       }
     },
     {
@@ -7664,7 +7807,8 @@
         "vechain": 0.010146511763942878,
         "polyhedra-network": 0.037679607071300296,
         "cat-in-a-dogs-world": 0.0008823546382238459,
-        "monad": 0.023911251131927477
+        "monad": 0.023911251131927477,
+        "jasmycoin": 0.008226166365900674
       }
     },
     {
@@ -7717,7 +7861,8 @@
         "vechain": 0.011375899697087606,
         "polyhedra-network": 0.09393214165417281,
         "cat-in-a-dogs-world": 0.0010125071551496951,
-        "monad": 0.02247908978088959
+        "monad": 0.02247908978088959,
+        "jasmycoin": 0.007909639423042158
       }
     },
     {
@@ -7770,7 +7915,8 @@
         "vechain": 0.011791449964785724,
         "polyhedra-network": 0.09965339364234412,
         "cat-in-a-dogs-world": 0.0011538161812308803,
-        "monad": 0.020875359848496318
+        "monad": 0.020875359848496318,
+        "jasmycoin": 0.007790288360661046
       }
     },
     {
@@ -7823,7 +7969,8 @@
         "vechain": 0.011566454107667636,
         "polyhedra-network": 0.08874399677104394,
         "cat-in-a-dogs-world": 0.001092082834234569,
-        "monad": 0.020401550067413062
+        "monad": 0.020401550067413062,
+        "jasmycoin": 0.0077753219523857345
       }
     },
     {
@@ -7876,7 +8023,8 @@
         "vechain": 0.010968401391170442,
         "polyhedra-network": 0.09150116430309783,
         "cat-in-a-dogs-world": 0.0009535617224834046,
-        "monad": 0.019808589587656817
+        "monad": 0.019808589587656817,
+        "jasmycoin": 0.007612982691512828
       }
     },
     {
@@ -7929,7 +8077,8 @@
         "vechain": 0.0113972805037421,
         "polyhedra-network": 0.08523722493907018,
         "cat-in-a-dogs-world": 0.0010336875029679465,
-        "monad": 0.02128912542155206
+        "monad": 0.02128912542155206,
+        "jasmycoin": 0.007911868473758795
       }
     },
     {
@@ -7982,7 +8131,8 @@
         "vechain": 0.011342150393705721,
         "polyhedra-network": 0.08652485843397668,
         "cat-in-a-dogs-world": 0.001014163240425616,
-        "monad": 0.01994527603772627
+        "monad": 0.01994527603772627,
+        "jasmycoin": 0.007769403846605188
       }
     },
     {
@@ -8035,7 +8185,8 @@
         "vechain": 0.010895068571017172,
         "polyhedra-network": 0.08644292358805224,
         "cat-in-a-dogs-world": 0.0009835643724900394,
-        "monad": 0.0190920673564722
+        "monad": 0.0190920673564722,
+        "jasmycoin": 0.00754103579414986
       }
     },
     {
@@ -8088,7 +8239,8 @@
         "vechain": 0.011072234469681624,
         "polyhedra-network": 0.0834903278142492,
         "cat-in-a-dogs-world": 0.0010688153566925402,
-        "monad": 0.019212910100273282
+        "monad": 0.019212910100273282,
+        "jasmycoin": 0.007668159887531555
       }
     },
     {
@@ -8141,7 +8293,8 @@
         "vechain": 0.010150643139690123,
         "polyhedra-network": 0.03549691109844383,
         "cat-in-a-dogs-world": 0.0009340755729375231,
-        "monad": 0.019012037019954055
+        "monad": 0.019012037019954055,
+        "jasmycoin": 0.007076058079008623
       }
     },
     {
@@ -8194,7 +8347,8 @@
         "vechain": 0.010673690540442163,
         "polyhedra-network": 0.08896698166960736,
         "cat-in-a-dogs-world": 0.0010193608095400994,
-        "monad": 0.018305773253141165
+        "monad": 0.018305773253141165,
+        "jasmycoin": 0.006995906420459366
       }
     },
     {
@@ -8247,7 +8401,8 @@
         "vechain": 0.010182458088242176,
         "polyhedra-network": 0.06573343473199898,
         "cat-in-a-dogs-world": 0.0009234866151898533,
-        "monad": 0.017149297514708024
+        "monad": 0.017149297514708024,
+        "jasmycoin": 0.006977918534761558
       }
     },
     {
@@ -8300,7 +8455,8 @@
         "vechain": 0.009598221802744578,
         "polyhedra-network": 0.07296104485650766,
         "cat-in-a-dogs-world": 0.0008895971310864823,
-        "monad": 0.015414286249985868
+        "monad": 0.015414286249985868,
+        "jasmycoin": 0.006552630469717009
       }
     },
     {
@@ -8353,7 +8509,8 @@
         "vechain": 0.00992605433370124,
         "polyhedra-network": 0.08057289049182854,
         "cat-in-a-dogs-world": 0.0009103141663879729,
-        "monad": 0.016012412149250154
+        "monad": 0.016012412149250154,
+        "jasmycoin": 0.00676059273100221
       }
     },
     {
@@ -8406,7 +8563,8 @@
         "vechain": 0.010211995552225253,
         "polyhedra-network": 0.08338733078015768,
         "cat-in-a-dogs-world": 0.0009333307098955686,
-        "monad": 0.015295319416734654
+        "monad": 0.015295319416734654,
+        "jasmycoin": 0.006836710196345552
       }
     },
     {
@@ -8459,7 +8617,8 @@
         "vechain": 0.010111231836605972,
         "polyhedra-network": 0.06088688062618035,
         "cat-in-a-dogs-world": 0.0009241324957023207,
-        "monad": 0.015510209949677785
+        "monad": 0.015510209949677785,
+        "jasmycoin": 0.0068103533743631255
       }
     },
     {
@@ -8512,7 +8671,8 @@
         "vechain": 0.010543142050168514,
         "polyhedra-network": 0.08092799347270395,
         "cat-in-a-dogs-world": 0.001044628013910866,
-        "monad": 0.016131518698573714
+        "monad": 0.016131518698573714,
+        "jasmycoin": 0.0069165994294376285
       }
     },
     {
@@ -8565,7 +8725,8 @@
         "vechain": 0.009519699268401316,
         "polyhedra-network": 0.06924398056838665,
         "cat-in-a-dogs-world": 0.0008631737647554529,
-        "monad": 0.014985604316408553
+        "monad": 0.014985604316408553,
+        "jasmycoin": 0.006340863414079862
       }
     },
     {
@@ -8618,7 +8779,8 @@
         "vechain": 0.009731928846174479,
         "polyhedra-network": 0.0792655186537757,
         "cat-in-a-dogs-world": 0.0008832306069219524,
-        "monad": 0.015626670928105955
+        "monad": 0.015626670928105955,
+        "jasmycoin": 0.0063062220554223804
       }
     },
     {
@@ -8671,7 +8833,8 @@
         "vechain": 0.009990335451603263,
         "polyhedra-network": 0.07700531090546578,
         "cat-in-a-dogs-world": 0.0009322916657112107,
-        "monad": 0.018440747112564743
+        "monad": 0.018440747112564743,
+        "jasmycoin": 0.006431380055965464
       }
     },
     {
@@ -8724,7 +8887,8 @@
         "vechain": 0.01007053382153356,
         "polyhedra-network": 0.07544740311849202,
         "cat-in-a-dogs-world": 0.0009828739188487369,
-        "monad": 0.017805759268799636
+        "monad": 0.017805759268799636,
+        "jasmycoin": 0.006430002085056292
       }
     },
     {
@@ -8777,7 +8941,8 @@
         "vechain": 0.008907795928870574,
         "polyhedra-network": 0.07608534845267696,
         "cat-in-a-dogs-world": 0.0008597440099702856,
-        "monad": 0.016907983607936244
+        "monad": 0.016907983607936244,
+        "jasmycoin": 0.006009926827364559
       }
     },
     {
@@ -8830,7 +8995,8 @@
         "vechain": 0.008870683729995067,
         "polyhedra-network": 0.07508526714138447,
         "cat-in-a-dogs-world": 0.0008302470740313558,
-        "monad": 0.017051694678776506
+        "monad": 0.017051694678776506,
+        "jasmycoin": 0.005862732703850261
       }
     },
     {
@@ -8883,7 +9049,8 @@
         "vechain": 0.007931360222870651,
         "polyhedra-network": 0.06852579383842614,
         "cat-in-a-dogs-world": 0.0007472772865923295,
-        "monad": 0.01526128496290742
+        "monad": 0.01526128496290742,
+        "jasmycoin": 0.0054368101718095165
       }
     },
     {
@@ -8936,7 +9103,8 @@
         "vechain": 0.008275732485645095,
         "polyhedra-network": 0.07104729573066162,
         "cat-in-a-dogs-world": 0.000789419262288575,
-        "monad": 0.015152434235823426
+        "monad": 0.015152434235823426,
+        "jasmycoin": 0.005806337505243873
       }
     },
     {
@@ -8989,7 +9157,8 @@
         "vechain": 0.008277428289836413,
         "polyhedra-network": 0.06802818655023517,
         "cat-in-a-dogs-world": 0.0007712419073487227,
-        "monad": 0.015650296135091127
+        "monad": 0.015650296135091127,
+        "jasmycoin": 0.005595291054981026
       }
     },
     {
@@ -9042,7 +9211,8 @@
         "vechain": 0.008277670207645858,
         "polyhedra-network": 0.06534065390326281,
         "cat-in-a-dogs-world": 0.0007691300698812702,
-        "monad": 0.014842208905053935
+        "monad": 0.014842208905053935,
+        "jasmycoin": 0.005695051353245157
       }
     },
     {
@@ -9095,7 +9265,8 @@
         "vechain": 0.00825466838400954,
         "polyhedra-network": 0.07237993491486322,
         "cat-in-a-dogs-world": 0.0007553548624372138,
-        "monad": 0.016768116455791356
+        "monad": 0.016768116455791356,
+        "jasmycoin": 0.005662990262774655
       }
     },
     {
@@ -9148,7 +9319,8 @@
         "vechain": 0.006980993486986042,
         "polyhedra-network": 0.06662413717917498,
         "cat-in-a-dogs-world": 0.0006160788876057515,
-        "monad": 0.014645382572154532
+        "monad": 0.014645382572154532,
+        "jasmycoin": 0.004665533463610262
       }
     },
     {
@@ -9201,7 +9373,8 @@
         "vechain": 0.0077843263595117505,
         "polyhedra-network": 0.06946848388880567,
         "cat-in-a-dogs-world": 0.0006611066734725942,
-        "monad": 0.01567755786076413
+        "monad": 0.01567755786076413,
+        "jasmycoin": 0.0050992810233318284
       }
     },
     {
@@ -9254,7 +9427,8 @@
         "vechain": 0.008253035340259786,
         "polyhedra-network": 0.06925004453434166,
         "cat-in-a-dogs-world": 0.000719223147115627,
-        "monad": 0.01572470500875367
+        "monad": 0.01572470500875367,
+        "jasmycoin": 0.005323557427709069
       }
     },
     {
@@ -9307,7 +9481,8 @@
         "vechain": 0.008682150963912595,
         "polyhedra-network": 0.07200654182371588,
         "cat-in-a-dogs-world": 0.0007940030562288913,
-        "monad": 0.015277400817878428
+        "monad": 0.015277400817878428,
+        "jasmycoin": 0.005658895024645882
       }
     },
     {
@@ -9360,7 +9535,8 @@
         "vechain": 0.006674758118237234,
         "polyhedra-network": 0.01983050856581623,
         "cat-in-a-dogs-world": 0.0005099640361232495,
-        "monad": 0.015148484739219868
+        "monad": 0.015148484739219868,
+        "jasmycoin": 0.004781101914932399
       }
     },
     {
@@ -9413,7 +9589,8 @@
         "vechain": 0.00647839127246966,
         "polyhedra-network": 0.01858256008201808,
         "cat-in-a-dogs-world": 0.0004863211173213379,
-        "monad": 0.016506906680732982
+        "monad": 0.016506906680732982,
+        "jasmycoin": 0.004590983596087938
       }
     },
     {
@@ -9466,7 +9643,8 @@
         "vechain": 0.008180204679252106,
         "polyhedra-network": 0.0702828625979617,
         "cat-in-a-dogs-world": 0.0007199815520395251,
-        "monad": 0.01607193911970734
+        "monad": 0.01607193911970734,
+        "jasmycoin": 0.005376901316192326
       }
     },
     {
@@ -9519,7 +9697,8 @@
         "vechain": 0.008314532451387135,
         "polyhedra-network": 0.06704267235194691,
         "cat-in-a-dogs-world": 0.0006240006805653237,
-        "monad": 0.01695438481156195
+        "monad": 0.01695438481156195,
+        "jasmycoin": 0.0054895939853354765
       }
     },
     {
@@ -9572,7 +9751,8 @@
         "vechain": 0.008658019319536693,
         "polyhedra-network": 0.05950802143289852,
         "cat-in-a-dogs-world": 0.0007714057982385579,
-        "monad": 0.01910513774922138
+        "monad": 0.01910513774922138,
+        "jasmycoin": 0.005925669846714081
       }
     },
     {
@@ -9625,7 +9805,8 @@
         "vechain": 0.008865245775302037,
         "polyhedra-network": 0.07423498413719282,
         "cat-in-a-dogs-world": 0.0007182812905936358,
-        "monad": 0.01973240808647546
+        "monad": 0.01973240808647546,
+        "jasmycoin": 0.006140813099040625
       }
     },
     {
@@ -9678,7 +9859,8 @@
         "vechain": 0.008489903685881995,
         "polyhedra-network": 0.06963850631189884,
         "cat-in-a-dogs-world": 0.0007453591191747172,
-        "monad": 0.02032061230173549
+        "monad": 0.02032061230173549,
+        "jasmycoin": 0.005889949185582243
       }
     },
     {
@@ -9731,7 +9913,8 @@
         "vechain": 0.008986686829936447,
         "polyhedra-network": 0.07595786079937879,
         "cat-in-a-dogs-world": 0.0008148351736059412,
-        "monad": 0.01974655191071663
+        "monad": 0.01974655191071663,
+        "jasmycoin": 0.006096484028029251
       }
     },
     {
@@ -9784,7 +9967,8 @@
         "vechain": 0.00891539253337106,
         "polyhedra-network": 0.07403862641368367,
         "cat-in-a-dogs-world": 0.0008668908690116576,
-        "monad": 0.018884980335752404
+        "monad": 0.018884980335752404,
+        "jasmycoin": 0.005914051310492248
       }
     },
     {
@@ -9837,7 +10021,8 @@
         "vechain": 0.008761888486071285,
         "polyhedra-network": 0.07454502889303122,
         "cat-in-a-dogs-world": 0.0008628061101884009,
-        "monad": 0.017203921083130673
+        "monad": 0.017203921083130673,
+        "jasmycoin": 0.00615214176478956
       }
     },
     {
@@ -9890,7 +10075,8 @@
         "vechain": 0.008487923659222503,
         "polyhedra-network": 0.07404657109343092,
         "cat-in-a-dogs-world": 0.0008594851299789733,
-        "monad": 0.017393537574470225
+        "monad": 0.017393537574470225,
+        "jasmycoin": 0.005929774394688002
       }
     },
     {
@@ -9943,7 +10129,8 @@
         "vechain": 0.008497321722972644,
         "polyhedra-network": 0.07256097836650395,
         "cat-in-a-dogs-world": 0.000791792110931393,
-        "monad": 0.01789842003455837
+        "monad": 0.01789842003455837,
+        "jasmycoin": 0.00588417417819297
       }
     },
     {
@@ -9996,7 +10183,8 @@
         "vechain": 0.008877244759735788,
         "polyhedra-network": 0.07895919766624972,
         "cat-in-a-dogs-world": 0.0009168369852625766,
-        "monad": 0.01742147001497564
+        "monad": 0.01742147001497564,
+        "jasmycoin": 0.006429121117373062
       }
     },
     {
@@ -10049,7 +10237,8 @@
         "vechain": 0.00826603504744871,
         "polyhedra-network": 0.07205543450623571,
         "cat-in-a-dogs-world": 0.0008675700839696404,
-        "monad": 0.01626807483132247
+        "monad": 0.01626807483132247,
+        "jasmycoin": 0.006041034293244284
       }
     },
     {
@@ -10102,7 +10291,8 @@
         "vechain": 0.008368536426813539,
         "polyhedra-network": 0.07315692691442975,
         "cat-in-a-dogs-world": 0.000813607665000054,
-        "monad": 0.01748907482772277
+        "monad": 0.01748907482772277,
+        "jasmycoin": 0.005466149608633178
       }
     },
     {
@@ -10155,7 +10345,8 @@
         "vechain": 0.007993408419441787,
         "polyhedra-network": 0.076913663359789,
         "cat-in-a-dogs-world": 0.0008500290930302855,
-        "monad": 0.016984194878166055
+        "monad": 0.016984194878166055,
+        "jasmycoin": 0.005581408677168582
       }
     },
     {
@@ -10208,7 +10399,8 @@
         "vechain": 0.007907409650015221,
         "polyhedra-network": 0.072161576765248,
         "cat-in-a-dogs-world": 0.0007417879113159759,
-        "monad": 0.018268332865512504
+        "monad": 0.018268332865512504,
+        "jasmycoin": 0.005619149479256632
       }
     },
     {
@@ -10261,7 +10453,8 @@
         "vechain": 0.008010785548724336,
         "polyhedra-network": 0.05826727107660776,
         "cat-in-a-dogs-world": 0.0008667782917057449,
-        "monad": 0.01780054988130995
+        "monad": 0.01780054988130995,
+        "jasmycoin": 0.005625262352331949
       }
     },
     {
@@ -10314,7 +10507,8 @@
         "vechain": 0.007929307766193048,
         "polyhedra-network": 0.05842109944908437,
         "cat-in-a-dogs-world": 0.0008244962095609395,
-        "monad": 0.01748350965705764
+        "monad": 0.01748350965705764,
+        "jasmycoin": 0.005650931343521121
       }
     },
     {
@@ -10367,7 +10561,8 @@
         "vechain": 0.0076347381362216575,
         "polyhedra-network": 0.061471384862554684,
         "cat-in-a-dogs-world": 0.0007938982429066024,
-        "monad": 0.017981744952606845
+        "monad": 0.017981744952606845,
+        "jasmycoin": 0.005617395733626665
       }
     },
     {
@@ -10420,7 +10615,8 @@
         "vechain": 0.007886493863011308,
         "polyhedra-network": 0.07331949137806001,
         "cat-in-a-dogs-world": 0.0008259104634407656,
-        "monad": 0.017847469826588868
+        "monad": 0.017847469826588868,
+        "jasmycoin": 0.005734603701779608
       }
     },
     {
@@ -10473,7 +10669,8 @@
         "vechain": 0.007586300840900265,
         "polyhedra-network": 0.07509835389617699,
         "cat-in-a-dogs-world": 0.000773317789806197,
-        "monad": 0.01827043364303782
+        "monad": 0.01827043364303782,
+        "jasmycoin": 0.0054587232108286934
       }
     },
     {
@@ -10526,7 +10723,8 @@
         "vechain": 0.00753394163829526,
         "polyhedra-network": 0.08069447339366947,
         "cat-in-a-dogs-world": 0.0008516411047209824,
-        "monad": 0.017527515179651752
+        "monad": 0.017527515179651752,
+        "jasmycoin": 0.005480960704649662
       }
     },
     {
@@ -10579,7 +10777,8 @@
         "vechain": 0.007686822591469465,
         "polyhedra-network": 0.06605294365592473,
         "cat-in-a-dogs-world": 0.0007975204146426571,
-        "monad": 0.019405179586558203
+        "monad": 0.019405179586558203,
+        "jasmycoin": 0.005675495597343821
       }
     },
     {
@@ -10632,7 +10831,8 @@
         "vechain": 0.008008866320907738,
         "polyhedra-network": 0.07900304837383294,
         "cat-in-a-dogs-world": 0.0009134165507772645,
-        "monad": 0.01871149871995402
+        "monad": 0.01871149871995402,
+        "jasmycoin": 0.005933117117959948
       }
     },
     {
@@ -10685,7 +10885,8 @@
         "vechain": 0.008421505874700393,
         "polyhedra-network": 0.07826590777163975,
         "cat-in-a-dogs-world": 0.0008502679453381536,
-        "monad": 0.018720107842047612
+        "monad": 0.018720107842047612,
+        "jasmycoin": 0.006009942782085647
       }
     },
     {
@@ -10738,7 +10939,8 @@
         "vechain": 0.008867167930649646,
         "polyhedra-network": 0.07828872300866975,
         "cat-in-a-dogs-world": 0.0010180747055176737,
-        "monad": 0.01876513524690564
+        "monad": 0.01876513524690564,
+        "jasmycoin": 0.006471273274554804
       }
     },
     {
@@ -10791,7 +10993,8 @@
         "vechain": 0.00826431424207138,
         "polyhedra-network": 0.07320332638086337,
         "cat-in-a-dogs-world": 0.0009317880729025496,
-        "monad": 0.0176091356499389
+        "monad": 0.0176091356499389,
+        "jasmycoin": 0.006015740647569422
       }
     },
     {
@@ -10844,7 +11047,8 @@
         "vechain": 0.008363725285141429,
         "polyhedra-network": 0.07726230309466467,
         "cat-in-a-dogs-world": 0.0008897430642816516,
-        "monad": 0.018258012511574426
+        "monad": 0.018258012511574426,
+        "jasmycoin": 0.0056309491761431345
       }
     },
     {
@@ -10897,7 +11101,8 @@
         "vechain": 0.008260712853400748,
         "polyhedra-network": 0.08127178257729481,
         "cat-in-a-dogs-world": 0.0008773058436270601,
-        "monad": 0.01867153286560537
+        "monad": 0.01867153286560537,
+        "jasmycoin": 0.006011942443865039
       }
     },
     {
@@ -10950,7 +11155,8 @@
         "vechain": 0.0061592616248123235,
         "polyhedra-network": 0.021704050695466052,
         "cat-in-a-dogs-world": 0.0005282118996452374,
-        "monad": 0.018581444157839074
+        "monad": 0.018581444157839074,
+        "jasmycoin": 0.005012153529039222
       }
     },
     {
@@ -11003,7 +11209,8 @@
         "vechain": 0.008680204636343497,
         "polyhedra-network": 0.08119757166299028,
         "cat-in-a-dogs-world": 0.0009110171286596986,
-        "monad": 0.018436802473853032
+        "monad": 0.018436802473853032,
+        "jasmycoin": 0.0062196153806411
       }
     },
     {
@@ -11056,7 +11263,8 @@
         "vechain": 0.00818862030088789,
         "polyhedra-network": 0.0798477763520225,
         "cat-in-a-dogs-world": 0.0006849641274562119,
-        "monad": 0.019093497987837958
+        "monad": 0.019093497987837958,
+        "jasmycoin": 0.006005069697915104
       }
     },
     {
@@ -11109,7 +11317,8 @@
         "vechain": 0.009479587435178776,
         "polyhedra-network": 0.08738775177505399,
         "cat-in-a-dogs-world": 0.0007752912169496841,
-        "monad": 0.01933712356673834
+        "monad": 0.01933712356673834,
+        "jasmycoin": 0.006580143327282425
       }
     },
     {
@@ -11162,7 +11371,8 @@
         "vechain": 0.00830901159826345,
         "polyhedra-network": 0.07749302466686482,
         "cat-in-a-dogs-world": 0.0009108814114347783,
-        "monad": 0.020409622097172883
+        "monad": 0.020409622097172883,
+        "jasmycoin": 0.00639003205076035
       }
     },
     {
@@ -11215,7 +11425,8 @@
         "vechain": 0.008646026661476973,
         "polyhedra-network": 0.07667364993367004,
         "cat-in-a-dogs-world": 0.0007878759760082287,
-        "monad": 0.02139799906076795
+        "monad": 0.02139799906076795,
+        "jasmycoin": 0.005972303717410897
       }
     },
     {
@@ -11268,7 +11479,8 @@
         "vechain": 0.008681524215193385,
         "polyhedra-network": 0.0800703858284741,
         "cat-in-a-dogs-world": 0.0009372087843883936,
-        "monad": 0.020581344244163902
+        "monad": 0.020581344244163902,
+        "jasmycoin": 0.006071034617690961
       }
     },
     {
@@ -11321,7 +11533,8 @@
         "vechain": 0.00816471764857717,
         "polyhedra-network": 0.07452278952089643,
         "cat-in-a-dogs-world": 0.0008175274230340972,
-        "monad": 0.01991330350432755
+        "monad": 0.01991330350432755,
+        "jasmycoin": 0.005961544339388415
       }
     },
     {
@@ -11374,7 +11587,8 @@
         "vechain": 0.00888543686694195,
         "polyhedra-network": 0.08378659077890804,
         "cat-in-a-dogs-world": 0.0009279446773463773,
-        "monad": 0.01899693564875556
+        "monad": 0.01899693564875556,
+        "jasmycoin": 0.006155978135757114
       }
     },
     {
@@ -11427,7 +11641,8 @@
         "vechain": 0.006259613135110536,
         "polyhedra-network": 0.018221013377042426,
         "cat-in-a-dogs-world": 0.0005390782182944435,
-        "monad": 0.01936393098369804
+        "monad": 0.01936393098369804,
+        "jasmycoin": 0.0048604619108540284
       }
     },
     {
@@ -11480,7 +11695,8 @@
         "vechain": 0.00917350072172148,
         "polyhedra-network": 0.07871730719086048,
         "cat-in-a-dogs-world": 0.0009497833233140376,
-        "monad": 0.018443094812108086
+        "monad": 0.018443094812108086,
+        "jasmycoin": 0.0063895408787134665
       }
     },
     {
@@ -11533,7 +11749,8 @@
         "vechain": 0.008603979969591044,
         "polyhedra-network": 0.0816539334519269,
         "cat-in-a-dogs-world": 0.0008795145005710448,
-        "monad": 0.01776790748973615
+        "monad": 0.01776790748973615,
+        "jasmycoin": 0.005898948026207876
       }
     },
     {
@@ -11586,7 +11803,8 @@
         "vechain": 0.008527296297266533,
         "polyhedra-network": 0.07606302170279394,
         "cat-in-a-dogs-world": 0.0007881400006003365,
-        "monad": 0.018594778141289788
+        "monad": 0.018594778141289788,
+        "jasmycoin": 0.005927913791502028
       }
     },
     {
@@ -11639,7 +11857,8 @@
         "vechain": 0.00817906444863032,
         "polyhedra-network": 0.07499152858924055,
         "cat-in-a-dogs-world": 0.0009393943379864344,
-        "monad": 0.020172899871164263
+        "monad": 0.020172899871164263,
+        "jasmycoin": 0.006061640675919706
       }
     },
     {
@@ -11692,7 +11911,8 @@
         "vechain": 0.008635131451581386,
         "polyhedra-network": 0.0772953659378103,
         "cat-in-a-dogs-world": 0.0008552538982755863,
-        "monad": 0.023001385766030308
+        "monad": 0.023001385766030308,
+        "jasmycoin": 0.006319824919917436
       }
     },
     {
@@ -11745,7 +11965,8 @@
         "vechain": 0.008161222661444709,
         "polyhedra-network": 0.07777792556300565,
         "cat-in-a-dogs-world": 0.0009401049610228214,
-        "monad": 0.021080870515659468
+        "monad": 0.021080870515659468,
+        "jasmycoin": 0.006182828968402737
       }
     },
     {
@@ -11798,7 +12019,8 @@
         "vechain": 0.005767379276250591,
         "polyhedra-network": 0.01652725512995593,
         "cat-in-a-dogs-world": 0.0004892922008290894,
-        "monad": 0.019370736848307448
+        "monad": 0.019370736848307448,
+        "jasmycoin": 0.004671554633613833
       }
     },
     {
@@ -11851,7 +12073,8 @@
         "vechain": 0.005802637244069248,
         "polyhedra-network": 0.016488661449139325,
         "cat-in-a-dogs-world": 0.00048156099200172026,
-        "monad": 0.02030570808603954
+        "monad": 0.02030570808603954,
+        "jasmycoin": 0.0045936811212228664
       }
     },
     {
@@ -11904,7 +12127,8 @@
         "vechain": 0.00571153884453646,
         "polyhedra-network": 0.016314705970543446,
         "cat-in-a-dogs-world": 0.0004728157570997234,
-        "monad": 0.019244781293308404
+        "monad": 0.019244781293308404,
+        "jasmycoin": 0.004543343685604659
       }
     },
     {
@@ -11957,7 +12181,8 @@
         "vechain": 0.005764817689300412,
         "polyhedra-network": 0.016222213516012596,
         "cat-in-a-dogs-world": 0.00047459504875818365,
-        "monad": 0.019224306721391672
+        "monad": 0.019224306721391672,
+        "jasmycoin": 0.004575076958288603
       }
     },
     {
@@ -12010,7 +12235,8 @@
         "vechain": 0.005836573434415619,
         "polyhedra-network": 0.01621794294618092,
         "cat-in-a-dogs-world": 0.0004898686331537582,
-        "monad": 0.021603704572930753
+        "monad": 0.021603704572930753,
+        "jasmycoin": 0.004634573858917908
       }
     },
     {
@@ -12063,7 +12289,8 @@
         "vechain": 0.005973885369353391,
         "polyhedra-network": 0.01618562397290229,
         "cat-in-a-dogs-world": 0.000493148806897516,
-        "monad": 0.0206600007741393
+        "monad": 0.0206600007741393,
+        "jasmycoin": 0.0046862620029213785
       }
     },
     {
@@ -12116,7 +12343,8 @@
         "vechain": 0.005861767246318516,
         "polyhedra-network": 0.016085813148885745,
         "cat-in-a-dogs-world": 0.0004783045184080119,
-        "monad": 0.021694391828096425
+        "monad": 0.021694391828096425,
+        "jasmycoin": 0.004557361903236258
       }
     },
     {
@@ -12169,7 +12397,8 @@
         "vechain": 0.00607371870683147,
         "polyhedra-network": 0.01495032336462521,
         "cat-in-a-dogs-world": 0.00047769238678495264,
-        "monad": 0.02360936091919515
+        "monad": 0.02360936091919515,
+        "jasmycoin": 0.00460740211139446
       }
     },
     {
@@ -12222,7 +12451,8 @@
         "vechain": 0.006488052138404856,
         "polyhedra-network": 0.01553094841562169,
         "cat-in-a-dogs-world": 0.0004806389651480104,
-        "monad": 0.023638587068931682
+        "monad": 0.023638587068931682,
+        "jasmycoin": 0.0045837741367025535
       }
     },
     {
@@ -12275,7 +12505,8 @@
         "vechain": 0.006469958984134079,
         "polyhedra-network": 0.015958930020868553,
         "cat-in-a-dogs-world": 0.0004886357162636078,
-        "monad": 0.02455165091577933
+        "monad": 0.02455165091577933,
+        "jasmycoin": 0.0045815891575258765
       }
     },
     {
@@ -12328,7 +12559,8 @@
         "vechain": 0.006120910481631139,
         "polyhedra-network": 0.015159109772965472,
         "cat-in-a-dogs-world": 0.00048136119585908646,
-        "monad": 0.02323404875913815
+        "monad": 0.02323404875913815,
+        "jasmycoin": 0.004463609460748198
       }
     },
     {
@@ -12381,7 +12613,8 @@
         "vechain": 0.006394541097932532,
         "polyhedra-network": 0.016029585178474963,
         "cat-in-a-dogs-world": 0.000514626192362782,
-        "monad": 0.026036099521345862
+        "monad": 0.026036099521345862,
+        "jasmycoin": 0.004673996324569032
       }
     },
     {
@@ -12434,7 +12667,8 @@
         "vechain": 0.00615031024912938,
         "polyhedra-network": 0.015145512413439862,
         "cat-in-a-dogs-world": 0.0004903964976837144,
-        "monad": 0.026550189867682997
+        "monad": 0.026550189867682997,
+        "jasmycoin": 0.004480763171954919
       }
     },
     {
@@ -12487,7 +12721,8 @@
         "vechain": 0.006073437875841117,
         "polyhedra-network": 0.01568855130047689,
         "cat-in-a-dogs-world": 0.0005036858214678526,
-        "monad": 0.028038173195756116
+        "monad": 0.028038173195756116,
+        "jasmycoin": 0.004516750745908028
       }
     },
     {
@@ -12540,7 +12775,8 @@
         "vechain": 0.00603419634805989,
         "polyhedra-network": 0.015575696264913676,
         "cat-in-a-dogs-world": 0.0005076371408767418,
-        "monad": 0.029923010552065178
+        "monad": 0.029923010552065178,
+        "jasmycoin": 0.004578506073622187
       }
     },
     {
@@ -12593,7 +12829,8 @@
         "vechain": 0.005989584502664493,
         "polyhedra-network": 0.015463006924513429,
         "cat-in-a-dogs-world": 0.0005128762997739261,
-        "monad": 0.030382783841074304
+        "monad": 0.030382783841074304,
+        "jasmycoin": 0.004580847146464603
       }
     },
     {
@@ -12646,7 +12883,8 @@
         "vechain": 0.0057313505561071105,
         "polyhedra-network": 0.014784406923766404,
         "cat-in-a-dogs-world": 0.0004781767762013738,
-        "monad": 0.027799944121362954
+        "monad": 0.027799944121362954,
+        "jasmycoin": 0.004451328779804065
       }
     },
     {
@@ -12699,7 +12937,8 @@
         "vechain": 0.006023658899398972,
         "polyhedra-network": 0.016000154912282294,
         "cat-in-a-dogs-world": 0.0005070895683082795,
-        "monad": 0.030455381509690335
+        "monad": 0.030455381509690335,
+        "jasmycoin": 0.004591625468525261
       }
     },
     {
@@ -12752,7 +12991,8 @@
         "vechain": 0.005843875406810572,
         "polyhedra-network": 0.015115296650725021,
         "cat-in-a-dogs-world": 0.00047829031012638587,
-        "monad": 0.029292098762198394
+        "monad": 0.029292098762198394,
+        "jasmycoin": 0.004471275126628202
       }
     },
     {
@@ -12805,7 +13045,8 @@
         "vechain": 0.00600248287184083,
         "polyhedra-network": 0.015449694183865341,
         "cat-in-a-dogs-world": 0.0004933731119885025,
-        "monad": 0.029843215632551823
+        "monad": 0.029843215632551823,
+        "jasmycoin": 0.004551080024162272
       }
     },
     {
@@ -12858,7 +13099,8 @@
         "vechain": 0.006309608578246426,
         "polyhedra-network": 0.016316841771512654,
         "cat-in-a-dogs-world": 0.0005303941758387739,
-        "monad": 0.029115367449051622
+        "monad": 0.029115367449051622,
+        "jasmycoin": 0.004816607993097363
       }
     },
     {
@@ -12911,7 +13153,8 @@
         "vechain": 0.006237235188578541,
         "polyhedra-network": 0.016659756258924227,
         "cat-in-a-dogs-world": 0.0005369028475819742,
-        "monad": 0.02955370920480535
+        "monad": 0.02955370920480535,
+        "jasmycoin": 0.004932521848350229
       }
     },
     {
@@ -12964,7 +13207,8 @@
         "vechain": 0.006028156047031179,
         "polyhedra-network": 0.016265220836985145,
         "cat-in-a-dogs-world": 0.0005036998862248402,
-        "monad": 0.027666237916076968
+        "monad": 0.027666237916076968,
+        "jasmycoin": 0.004782535904254694
       }
     },
     {
@@ -13017,7 +13261,8 @@
         "vechain": 0.005897725953729126,
         "polyhedra-network": 0.015216948515276234,
         "cat-in-a-dogs-world": 0.0004778147381098144,
-        "monad": 0.025552589247460466
+        "monad": 0.025552589247460466,
+        "jasmycoin": 0.004767827518461953
       }
     },
     {
@@ -13070,7 +13315,8 @@
         "vechain": 0.006042896977965368,
         "polyhedra-network": 0.01557687432050214,
         "cat-in-a-dogs-world": 0.000499653939799289,
-        "monad": 0.02716650991460202
+        "monad": 0.02716650991460202,
+        "jasmycoin": 0.004845691337388531
       }
     },
     {
@@ -13123,7 +13369,8 @@
         "vechain": 0.006113875931094957,
         "polyhedra-network": 0.016269492869248465,
         "cat-in-a-dogs-world": 0.0005022851404460322,
-        "monad": 0.027975869060579698
+        "monad": 0.027975869060579698,
+        "jasmycoin": 0.004847355452243853
       }
     },
     {
@@ -13176,7 +13423,8 @@
         "vechain": 0.006113021994941022,
         "polyhedra-network": 0.01536820515454989,
         "cat-in-a-dogs-world": 0.0005190243943581806,
-        "monad": 0.028860559533496196
+        "monad": 0.028860559533496196,
+        "jasmycoin": 0.004874649698599508
       }
     },
     {
@@ -13229,7 +13477,8 @@
         "vechain": 0.006182885362751402,
         "polyhedra-network": 0.013705258683159157,
         "cat-in-a-dogs-world": 0.0005177674195248312,
-        "monad": 0.02770089019463088
+        "monad": 0.02770089019463088,
+        "jasmycoin": 0.004793846893436992
       }
     },
     {
@@ -13282,7 +13531,8 @@
         "vechain": 0.006204594015047142,
         "polyhedra-network": 0.01192131369125043,
         "cat-in-a-dogs-world": 0.0005209174217280499,
-        "monad": 0.02622198970918811
+        "monad": 0.02622198970918811,
+        "jasmycoin": 0.004936850724716756
       }
     },
     {
@@ -13335,7 +13585,8 @@
         "vechain": 0.006298786285520413,
         "polyhedra-network": 0.011954315289868355,
         "cat-in-a-dogs-world": 0.0005203708828171538,
-        "monad": 0.026745497711378997
+        "monad": 0.026745497711378997,
+        "jasmycoin": 0.0048923387936319306
       }
     },
     {
@@ -13388,7 +13639,8 @@
         "vechain": 0.006285929114882996,
         "polyhedra-network": 0.01181157945122469,
         "cat-in-a-dogs-world": 0.0005287581623959725,
-        "monad": 0.027369863429161437
+        "monad": 0.027369863429161437,
+        "jasmycoin": 0.005063031415170675
       }
     },
     {
@@ -13441,7 +13693,8 @@
         "vechain": 0.0061721116450995555,
         "polyhedra-network": 0.012882832132200513,
         "cat-in-a-dogs-world": 0.0005141284471652656,
-        "monad": 0.026123998992720297
+        "monad": 0.026123998992720297,
+        "jasmycoin": 0.005039804001601265
       }
     },
     {
@@ -13494,7 +13747,8 @@
         "vechain": 0.0061146161147781946,
         "polyhedra-network": 0.025188645689085,
         "cat-in-a-dogs-world": 0.0005107338239940891,
-        "monad": 0.024952553633831188
+        "monad": 0.024952553633831188,
+        "jasmycoin": 0.005061221548650526
       }
     },
     {
@@ -13547,7 +13801,8 @@
         "vechain": 0.005964719912085006,
         "polyhedra-network": 0.014625028185794094,
         "cat-in-a-dogs-world": 0.0004950973834377021,
-        "monad": 0.02304114903992451
+        "monad": 0.02304114903992451,
+        "jasmycoin": 0.004884854847870475
       }
     },
     {
@@ -13600,7 +13855,8 @@
         "vechain": 0.005960088863909926,
         "polyhedra-network": 0.012943913071199764,
         "cat-in-a-dogs-world": 0.000494797647670552,
-        "monad": 0.023166004141123495
+        "monad": 0.023166004141123495,
+        "jasmycoin": 0.00479892197216202
       }
     },
     {
@@ -13653,7 +13909,8 @@
         "vechain": 0.006108250040789768,
         "polyhedra-network": 0.012347086359183765,
         "cat-in-a-dogs-world": 0.0005010330799989118,
-        "monad": 0.02562046575884971
+        "monad": 0.02562046575884971,
+        "jasmycoin": 0.004767602455329199
       }
     },
     {
@@ -13706,7 +13963,8 @@
         "vechain": 0.006150681057743953,
         "polyhedra-network": 0.012504061809954656,
         "cat-in-a-dogs-world": 0.0005084273104067414,
-        "monad": 0.025692575458594224
+        "monad": 0.025692575458594224,
+        "jasmycoin": 0.004859060919039065
       }
     },
     {
@@ -13759,7 +14017,8 @@
         "vechain": 0.006164122384400091,
         "polyhedra-network": 0.012136863090667086,
         "cat-in-a-dogs-world": 0.0005039042706565853,
-        "monad": 0.024910535072640443
+        "monad": 0.024910535072640443,
+        "jasmycoin": 0.004754822296310723
       }
     },
     {
@@ -13812,7 +14071,8 @@
         "vechain": 0.006112814753664405,
         "polyhedra-network": 0.011826043971804949,
         "cat-in-a-dogs-world": 0.0005155050622298277,
-        "monad": 0.025159256944243483
+        "monad": 0.025159256944243483,
+        "jasmycoin": 0.004739036621505304
       }
     },
     {
@@ -13865,7 +14125,8 @@
         "vechain": 0.006398607777105577,
         "polyhedra-network": 0.01188091822730719,
         "cat-in-a-dogs-world": 0.0005294294807412488,
-        "monad": 0.02665843935703045
+        "monad": 0.02665843935703045,
+        "jasmycoin": 0.0048841886988148136
       }
     },
     {
@@ -13918,7 +14179,8 @@
         "vechain": 0.006580621753780099,
         "polyhedra-network": 0.012203760283586869,
         "cat-in-a-dogs-world": 0.0005459392783597205,
-        "monad": 0.027531775980620763
+        "monad": 0.027531775980620763,
+        "jasmycoin": 0.004996974320002446
       }
     },
     {
@@ -13971,7 +14233,8 @@
         "vechain": 0.006466607054538994,
         "polyhedra-network": 0.012099186747922416,
         "cat-in-a-dogs-world": 0.000527017506861041,
-        "monad": 0.02745138189289065
+        "monad": 0.02745138189289065,
+        "jasmycoin": 0.004983070105423749
       }
     },
     {
@@ -14024,7 +14287,8 @@
         "vechain": 0.006753220120699225,
         "polyhedra-network": 0.011577808883300846,
         "cat-in-a-dogs-world": 0.0005658649335926621,
-        "monad": 0.029019785882379613
+        "monad": 0.029019785882379613,
+        "jasmycoin": 0.005536893222768916
       }
     },
     {
@@ -14077,7 +14341,8 @@
         "vechain": 0.006449046017237217,
         "polyhedra-network": 0.01214005930181594,
         "cat-in-a-dogs-world": 0.0005753563139582721,
-        "monad": 0.02947760468568107
+        "monad": 0.02947760468568107,
+        "jasmycoin": 0.006327642169684163
       }
     },
     {
@@ -14130,7 +14395,8 @@
         "vechain": 0.006715928492794757,
         "polyhedra-network": 0.012382567490373834,
         "cat-in-a-dogs-world": 0.0005988379582968272,
-        "monad": 0.030088571353599866
+        "monad": 0.030088571353599866,
+        "jasmycoin": 0.006163186079495843
       }
     },
     {
@@ -14183,7 +14449,8 @@
         "vechain": 0.006601702637740416,
         "polyhedra-network": 0.013112903655922874,
         "cat-in-a-dogs-world": 0.0005927997354598224,
-        "monad": 0.02866670059898789
+        "monad": 0.02866670059898789,
+        "jasmycoin": 0.0059675673133808395
       }
     },
     {
@@ -14236,7 +14503,8 @@
         "vechain": 0.0063842119263286855,
         "polyhedra-network": 0.012422357317196694,
         "cat-in-a-dogs-world": 0.0005524640364159825,
-        "monad": 0.026357730540521408
+        "monad": 0.026357730540521408,
+        "jasmycoin": 0.005851473813087729
       }
     },
     {
@@ -14289,7 +14557,8 @@
         "vechain": 0.006247786753577279,
         "polyhedra-network": 0.011574861233192957,
         "cat-in-a-dogs-world": 0.0005314129684465792,
-        "monad": 0.025881190673399796
+        "monad": 0.025881190673399796,
+        "jasmycoin": 0.005596976138056029
       }
     },
     {
@@ -14342,7 +14611,8 @@
         "vechain": 0.0063151722379517,
         "polyhedra-network": 0.012096668139842266,
         "cat-in-a-dogs-world": 0.0005368186927706819,
-        "monad": 0.025614942918824535
+        "monad": 0.025614942918824535,
+        "jasmycoin": 0.005602357545992293
       }
     },
     {
@@ -14395,7 +14665,8 @@
         "vechain": 0.006043744307576565,
         "polyhedra-network": 0.011677028229028833,
         "cat-in-a-dogs-world": 0.0004992906387617768,
-        "monad": 0.024326176834973724
+        "monad": 0.024326176834973724,
+        "jasmycoin": 0.0052851161971295794
       }
     },
     {
@@ -14448,7 +14719,8 @@
         "vechain": 0.00588438928696692,
         "polyhedra-network": 0.011119491343780681,
         "cat-in-a-dogs-world": 0.00048472695636875404,
-        "monad": 0.023882902763504365
+        "monad": 0.023882902763504365,
+        "jasmycoin": 0.005078404190340803
       }
     },
     {
@@ -14501,7 +14773,8 @@
         "vechain": 0.005716963829308057,
         "polyhedra-network": 0.010852674569976394,
         "cat-in-a-dogs-world": 0.0004679030761580785,
-        "monad": 0.023871430617692552
+        "monad": 0.023871430617692552,
+        "jasmycoin": 0.004904696099325377
       }
     },
     {
@@ -14554,7 +14827,8 @@
         "vechain": 0.005829203424522507,
         "polyhedra-network": 0.010973769582797898,
         "cat-in-a-dogs-world": 0.0004801361946668971,
-        "monad": 0.023248679439521608
+        "monad": 0.023248679439521608,
+        "jasmycoin": 0.004914362901111523
       }
     },
     {
@@ -14607,7 +14881,8 @@
         "vechain": 0.005623037217088072,
         "polyhedra-network": 0.010820119652679176,
         "cat-in-a-dogs-world": 0.00046959420897951223,
-        "monad": 0.02229162519610392
+        "monad": 0.02229162519610392,
+        "jasmycoin": 0.004841209109260201
       }
     },
     {
@@ -14660,7 +14935,8 @@
         "vechain": 0.005690505183549652,
         "polyhedra-network": 0.010854601130003461,
         "cat-in-a-dogs-world": 0.00048076905907999397,
-        "monad": 0.023158172624696122
+        "monad": 0.023158172624696122,
+        "jasmycoin": 0.004839004293706957
       }
     },
     {
@@ -14713,7 +14989,8 @@
         "vechain": 0.005765305991100791,
         "polyhedra-network": 0.011123716281963613,
         "cat-in-a-dogs-world": 0.0004895714023227658,
-        "monad": 0.024647880591945996
+        "monad": 0.024647880591945996,
+        "jasmycoin": 0.004956692340509233
       }
     },
     {
@@ -14766,7 +15043,8 @@
         "vechain": 0.0056100359852449735,
         "polyhedra-network": 0.01040710544093309,
         "cat-in-a-dogs-world": 0.0004597441175074954,
-        "monad": 0.022546926383203644
+        "monad": 0.022546926383203644,
+        "jasmycoin": 0.004692954624427115
       }
     },
     {
@@ -14819,7 +15097,8 @@
         "vechain": 0.0058079481217278555,
         "polyhedra-network": 0.010571222932190096,
         "cat-in-a-dogs-world": 0.0004743219555263534,
-        "monad": 0.022117434320939214
+        "monad": 0.022117434320939214,
+        "jasmycoin": 0.004812836896037181
       }
     },
     {
@@ -14872,7 +15151,8 @@
         "vechain": 0.005688457625554849,
         "polyhedra-network": 0.010378413625421674,
         "cat-in-a-dogs-world": 0.0004586812493245608,
-        "monad": 0.021696246177940734
+        "monad": 0.021696246177940734,
+        "jasmycoin": 0.004696716883627884
       }
     },
     {
@@ -14925,7 +15205,8 @@
         "vechain": 0.0057056705478697265,
         "polyhedra-network": 0.010175335402912024,
         "cat-in-a-dogs-world": 0.00046160659610479474,
-        "monad": 0.022580871093592844
+        "monad": 0.022580871093592844,
+        "jasmycoin": 0.004796036056239253
       }
     },
     {
@@ -14978,7 +15259,8 @@
         "vechain": 0.005427270177073,
         "polyhedra-network": 0.00987817741897407,
         "cat-in-a-dogs-world": 0.0004540691414751867,
-        "monad": 0.021536554506240122
+        "monad": 0.021536554506240122,
+        "jasmycoin": 0.004688051607277542
       }
     },
     {
@@ -15031,7 +15313,8 @@
         "vechain": 0.0052221212036221805,
         "polyhedra-network": 0.009628544054042952,
         "cat-in-a-dogs-world": 0.00044111163336359464,
-        "monad": 0.019980091599343074
+        "monad": 0.019980091599343074,
+        "jasmycoin": 0.004646592750720599
       }
     },
     {
@@ -15084,7 +15367,8 @@
         "vechain": 0.005119949033220885,
         "polyhedra-network": 0.007924213115086898,
         "cat-in-a-dogs-world": 0.0004256013758796655,
-        "monad": 0.020320548749106535
+        "monad": 0.020320548749106535,
+        "jasmycoin": 0.004755897681324238
       }
     },
     {
@@ -15137,7 +15421,8 @@
         "vechain": 0.005019687806560326,
         "polyhedra-network": 0.007763119783815968,
         "cat-in-a-dogs-world": 0.0004241348643222393,
-        "monad": 0.019945307589405416
+        "monad": 0.019945307589405416,
+        "jasmycoin": 0.004740113398735689
       }
     },
     {
@@ -15190,7 +15475,8 @@
         "vechain": 0.0052419436979954295,
         "polyhedra-network": 0.007929697162885236,
         "cat-in-a-dogs-world": 0.00042880412077724907,
-        "monad": 0.01994537013806475
+        "monad": 0.01994537013806475,
+        "jasmycoin": 0.004669628908546535
       }
     },
     {
@@ -15243,7 +15529,8 @@
         "vechain": 0.005229267848418701,
         "polyhedra-network": 0.007734646761319628,
         "cat-in-a-dogs-world": 0.0004311270662262096,
-        "monad": 0.020480818853676544
+        "monad": 0.020480818853676544,
+        "jasmycoin": 0.004703804406634721
       }
     },
     {
@@ -15296,7 +15583,8 @@
         "vechain": 0.005125432447912684,
         "polyhedra-network": 0.007503064770934981,
         "cat-in-a-dogs-world": 0.0004349121591546651,
-        "monad": 0.01936007906742754
+        "monad": 0.01936007906742754,
+        "jasmycoin": 0.004721031275676834
       }
     },
     {
@@ -15349,7 +15637,8 @@
         "vechain": 0.004757416962210679,
         "polyhedra-network": 0.007423337078981878,
         "cat-in-a-dogs-world": 0.0003788539640701573,
-        "monad": 0.01763168812909685
+        "monad": 0.01763168812909685,
+        "jasmycoin": 0.004373405461589712
       }
     },
     {
@@ -15402,7 +15691,8 @@
         "vechain": 0.004814040921771477,
         "polyhedra-network": 0.007313186882075611,
         "cat-in-a-dogs-world": 0.00037864326329598133,
-        "monad": 0.017598952835998136
+        "monad": 0.017598952835998136,
+        "jasmycoin": 0.004313545490278753
       }
     },
     {
@@ -15455,7 +15745,8 @@
         "vechain": 0.004626814246520477,
         "polyhedra-network": 0.006989980050669386,
         "cat-in-a-dogs-world": 0.00035346932984365074,
-        "monad": 0.018724660115129695
+        "monad": 0.018724660115129695,
+        "jasmycoin": 0.004152196651814319
       }
     },
     {
@@ -15508,7 +15799,8 @@
         "vechain": 0.004134517035445276,
         "polyhedra-network": 0.006336064069250596,
         "cat-in-a-dogs-world": 0.0003149776937870782,
-        "monad": 0.018252698235362446
+        "monad": 0.018252698235362446,
+        "jasmycoin": 0.003907554195938298
       }
     },
     {
@@ -15561,7 +15853,8 @@
         "vechain": 0.004123859724656933,
         "polyhedra-network": 0.006607089031805446,
         "cat-in-a-dogs-world": 0.00031037777382083876,
-        "monad": 0.018322905709240535
+        "monad": 0.018322905709240535,
+        "jasmycoin": 0.003974868831637424
       }
     },
     {
@@ -15614,7 +15907,8 @@
         "vechain": 0.004283220134062845,
         "polyhedra-network": 0.007082534886840421,
         "cat-in-a-dogs-world": 0.00031692732342799825,
-        "monad": 0.019181454358538012
+        "monad": 0.019181454358538012,
+        "jasmycoin": 0.004203573206153485
       }
     },
     {
@@ -15667,7 +15961,8 @@
         "vechain": 0.004281850839810682,
         "polyhedra-network": 0.006693589325621205,
         "cat-in-a-dogs-world": 0.0003147720475790416,
-        "monad": 0.01807864047448562
+        "monad": 0.01807864047448562,
+        "jasmycoin": 0.004051373764023382
       }
     },
     {
@@ -15720,7 +16015,8 @@
         "vechain": 0.004179190195386608,
         "polyhedra-network": 0.006599830056392076,
         "cat-in-a-dogs-world": 0.0003014838452742071,
-        "monad": 0.018437304295868776
+        "monad": 0.018437304295868776,
+        "jasmycoin": 0.003996406296446909
       }
     },
     {
@@ -15773,7 +16069,8 @@
         "vechain": 0.004053634412198862,
         "polyhedra-network": 0.006500080118477902,
         "cat-in-a-dogs-world": 0.0002933499934411109,
-        "monad": 0.01816117817956498
+        "monad": 0.01816117817956498,
+        "jasmycoin": 0.003932123602066583
       }
     },
     {
@@ -15826,7 +16123,8 @@
         "vechain": 0.0042983839480975625,
         "polyhedra-network": 0.006634392037311362,
         "cat-in-a-dogs-world": 0.0003084183382257997,
-        "monad": 0.018700193698629995
+        "monad": 0.018700193698629995,
+        "jasmycoin": 0.004152561526314931
       }
     },
     {
@@ -15879,7 +16177,8 @@
         "vechain": 0.004322976702010972,
         "polyhedra-network": 0.006412487248823421,
         "cat-in-a-dogs-world": 0.0003132945360956823,
-        "monad": 0.018238191139920704
+        "monad": 0.018238191139920704,
+        "jasmycoin": 0.0040459809435374255
       }
     },
     {
@@ -15932,7 +16231,8 @@
         "vechain": 0.004402207493871099,
         "polyhedra-network": 0.006510202532986324,
         "cat-in-a-dogs-world": 0.0003199566134419539,
-        "monad": 0.018793574271383257
+        "monad": 0.018793574271383257,
+        "jasmycoin": 0.004394607034215919
       }
     },
     {
@@ -15985,7 +16285,8 @@
         "vechain": 0.004389401023559231,
         "polyhedra-network": 0.006637088142063282,
         "cat-in-a-dogs-world": 0.00033444822328701994,
-        "monad": 0.019403293943034368
+        "monad": 0.019403293943034368,
+        "jasmycoin": 0.00455910894995951
       }
     },
     {
@@ -16038,7 +16339,8 @@
         "vechain": 0.00453432793465915,
         "polyhedra-network": 0.006776199658436045,
         "cat-in-a-dogs-world": 0.00033209501789276905,
-        "monad": 0.019475675825057163
+        "monad": 0.019475675825057163,
+        "jasmycoin": 0.004382248996533901
       }
     },
     {
@@ -16091,7 +16393,8 @@
         "vechain": 0.004521870105954866,
         "polyhedra-network": 0.006706097624746776,
         "cat-in-a-dogs-world": 0.00033006230663666284,
-        "monad": 0.02003068008802746
+        "monad": 0.02003068008802746,
+        "jasmycoin": 0.004239803908249146
       }
     },
     {
@@ -16144,7 +16447,8 @@
         "vechain": 0.004402779625300466,
         "polyhedra-network": 0.006549749267746336,
         "cat-in-a-dogs-world": 0.00032990656489540696,
-        "monad": 0.018998080641720004
+        "monad": 0.018998080641720004,
+        "jasmycoin": 0.004288465481411321
       }
     },
     {
@@ -16197,7 +16501,8 @@
         "vechain": 0.004208226553773995,
         "polyhedra-network": 0.006683952878659478,
         "cat-in-a-dogs-world": 0.0003195344745334037,
-        "monad": 0.018377934223708977
+        "monad": 0.018377934223708977,
+        "jasmycoin": 0.004142133162950664
       }
     },
     {
@@ -16250,7 +16555,8 @@
         "vechain": 0.004283982540438397,
         "polyhedra-network": 0.006624203965563202,
         "cat-in-a-dogs-world": 0.0003187990586460655,
-        "monad": 0.018007816249511505
+        "monad": 0.018007816249511505,
+        "jasmycoin": 0.0041323473765965376
       }
     },
     {
@@ -16303,7 +16609,8 @@
         "vechain": 0.004418507062143093,
         "polyhedra-network": 0.007245939494703816,
         "cat-in-a-dogs-world": 0.00032664191904254787,
-        "monad": 0.0179596613715661
+        "monad": 0.0179596613715661,
+        "jasmycoin": 0.004098700101001449
       }
     },
     {
@@ -16356,7 +16663,8 @@
         "vechain": 0.0042468074509763734,
         "polyhedra-network": 0.006964032477635699,
         "cat-in-a-dogs-world": 0.0003207484092287159,
-        "monad": 0.018176884153179293
+        "monad": 0.018176884153179293,
+        "jasmycoin": 0.004026449464976266
       }
     },
     {
@@ -16409,7 +16717,8 @@
         "vechain": 0.004261465544195699,
         "polyhedra-network": 0.006750515142301903,
         "cat-in-a-dogs-world": 0.0003201039117589773,
-        "monad": 0.0181251689824121
+        "monad": 0.0181251689824121,
+        "jasmycoin": 0.004026952774646293
       }
     },
     {
@@ -16462,7 +16771,8 @@
         "vechain": 0.004137167452559401,
         "polyhedra-network": 0.006440278204459705,
         "cat-in-a-dogs-world": 0.00030847880758483315,
-        "monad": 0.01769448670934298
+        "monad": 0.01769448670934298,
+        "jasmycoin": 0.004112016459887371
       }
     },
     {
@@ -16515,7 +16825,8 @@
         "vechain": 0.004033676092005686,
         "polyhedra-network": 0.006413519973470943,
         "cat-in-a-dogs-world": 0.0003009630409886612,
-        "monad": 0.017331947357320222
+        "monad": 0.017331947357320222,
+        "jasmycoin": 0.003948423134709963
       }
     },
     {
@@ -16568,7 +16879,8 @@
         "vechain": 0.003909364742779222,
         "polyhedra-network": 0.00630464707973537,
         "cat-in-a-dogs-world": 0.0002935245647222791,
-        "monad": 0.016810674308059062
+        "monad": 0.016810674308059062,
+        "jasmycoin": 0.003882031354971497
       }
     },
     {
@@ -16621,7 +16933,8 @@
         "vechain": 0.003941991655639517,
         "polyhedra-network": 0.007484163192545416,
         "cat-in-a-dogs-world": 0.0003196171024411307,
-        "monad": 0.01696661663696629
+        "monad": 0.01696661663696629,
+        "jasmycoin": 0.004027871193789104
       }
     },
     {
@@ -16674,7 +16987,8 @@
         "vechain": 0.003964040272169033,
         "polyhedra-network": 0.007285139263238752,
         "cat-in-a-dogs-world": 0.0003127222430842448,
-        "monad": 0.016547248615668378
+        "monad": 0.016547248615668378,
+        "jasmycoin": 0.003931829334398068
       }
     },
     {
@@ -16727,7 +17041,8 @@
         "vechain": 0.003951232949072799,
         "polyhedra-network": 0.007297338528933384,
         "cat-in-a-dogs-world": 0.0003166895720010177,
-        "monad": 0.016327817730493292
+        "monad": 0.016327817730493292,
+        "jasmycoin": 0.0037908808172861744
       }
     },
     {
@@ -16780,7 +17095,8 @@
         "vechain": 0.003921081640114691,
         "polyhedra-network": 0.007327486521714651,
         "cat-in-a-dogs-world": 0.0003252512460364701,
-        "monad": 0.01652060229473288
+        "monad": 0.01652060229473288,
+        "jasmycoin": 0.0038577994802764526
       }
     },
     {
@@ -16833,7 +17149,8 @@
         "vechain": 0.00382992369815687,
         "polyhedra-network": 0.007205614752067369,
         "cat-in-a-dogs-world": 0.0003163997425558909,
-        "monad": 0.016080337953146978
+        "monad": 0.016080337953146978,
+        "jasmycoin": 0.003744273247035867
       }
     },
     {
@@ -16886,7 +17203,8 @@
         "vechain": 0.003914424845924909,
         "polyhedra-network": 0.007186034721199928,
         "cat-in-a-dogs-world": 0.0003206262374811155,
-        "monad": 0.017526653361881715
+        "monad": 0.017526653361881715,
+        "jasmycoin": 0.003916061783443196
       }
     },
     {
@@ -16939,7 +17257,8 @@
         "vechain": 0.004058472624453551,
         "polyhedra-network": 0.006142827396752506,
         "cat-in-a-dogs-world": 0.0003316631779769092,
-        "monad": 0.017470335805976143
+        "monad": 0.017470335805976143,
+        "jasmycoin": 0.00395739935283003
       }
     },
     {
@@ -16992,7 +17311,8 @@
         "vechain": 0.0041609454889561266,
         "polyhedra-network": 0.006337716818234457,
         "cat-in-a-dogs-world": 0.00034776582475592847,
-        "monad": 0.0179258183748819
+        "monad": 0.0179258183748819,
+        "jasmycoin": 0.004126499646941243
       }
     },
     {
@@ -17045,7 +17365,8 @@
         "vechain": 0.004194068569065185,
         "polyhedra-network": 0.006307433690479584,
         "cat-in-a-dogs-world": 0.0003419781307224924,
-        "monad": 0.018468587069067947
+        "monad": 0.018468587069067947,
+        "jasmycoin": 0.004023320037641513
       }
     },
     {
@@ -17098,7 +17419,8 @@
         "vechain": 0.004172575234466371,
         "polyhedra-network": 0.006412949785157301,
         "cat-in-a-dogs-world": 0.0003407379655844772,
-        "monad": 0.01888922186323234
+        "monad": 0.01888922186323234,
+        "jasmycoin": 0.004036708979662634
       }
     },
     {
@@ -17151,7 +17473,8 @@
         "vechain": 0.004361017091548932,
         "polyhedra-network": 0.006339241798881124,
         "cat-in-a-dogs-world": 0.0003425820883387289,
-        "monad": 0.021898452484272815
+        "monad": 0.021898452484272815,
+        "jasmycoin": 0.0040096243115755196
       }
     },
     {
@@ -17204,7 +17527,8 @@
         "vechain": 0.004148236865803411,
         "polyhedra-network": 0.006063816971275681,
         "cat-in-a-dogs-world": 0.00032751807135177204,
-        "monad": 0.021361548630039116
+        "monad": 0.021361548630039116,
+        "jasmycoin": 0.003861687966831756
       }
     },
     {
@@ -17257,7 +17581,8 @@
         "vechain": 0.004097116156574412,
         "polyhedra-network": 0.006153392443252155,
         "cat-in-a-dogs-world": 0.00031279368498502623,
-        "monad": 0.020196776022747272
+        "monad": 0.020196776022747272,
+        "jasmycoin": 0.0038140199591678537
       }
     },
     {
@@ -17310,7 +17635,8 @@
         "vechain": 0.004137598346387697,
         "polyhedra-network": 0.006207929285009816,
         "cat-in-a-dogs-world": 0.00031487034780786077,
-        "monad": 0.020218605733360186
+        "monad": 0.020218605733360186,
+        "jasmycoin": 0.003851153687501169
       }
     },
     {
@@ -17363,7 +17689,8 @@
         "vechain": 0.004171645491245685,
         "polyhedra-network": 0.006211502963152675,
         "cat-in-a-dogs-world": 0.00032058861605210675,
-        "monad": 0.020137262475250384
+        "monad": 0.020137262475250384,
+        "jasmycoin": 0.003987530626256972
       }
     },
     {
@@ -17416,7 +17743,8 @@
         "vechain": 0.004327137272025278,
         "polyhedra-network": 0.00612156051214039,
         "cat-in-a-dogs-world": 0.000320114629257153,
-        "monad": 0.0195347592123739
+        "monad": 0.0195347592123739,
+        "jasmycoin": 0.0038824020729856155
       }
     },
     {
@@ -17469,7 +17797,8 @@
         "vechain": 0.004260931549726772,
         "polyhedra-network": 0.006105867007151873,
         "cat-in-a-dogs-world": 0.00032003533229085513,
-        "monad": 0.020032591894115562
+        "monad": 0.020032591894115562,
+        "jasmycoin": 0.003833295803318934
       }
     },
     {
@@ -17522,7 +17851,8 @@
         "vechain": 0.004164939533039222,
         "polyhedra-network": 0.005862814467519959,
         "cat-in-a-dogs-world": 0.00031216569531464754,
-        "monad": 0.019506140420996486
+        "monad": 0.019506140420996486,
+        "jasmycoin": 0.00376250786090372
       }
     },
     {
@@ -17575,7 +17905,8 @@
         "vechain": 0.004233119486999904,
         "polyhedra-network": 0.005977606822556697,
         "cat-in-a-dogs-world": 0.0003200787724610988,
-        "monad": 0.019833011888312754
+        "monad": 0.019833011888312754,
+        "jasmycoin": 0.0038179078172315218
       }
     },
     {
@@ -17628,7 +17959,8 @@
         "vechain": 0.0042388725352405085,
         "polyhedra-network": 0.0058859684390942186,
         "cat-in-a-dogs-world": 0.00031365249292717725,
-        "monad": 0.019424243985134402
+        "monad": 0.019424243985134402,
+        "jasmycoin": 0.003969175407645788
       }
     },
     {
@@ -17681,7 +18013,8 @@
         "vechain": 0.004131750264849048,
         "polyhedra-network": 0.0059676834569212245,
         "cat-in-a-dogs-world": 0.00030371631586083113,
-        "monad": 0.01884020476570909
+        "monad": 0.01884020476570909,
+        "jasmycoin": 0.0038418872281426298
       }
     },
     {
@@ -17734,7 +18067,8 @@
         "vechain": 0.00412763295668829,
         "polyhedra-network": 0.00582063098436745,
         "cat-in-a-dogs-world": 0.0003078728295393089,
-        "monad": 0.019164942737233567
+        "monad": 0.019164942737233567,
+        "jasmycoin": 0.003928690546768108
       }
     },
     {
@@ -17787,7 +18121,8 @@
         "vechain": 0.004153532431816209,
         "polyhedra-network": 0.00577246650282501,
         "cat-in-a-dogs-world": 0.000315823734732945,
-        "monad": 0.018858040645136107
+        "monad": 0.018858040645136107,
+        "jasmycoin": 0.004194468716348099
       }
     },
     {
@@ -17840,7 +18175,8 @@
         "vechain": 0.004070901420392512,
         "polyhedra-network": 0.005765240437824424,
         "cat-in-a-dogs-world": 0.0003135486923512495,
-        "monad": 0.018558405881161043
+        "monad": 0.018558405881161043,
+        "jasmycoin": 0.004035265139133489
       }
     },
     {
@@ -17893,7 +18229,8 @@
         "vechain": 0.004131129914277467,
         "polyhedra-network": 0.005691328926850271,
         "cat-in-a-dogs-world": 0.00031546133185544813,
-        "monad": 0.020029052720100343
+        "monad": 0.020029052720100343,
+        "jasmycoin": 0.004015508808710689
       }
     },
     {
@@ -17947,7 +18284,8 @@
         "vechain": 0.004347692707900282,
         "polyhedra-network": 0.0056966210387747315,
         "cat-in-a-dogs-world": 0.0003168597516450306,
-        "monad": 0.02010406004847543
+        "monad": 0.02010406004847543,
+        "jasmycoin": 0.004015307419468502
       }
     },
     {
@@ -18001,7 +18339,8 @@
         "vechain": 0.00426982518064738,
         "polyhedra-network": 0.005692382144064509,
         "cat-in-a-dogs-world": 0.0003221026091180785,
-        "monad": 0.02009127094889043
+        "monad": 0.02009127094889043,
+        "jasmycoin": 0.0038981301695429726
       }
     },
     {
@@ -18055,7 +18394,8 @@
         "vechain": 0.004199884624117907,
         "polyhedra-network": 0.0056969270749930336,
         "cat-in-a-dogs-world": 0.0003134760470630979,
-        "monad": 0.019468128015788046
+        "monad": 0.019468128015788046,
+        "jasmycoin": 0.0038409832222804784
       }
     },
     {
@@ -18109,7 +18449,8 @@
         "vechain": 0.004128616068747412,
         "polyhedra-network": 0.0057768385181311355,
         "cat-in-a-dogs-world": 0.0002998155194173763,
-        "monad": 0.01921323585300211
+        "monad": 0.01921323585300211,
+        "jasmycoin": 0.0038072140920859874
       }
     },
     {
@@ -18163,7 +18504,8 @@
         "vechain": 0.004111911649893215,
         "polyhedra-network": 0.00573188300389092,
         "cat-in-a-dogs-world": 0.00031234135897695666,
-        "monad": 0.018111673531680063
+        "monad": 0.018111673531680063,
+        "jasmycoin": 0.0038343298115556686
       }
     },
     {
@@ -18217,7 +18559,8 @@
         "vechain": 0.004156547731482464,
         "polyhedra-network": 0.005727809198740266,
         "cat-in-a-dogs-world": 0.00031299106879349487,
-        "monad": 0.01875763712550292
+        "monad": 0.01875763712550292,
+        "jasmycoin": 0.003930160361020662
       }
     },
     {
@@ -18271,7 +18614,8 @@
         "vechain": 0.00396243449777585,
         "polyhedra-network": 0.0056308643246057695,
         "cat-in-a-dogs-world": 0.0003011192576797337,
-        "monad": 0.017721907640116677
+        "monad": 0.017721907640116677,
+        "jasmycoin": 0.0037817695744564507
       }
     },
     {
@@ -18325,7 +18669,8 @@
         "vechain": 0.0040196375701004065,
         "polyhedra-network": 0.0053445707188972845,
         "cat-in-a-dogs-world": 0.00029469933058470516,
-        "monad": 0.018656715354618117
+        "monad": 0.018656715354618117,
+        "jasmycoin": 0.0038439310904437216
       }
     },
     {
@@ -18379,7 +18724,8 @@
         "vechain": 0.003911370689609833,
         "polyhedra-network": 0.005435115729048699,
         "cat-in-a-dogs-world": 0.0002809151436565823,
-        "monad": 0.018115116008084832
+        "monad": 0.018115116008084832,
+        "jasmycoin": 0.00373051166636777
       }
     },
     {
@@ -18433,7 +18779,8 @@
         "vechain": 0.004084448908315987,
         "polyhedra-network": 0.005491325303159478,
         "cat-in-a-dogs-world": 0.0002879500583252511,
-        "monad": 0.018878739833126726
+        "monad": 0.018878739833126726,
+        "jasmycoin": 0.003742428122473007
       }
     },
     {
@@ -18487,7 +18834,8 @@
         "vechain": 0.004118315511038937,
         "polyhedra-network": 0.005584606251236603,
         "cat-in-a-dogs-world": 0.0002852912321730158,
-        "monad": 0.01800798631932782
+        "monad": 0.01800798631932782,
+        "jasmycoin": 0.003747218450679789
       }
     },
     {
@@ -18541,7 +18889,8 @@
         "vechain": 0.004025153797717292,
         "polyhedra-network": 0.0056096959402213336,
         "cat-in-a-dogs-world": 0.0002888767082852706,
-        "monad": 0.017764722279643288
+        "monad": 0.017764722279643288,
+        "jasmycoin": 0.0037542369948303264
       }
     },
     {
@@ -18595,7 +18944,8 @@
         "vechain": 0.004072364227754689,
         "polyhedra-network": 0.0053716002795623575,
         "cat-in-a-dogs-world": 0.00029410683678533084,
-        "monad": 0.018181826290460393
+        "monad": 0.018181826290460393,
+        "jasmycoin": 0.0037343351775683997
       }
     },
     {
@@ -18649,7 +18999,8 @@
         "vechain": 0.004110611622043982,
         "polyhedra-network": 0.005485729417547391,
         "cat-in-a-dogs-world": 0.00029102118858650425,
-        "monad": 0.0187170810961863
+        "monad": 0.0187170810961863,
+        "jasmycoin": 0.0037228718301901592
       }
     },
     {
@@ -18703,7 +19054,8 @@
         "vechain": 0.0040379798296890776,
         "polyhedra-network": 0.005458869081145504,
         "cat-in-a-dogs-world": 0.0002896931088337103,
-        "monad": 0.017806220511684435
+        "monad": 0.017806220511684435,
+        "jasmycoin": 0.003624659790976944
       }
     },
     {
@@ -18757,7 +19109,8 @@
         "vechain": 0.0040161789583444,
         "polyhedra-network": 0.005428905267421437,
         "cat-in-a-dogs-world": 0.00028901380747845055,
-        "monad": 0.018175059056119224
+        "monad": 0.018175059056119224,
+        "jasmycoin": 0.0035905093331734237
       }
     },
     {
@@ -18811,7 +19164,8 @@
         "vechain": 0.004019116634630156,
         "polyhedra-network": 0.005488099659140488,
         "cat-in-a-dogs-world": 0.0002823600701964587,
-        "monad": 0.01772040474289699
+        "monad": 0.01772040474289699,
+        "jasmycoin": 0.0036013453193559494
       }
     },
     {
@@ -18865,7 +19219,8 @@
         "vechain": 0.004050401709868113,
         "polyhedra-network": 0.005405058704573743,
         "cat-in-a-dogs-world": 0.0002817306060828581,
-        "monad": 0.01807564020577992
+        "monad": 0.01807564020577992,
+        "jasmycoin": 0.0034929915000728564
       }
     },
     {
@@ -18919,7 +19274,8 @@
         "vechain": 0.004097166471544735,
         "polyhedra-network": 0.0054010289329869355,
         "cat-in-a-dogs-world": 0.0002936520446875799,
-        "monad": 0.018074349160876902
+        "monad": 0.018074349160876902,
+        "jasmycoin": 0.00352254190808431
       }
     },
     {
@@ -18973,7 +19329,8 @@
         "vechain": 0.00407470677803123,
         "polyhedra-network": 0.00538109506628925,
         "cat-in-a-dogs-world": 0.0002944539471795099,
-        "monad": 0.018154896865321922
+        "monad": 0.018154896865321922,
+        "jasmycoin": 0.003451261754353717
       }
     },
     {
@@ -19027,7 +19384,8 @@
         "vechain": 0.00401339084535913,
         "polyhedra-network": 0.005438887300319071,
         "cat-in-a-dogs-world": 0.00029125175862133797,
-        "monad": 0.018869769592810434
+        "monad": 0.018869769592810434,
+        "jasmycoin": 0.0034190093170283335
       }
     },
     {
@@ -19081,7 +19439,8 @@
         "vechain": 0.004006391105728515,
         "polyhedra-network": 0.005413935600394394,
         "cat-in-a-dogs-world": 0.0002880984441444007,
-        "monad": 0.01854026963240094
+        "monad": 0.01854026963240094,
+        "jasmycoin": 0.0034557783350202004
       }
     },
     {
@@ -19135,7 +19494,8 @@
         "vechain": 0.0038278150208971807,
         "polyhedra-network": 0.005430873841295813,
         "cat-in-a-dogs-world": 0.0002794259059707281,
-        "monad": 0.018922386970194816
+        "monad": 0.018922386970194816,
+        "jasmycoin": 0.003469555154142727
       }
     },
     {
@@ -19189,7 +19549,8 @@
         "vechain": 0.003930218052313089,
         "polyhedra-network": 0.005398380192445014,
         "cat-in-a-dogs-world": 0.00028187294274530154,
-        "monad": 0.018678048441891252
+        "monad": 0.018678048441891252,
+        "jasmycoin": 0.003642144497119436
       }
     },
     {
@@ -19243,7 +19604,8 @@
         "vechain": 0.0038842514264252003,
         "polyhedra-network": 0.004693123540647853,
         "cat-in-a-dogs-world": 0.0002789485149406155,
-        "monad": 0.018263393881044802
+        "monad": 0.018263393881044802,
+        "jasmycoin": 0.0033913616542528176
       }
     },
     {
@@ -19297,7 +19659,8 @@
         "vechain": 0.0038799285986137223,
         "polyhedra-network": 0.004742051982107266,
         "cat-in-a-dogs-world": 0.0002781567600863688,
-        "monad": 0.01804360928643562
+        "monad": 0.01804360928643562,
+        "jasmycoin": 0.0033459370771658985
       }
     },
     {
@@ -19351,7 +19714,8 @@
         "vechain": 0.0038087976312692795,
         "polyhedra-network": 0.004669610828647611,
         "cat-in-a-dogs-world": 0.00027363930162939453,
-        "monad": 0.017530643536534808
+        "monad": 0.017530643536534808,
+        "jasmycoin": 0.0032417232620472517
       }
     },
     {
@@ -19405,7 +19769,8 @@
         "vechain": 0.0038386070895928778,
         "polyhedra-network": 0.004500188484354084,
         "cat-in-a-dogs-world": 0.00027505356111200434,
-        "monad": 0.018709650326398243
+        "monad": 0.018709650326398243,
+        "jasmycoin": 0.003220431111547009
       }
     },
     {
@@ -19459,7 +19824,8 @@
         "vechain": 0.003821210728363795,
         "polyhedra-network": 0.004413530663424347,
         "cat-in-a-dogs-world": 0.00027417812327985863,
-        "monad": 0.018335890631808117
+        "monad": 0.018335890631808117,
+        "jasmycoin": 0.0030126304530130976
       }
     },
     {
@@ -19513,7 +19879,8 @@
         "vechain": 0.004152408216301611,
         "polyhedra-network": 0.004572790723883331,
         "cat-in-a-dogs-world": 0.0002965863113404396,
-        "monad": 0.019405440803582887
+        "monad": 0.019405440803582887,
+        "jasmycoin": 0.003140815817495222
       }
     },
     {
@@ -19567,7 +19934,8 @@
         "vechain": 0.004427724823006873,
         "polyhedra-network": 0.00459681807144237,
         "cat-in-a-dogs-world": 0.00032785217727660735,
-        "monad": 0.02280503045425119
+        "monad": 0.02280503045425119,
+        "jasmycoin": 0.00340627266519835
       }
     },
     {
@@ -19621,7 +19989,8 @@
         "vechain": 0.004910555410693801,
         "polyhedra-network": 0.004724242010632801,
         "cat-in-a-dogs-world": 0.00037774827080331956,
-        "monad": 0.024476729509923516
+        "monad": 0.024476729509923516,
+        "jasmycoin": 0.003946565519002378
       }
     },
     {
@@ -19675,7 +20044,8 @@
         "vechain": 0.004833857844550801,
         "polyhedra-network": 0.005489646630285578,
         "cat-in-a-dogs-world": 0.0003566984264833063,
-        "monad": 0.024075369448216814
+        "monad": 0.024075369448216814,
+        "jasmycoin": 0.003661072047888118
       }
     },
     {
@@ -19728,60 +20098,62 @@
         "test-3": 0.01351403,
         "portal-2": 0.0136806,
         "tars-protocol": 0.00515142,
-        "polyhedra-network": 0.00490061
+        "polyhedra-network": 0.00490061,
+        "jasmycoin": 0.0037640964095922995
       }
     },
     {
       "date": "2026-08-25",
       "prices": {
-        "bitcoin": 69159,
-        "ethereum": 2147.5,
-        "solana": 87.23,
-        "hyperliquid": 69.92,
-        "dogecoin": 0.079201,
-        "chainlink": 10.08,
-        "sui": 0.704229,
-        "shiba-inu": 0.00000481,
-        "avalanche-2": 6.53,
-        "uniswap": 3.79,
-        "near": 1.67,
-        "bittensor": 206.85,
-        "aave": 112.85,
-        "ondo-finance": 0.333887,
-        "pepe": 0.00000358,
-        "render-token": 1.33,
-        "arbitrum": 0.08378,
-        "pudgy-penguins": 0.00863562,
-        "flare-networks": 0.00594857,
-        "injective-protocol": 5.12,
-        "blockstack": 0.241396,
-        "vechain": 0.00500835,
-        "monad": 0.02609512,
-        "bonk": 0.00000281,
-        "floki": 0.00002364,
-        "optimism": 0.090912,
-        "dogwifcoin": 0.191901,
-        "the-graph": 0.01648431,
-        "fartcoin": 0.159198,
-        "chiliz": 0.01257552,
-        "popcat": 0.053761,
-        "based-brett": 0.00487396,
-        "mog-coin": 1.02744e-7,
-        "cat-in-a-dogs-world": 0.0003958,
-        "neiro-3": 0.00007782,
-        "avantis": 0.090556,
-        "wink": 0.00002973,
-        "mubarak": 0.02089298,
-        "dogs-2": 0.00003482,
-        "bonfida": 0.01673204,
-        "celer-network": 0.00200636,
-        "czs-dog": 0.01505988,
-        "the-index": 0.0141868,
-        "coin98": 0.01371864,
-        "test-3": 0.0133478,
-        "portal-2": 0.01375427,
-        "tars-protocol": 0.00513166,
-        "polyhedra-network": 0.00474472
+        "bitcoin": 68693,
+        "ethereum": 2133.64,
+        "solana": 86.71,
+        "hyperliquid": 69.4,
+        "dogecoin": 0.0783,
+        "chainlink": 10,
+        "sui": 0.695546,
+        "shiba-inu": 0.00000475,
+        "avalanche-2": 6.48,
+        "uniswap": 3.73,
+        "near": 1.66,
+        "bittensor": 204.25,
+        "aave": 111.9,
+        "ondo-finance": 0.330275,
+        "pepe": 0.00000353,
+        "render-token": 1.31,
+        "arbitrum": 0.083055,
+        "pudgy-penguins": 0.00859503,
+        "flare-networks": 0.00594025,
+        "injective-protocol": 5.06,
+        "blockstack": 0.229471,
+        "vechain": 0.0049603,
+        "monad": 0.02600918,
+        "bonk": 0.00000277,
+        "floki": 0.00002325,
+        "jasmycoin": 0.00434068,
+        "optimism": 0.090077,
+        "dogwifcoin": 0.185658,
+        "the-graph": 0.01629901,
+        "fartcoin": 0.157597,
+        "chiliz": 0.01243837,
+        "popcat": 0.052872,
+        "based-brett": 0.00476282,
+        "mog-coin": 1.02075e-7,
+        "cat-in-a-dogs-world": 0.00038703,
+        "neiro-3": 0.00007685,
+        "avantis": 0.090134,
+        "wink": 0.00002968,
+        "mubarak": 0.02063828,
+        "dogs-2": 0.00003456,
+        "bonfida": 0.01652773,
+        "celer-network": 0.00200606,
+        "czs-dog": 0.01486614,
+        "the-index": 0.0140153,
+        "coin98": 0.0135969,
+        "test-3": 0.01319261,
+        "portal-2": 0.01353644,
+        "tars-protocol": 0.00511094,
+        "polyhedra-network": 0.00474073
       }
     }
   ]
