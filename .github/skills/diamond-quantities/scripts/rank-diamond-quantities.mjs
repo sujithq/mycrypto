@@ -709,6 +709,31 @@ export async function fetchLatestDiamondMarkets(
   return rows;
 }
 
+export async function fetchDiamondMarketsByIds(currency, assetIdsInput, options) {
+  if (!Array.isArray(assetIdsInput) || assetIdsInput.length === 0) {
+    throw new Error('Provide at least one CoinGecko asset ID.');
+  }
+  const assetIds = [...new Set(assetIdsInput
+    .map((value) => String(value ?? '').trim().toLowerCase()))];
+  if (assetIds.some((id) => !id)) throw new Error('CoinGecko asset IDs cannot be empty.');
+  if (assetIds.length > MAX_MARKETS_PER_REQUEST) {
+    throw new Error(`Cannot retrieve more than ${MAX_MARKETS_PER_REQUEST} CoinGecko asset IDs at once.`);
+  }
+  const query = new URLSearchParams({
+    vs_currency: String(currency).toLowerCase(),
+    ids: assetIds.join(','),
+    order: 'market_cap_desc',
+    per_page: String(assetIds.length),
+    page: '1',
+    sparkline: 'false',
+    price_change_percentage: '7d,30d',
+    precision: 'full',
+  });
+  const result = await fetchJson(`${API}/coins/markets?${query}`, options);
+  if (!Array.isArray(result)) throw new Error('CoinGecko returned invalid market data.');
+  return result;
+}
+
 function activeTradingSymbols(tradingVenue) {
   const quoteCurrencies = new Set(tradingVenue.quoteCurrencies);
   return [...new Set(tradingVenue.pairs

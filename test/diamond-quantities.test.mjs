@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
+  fetchDiamondMarketsByIds,
   fetchLatestDiamondMarkets,
   fetchRevolutXTradingVenue,
   getDiamondQuantities,
@@ -135,6 +136,26 @@ test('paginates and paces the top market candidate window', async () => {
   assert.equal(rows.length, 251);
   assert.deepEqual(requestedPages, [1, 2]);
   assert.deepEqual(pauses, [1_000]);
+});
+
+test('fetches complete eligibility metrics for canonical CoinGecko IDs', async () => {
+  let requestedUrl;
+  const rows = await fetchDiamondMarketsByIds('EUR', ['Candidate', 'candidate'], {
+    fetchImpl: async (url) => {
+      requestedUrl = new URL(url);
+      return {
+        ok: true,
+        json: async () => [marketRow({ id: 'candidate' })],
+      };
+    },
+  });
+
+  assert.equal(requestedUrl.pathname, '/api/v3/coins/markets');
+  assert.equal(requestedUrl.searchParams.get('vs_currency'), 'eur');
+  assert.equal(requestedUrl.searchParams.get('ids'), 'candidate');
+  assert.equal(requestedUrl.searchParams.get('price_change_percentage'), '7d,30d');
+  assert.equal(requestedUrl.searchParams.get('precision'), 'full');
+  assert.equal(rows[0].id, 'candidate');
 });
 
 test('uses a live EUR/USD rate for USD quote mode', async () => {

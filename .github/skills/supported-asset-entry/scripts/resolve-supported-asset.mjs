@@ -5,6 +5,7 @@ import path from 'node:path';
 const skillRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const repositoryRoot = path.resolve(skillRoot, '..', '..', '..');
 const API = 'https://api.coingecko.com/api/v3';
+const REQUEST_INTERVAL_MS = 1_000;
 
 const sleep = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
 
@@ -107,13 +108,29 @@ export async function resolveSupportedAssetById(assetIdInput, options = {}) {
   };
 }
 
-export async function resolveSupportedAsset(assetInput, portfolioConfig, options = {}) {
+export async function resolveCanonicalAsset(assetInput, portfolioConfig, options = {}) {
   const assetKey = String(assetInput ?? '').trim().toLowerCase();
   if (!assetKey) throw new Error('Provide an asset symbol or CoinGecko ID.');
 
-  const localEntry = portfolioConfig.supportedAssets?.find(({ id, symbol }) =>
-    id.toLowerCase() === assetKey || symbol.toLowerCase() === assetKey);
-  if (localEntry) return { entry: localEntry, source: 'local' };
+  const supportedAssets = Array.isArray(portfolioConfig.supportedAssets)
+    ? portfolioConfig.supportedAssets
+    : [];
+  const localIdMatch = supportedAssets.find(({ id }) =>
+    String(id).toLowerCase() === assetKey);
+  if (localIdMatch) return { entry: localIdMatch, source: 'local' };
+
+  const localSymbolMatches = supportedAssets.filter(({ symbol }) =>
+    String(symbol).toLowerCase() === assetKey);
+  if (localSymbolMatches.length > 1) {
+    const choices = localSymbolMatches
+      .map(({ id, name }) => `${id} (${name})`)
+      .sort()
+      .join(', ');
+    throw new Error(`Ambiguous symbol ${assetKey.toUpperCase()}; use one of these CoinGecko IDs: ${choices}`);
+  }
+  if (localSymbolMatches.length === 1) {
+    return { entry: localSymbolMatches[0], source: 'local' };
+  }
 
   const coins = await fetchJson(`${API}/coins/list?include_platform=false`, options);
   if (!Array.isArray(coins)) throw new Error('CoinGecko returned an invalid coin list.');
@@ -132,7 +149,25 @@ export async function resolveSupportedAsset(assetInput, portfolioConfig, options
   }
 
   const match = exactId ?? symbolMatches[0];
-  return resolveSupportedAssetById(match.id, options);
+  const id = String(match?.id ?? '').trim();
+  const symbol = String(match?.symbol ?? '').trim().toUpperCase();
+  const name = String(match?.name ?? '').trim();
+  if (!id || !symbol || !name) {
+    throw new Error(`CoinGecko returned incomplete canonical metadata for ${assetInput}.`);
+  }
+  return {
+    entry: { id, symbol, name },
+    source: 'CoinGecko',
+  };
+}
+
+export async function resolveSupportedAsset(assetInput, portfolioConfig, options = {}) {
+  const resolution = await resolveCanonicalAsset(assetInput, portfolioConfig, options);
+  if (resolution.source === 'local') return resolution;
+
+  const sleepImpl = options.sleepImpl ?? sleep;
+  await sleepImpl(REQUEST_INTERVAL_MS);
+  return resolveSupportedAssetById(resolution.entry.id, options);
 }
 
 async function main([assetInput]) {

@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
+  resolveCanonicalAsset,
   resolveSupportedAsset,
   resolveSupportedAssetById,
   resolveSupportedAssetsByIds,
@@ -28,11 +29,43 @@ test('returns an existing supportedAssets entry by symbol without a request', as
   });
 });
 
+test('prefers an exact local CoinGecko ID over another asset symbol', async () => {
+  const collisionConfig = {
+    supportedAssets: [
+      { id: 'first-coin', symbol: 'TARGET', name: 'First Coin' },
+      { id: 'target', symbol: 'SECOND', name: 'Target ID Coin' },
+    ],
+  };
+
+  const result = await resolveCanonicalAsset('target', collisionConfig, {
+    fetchImpl: async () => assert.fail('fetch should not be called'),
+  });
+
+  assert.equal(result.entry.id, 'target');
+  assert.equal(result.entry.symbol, 'SECOND');
+});
+
+test('rejects duplicate local symbols with canonical ID choices', async () => {
+  const collisionConfig = {
+    supportedAssets: [
+      { id: 'first-coin', symbol: 'DUP', name: 'First Coin' },
+      { id: 'second-coin', symbol: 'DUP', name: 'Second Coin' },
+    ],
+  };
+
+  await assert.rejects(resolveCanonicalAsset('dup', collisionConfig, {
+    fetchImpl: async () => assert.fail('fetch should not be called'),
+  }), /Ambiguous symbol DUP.*first-coin.*second-coin/);
+});
+
 test('resolves a canonical CoinGecko entry by id', async () => {
   const requests = [];
+  const events = [];
   const result = await resolveSupportedAsset('dogwifcoin', portfolioConfig, {
     fetchImpl: async (url) => {
-      requests.push(new URL(url));
+      const request = new URL(url);
+      requests.push(request);
+      events.push(`fetch:${request.pathname}`);
       return {
         ok: true,
         json: async () => requests.length === 1
@@ -46,10 +79,16 @@ test('resolves a canonical CoinGecko entry by id', async () => {
           },
       };
     },
+    sleepImpl: async (milliseconds) => events.push(`sleep:${milliseconds}`),
   });
 
   assert.equal(requests[0].pathname, '/api/v3/coins/list');
   assert.equal(requests[1].pathname, '/api/v3/coins/dogwifcoin');
+  assert.deepEqual(events, [
+    'fetch:/api/v3/coins/list',
+    'sleep:1000',
+    'fetch:/api/v3/coins/dogwifcoin',
+  ]);
   assert.deepEqual(result, {
     entry: {
       id: 'dogwifcoin',
@@ -72,6 +111,7 @@ test('resolves a unique CoinGecko symbol', async () => {
         ? [{ id: 'dogwifcoin', symbol: 'wif', name: 'dogwifhat' }]
         : { id: 'dogwifcoin', symbol: 'wif', name: 'dogwifhat' },
     }),
+      sleepImpl: async () => {},
   });
 
   assert.deepEqual(result.entry, {

@@ -8,6 +8,7 @@
     "build:manage": "node scripts/build.mjs --include-management",
     "daily-gems-issue": "node scripts/generate-daily-gems-issue.mjs",
     "publish-daily-gems-issue": "node scripts/upsert-daily-gems-issue.mjs",
+    "daily-gems-eligibility": "node .github/skills/daily-gems-eligibility/scripts/check-daily-gems-eligibility.mjs",
     "diamond-quantities": "node .github/skills/diamond-quantities/scripts/rank-diamond-quantities.mjs",
     "test": "node --test",
     "market-quantity": "node .github/skills/market-quantity/scripts/calculate-market-quantity.mjs",

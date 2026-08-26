@@ -140,6 +140,25 @@ are marked as unsupported until their canonical metadata and thesis are added wi
 `supported-asset-entry` skill. The ranking is a quantitative research screen,
 not a price forecast.
 
+### Check daily gems eligibility
+
+The `daily-gems-eligibility` agent skill checks one canonical CoinGecko asset
+against the same live candidate rules used by the daily issue. It defaults to
+checking EUR, USD, and EUR-preferred mixed modes from one Revolut X EEA
+configuration snapshot:
+
+```bash
+npm run daily-gems-eligibility -- polyswarm
+npm run daily-gems-eligibility -- measurable-data-token USD
+npm run daily-gems-eligibility -- layerzero EUR 50
+```
+
+The JSON result reports whether the coin is eligible in any and all requested
+modes. Each mode includes either its verified pair and passing market metrics,
+or the exact rejection reason, identity status, and ticker-matched pairs. This
+isolated check admits a coin to the candidate pool; it does not assign the
+coin's relative daily rank or guarantee a top-10 place.
+
 ### Review a daily gems profile
 
 The **Propose daily crypto gems** workflow runs every day at 07:15 UTC. It
