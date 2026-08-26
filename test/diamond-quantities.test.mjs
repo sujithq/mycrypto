@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
+  fetchLatestDiamondMarkets,
   fetchRevolutXTradingVenue,
   getDiamondQuantities,
   getDiamondQuantitiesForQuoteModes,
@@ -114,6 +115,28 @@ test('fetches live growth signals without using ATH data or invented IDs', async
   assert.equal(result.assets[0].tradingPair, 'NEW/EUR');
 });
 
+test('paginates and paces the top market candidate window', async () => {
+  const requestedPages = [];
+  const pauses = [];
+  const rows = await fetchLatestDiamondMarkets('EUR', 251, {
+    sleepImpl: async (milliseconds) => { pauses.push(milliseconds); },
+    fetchImpl: async (url) => {
+      const page = Number(new URL(url).searchParams.get('page'));
+      requestedPages.push(page);
+      return {
+        ok: true,
+        json: async () => page === 1
+          ? Array.from({ length: 250 }, (_, index) => marketRow({ id: `top-${index}` }))
+          : [marketRow({ id: 'top-250' })],
+      };
+    },
+  });
+
+  assert.equal(rows.length, 251);
+  assert.deepEqual(requestedPages, [1, 2]);
+  assert.deepEqual(pauses, [1_000]);
+});
+
 test('uses a live EUR/USD rate for USD quote mode', async () => {
   const requestedUrls = [];
   const result = await getDiamondQuantities(portfolioConfig, {
@@ -215,7 +238,7 @@ test('ranks EUR, USD, and mixed modes from one live snapshot', async () => {
   );
   assert.equal(
     requestedUrls.filter(({ pathname }) => pathname.endsWith('/coins/markets')).length,
-    1,
+    2,
   );
   assert.equal(
     requestedUrls.filter(({ pathname }) => pathname.endsWith('/pairs')).length,
@@ -229,6 +252,169 @@ test('ranks EUR, USD, and mixed modes from one live snapshot', async () => {
     requestedUrls.filter(({ pathname }) => pathname.endsWith('/exchange_rates')).length,
     1,
   );
+});
+
+test('supplements the market-cap window with active Revolut X symbols', async () => {
+  const result = await getDiamondQuantities(portfolioConfig, {
+    observedAt: '2026-08-24T12:00:00.000Z',
+    candidateLimit: 1,
+    limit: 2,
+    sleepImpl: async () => {},
+    fetchImpl: async (url) => {
+      const requestedUrl = new URL(url);
+      let body = requestedUrl.searchParams.has('symbols')
+        ? [marketRow({ id: 'outside-window', symbol: 'nct', name: 'PolySwarm' })]
+        : [marketRow({ id: 'inside-window', symbol: 'inside', name: 'Inside Window' })];
+      if (requestedUrl.pathname.endsWith('/pairs')) {
+        body = {
+          'INSIDE/EUR': {
+            base: 'INSIDE', quote: 'EUR', status: 'active',
+            min_order_size_quote: '0.1', max_order_size_quote: '1000000',
+          },
+          'NCT/EUR': {
+            base: 'NCT', quote: 'EUR', status: 'active',
+            min_order_size_quote: '0.1', max_order_size_quote: '1000000',
+          },
+        };
+      }
+      else if (requestedUrl.pathname.endsWith('/currencies')) {
+        body = {
+          INSIDE: { symbol: 'INSIDE', name: 'Inside Window', status: 'active' },
+          NCT: { symbol: 'NCT', name: 'PolySwarm', status: 'active' },
+        };
+      }
+      return { ok: true, json: async () => body };
+    },
+  });
+
+  assert.deepEqual(result.assets.map(({ id }) => id).sort(), [
+    'inside-window',
+    'outside-window',
+  ]);
+  assert.deepEqual(result.discovery, {
+    marketCapCandidateLimit: 1,
+    activeVenueSymbolCount: 2,
+    supplementalCandidateCount: 1,
+  });
+});
+
+test('paginates all CoinGecko matches for active Revolut X symbols', async () => {
+  const supplementalPages = [];
+  const result = await getDiamondQuantities(portfolioConfig, {
+    observedAt: '2026-08-24T12:00:00.000Z',
+    candidateLimit: 1,
+    limit: 1,
+    sleepImpl: async () => {},
+    fetchImpl: async (url) => {
+      const requestedUrl = new URL(url);
+      let body = [marketRow({ id: 'inside-window', symbol: 'inside', name: 'Inside Window' })];
+      if (requestedUrl.searchParams.has('symbols')) {
+        const page = Number(requestedUrl.searchParams.get('page'));
+        supplementalPages.push(page);
+        body = page === 1
+          ? Array.from({ length: 250 }, (_, index) => marketRow({
+              id: `nct-collision-${index}`,
+              symbol: 'nct',
+              name: `NCT Collision ${index}`,
+            }))
+          : [marketRow({ id: 'polyswarm', symbol: 'nct', name: 'PolySwarm' })];
+      } else if (requestedUrl.pathname.endsWith('/pairs')) {
+        body = {
+          'NCT/EUR': {
+            base: 'NCT', quote: 'EUR', status: 'active',
+            min_order_size_quote: '0.1', max_order_size_quote: '1000000',
+          },
+        };
+      } else if (requestedUrl.pathname.endsWith('/currencies')) {
+        body = { NCT: { symbol: 'NCT', name: 'PolySwarm', status: 'active' } };
+      }
+      return { ok: true, json: async () => body };
+    },
+  });
+
+  assert.deepEqual(supplementalPages, [1, 2]);
+  assert.deepEqual(result.assets.map(({ id }) => id), ['polyswarm']);
+});
+
+test('serializes and paces CoinGecko requests with the injected sleeper', async () => {
+  let activeCoinGeckoRequests = 0;
+  let maximumConcurrentCoinGeckoRequests = 0;
+  const pauses = [];
+  await getDiamondQuantities(portfolioConfig, {
+    observedAt: '2026-08-24T12:00:00.000Z',
+    candidateLimit: 1,
+    quoteCurrencyMode: 'USD',
+    sleepImpl: async (milliseconds) => { pauses.push(milliseconds); },
+    fetchImpl: async (url) => {
+      const requestedUrl = new URL(url);
+      const isCoinGecko = requestedUrl.hostname === 'api.coingecko.com';
+      if (isCoinGecko) {
+        activeCoinGeckoRequests += 1;
+        maximumConcurrentCoinGeckoRequests = Math.max(
+          maximumConcurrentCoinGeckoRequests,
+          activeCoinGeckoRequests,
+        );
+        await new Promise((resolve) => setImmediate(resolve));
+        activeCoinGeckoRequests -= 1;
+      }
+      let body = [marketRow({ id: 'usd-asset', symbol: 'usdasset', name: 'USD Asset' })];
+      if (requestedUrl.pathname.endsWith('/exchange_rates')) {
+        body = { rates: { eur: { value: 100 }, usd: { value: 120 } } };
+      } else if (requestedUrl.pathname.endsWith('/pairs')) {
+        body = {
+          'USDASSET/USD': {
+            base: 'USDASSET', quote: 'USD', status: 'active',
+            min_order_size_quote: '0.1', max_order_size_quote: '1000000',
+          },
+        };
+      } else if (requestedUrl.pathname.endsWith('/currencies')) {
+        body = { USDASSET: { symbol: 'USDASSET', name: 'USD Asset', status: 'active' } };
+      }
+      return { ok: true, json: async () => body };
+    },
+  });
+
+  assert.equal(maximumConcurrentCoinGeckoRequests, 1);
+  assert.ok(pauses.filter((milliseconds) => milliseconds === 1_000).length >= 3);
+});
+
+test('paces supplemental CoinGecko symbol batches', async () => {
+  const events = [];
+  await getDiamondQuantities(portfolioConfig, {
+    observedAt: '2026-08-24T12:00:00.000Z',
+    candidateLimit: 1,
+    sleepImpl: async (milliseconds) => { events.push(`sleep:${milliseconds}`); },
+    fetchImpl: async (url) => {
+      const requestedUrl = new URL(url);
+      let body = [];
+      if (requestedUrl.searchParams.has('symbols')) {
+        body = [];
+        events.push(`symbols:${requestedUrl.searchParams.get('symbols').split(',').length}`);
+      } else if (requestedUrl.pathname.endsWith('/pairs')) {
+        body = Object.fromEntries(Array.from({ length: 51 }, (_, index) => [
+          `ASSET${index}/EUR`,
+          {
+            base: `ASSET${index}`,
+            quote: 'EUR',
+            status: 'active',
+            min_order_size_quote: '0.1',
+            max_order_size_quote: '1000000',
+          },
+        ]));
+      } else if (requestedUrl.pathname.endsWith('/currencies')) {
+        body = Object.fromEntries(Array.from({ length: 51 }, (_, index) => [
+          `ASSET${index}`,
+          { symbol: `ASSET${index}`, name: `Asset ${index}`, status: 'active' },
+        ]));
+      }
+      return { ok: true, json: async () => body };
+    },
+  });
+
+  const firstBatchIndex = events.indexOf('symbols:50');
+  const secondBatchIndex = events.indexOf('symbols:1');
+  assert.ok(firstBatchIndex >= 0 && secondBatchIndex > firstBatchIndex);
+  assert.ok(events.slice(firstBatchIndex + 1, secondBatchIndex).includes('sleep:1000'));
 });
 
 test('normalizes active Revolut X EUR pair configuration', async () => {
@@ -295,6 +481,97 @@ test('excludes illiquid assets even when EUR 50 buys an enormous quantity', () =
     { id: 'illiquid', reason: 'Trading volume is below 100000.' },
     { id: 'no-headroom', reason: 'Market capitalization has no headroom below 1000000000.' },
   ]);
+  assert.deepEqual(
+    result.exclusionDetails.map(({ identityStatus }) => identityStatus),
+    ['not-checked', 'not-checked'],
+  );
+});
+
+test('reports verified, mismatch, and not-checked exclusion identities', () => {
+  const result = rankDiamondQuantities([
+    marketRow({ id: 'no-pair', symbol: 'none', name: 'No Pair' }),
+    marketRow({ id: 'collision', symbol: 'same', name: 'Wrong Asset' }),
+    marketRow({
+      id: 'verified-dry',
+      symbol: 'dry',
+      name: 'Verified Dry',
+      total_volume: 50_000,
+    }),
+  ], portfolioConfig, {
+    observedAt: '2026-08-24T12:00:00.000Z',
+    tradingVenue: {
+      name: 'Revolut X',
+      region: 'EEA',
+      source: 'Revolut X public configuration API',
+      identitySource: 'Revolut X public currencies API',
+      quoteCurrency: 'EUR',
+      pairs: [{
+        symbol: 'SAME/EUR', base: 'SAME', quote: 'EUR', status: 'active',
+        minOrderSizeQuote: '0.1', maxOrderSizeQuote: '1000000',
+      }, {
+        symbol: 'DRY/EUR', base: 'DRY', quote: 'EUR', status: 'active',
+        minOrderSizeQuote: '0.1', maxOrderSizeQuote: '1000000',
+      }],
+      currencies: [
+        { symbol: 'SAME', name: 'Different Asset', status: 'active' },
+        { symbol: 'DRY', name: 'Verified Dry', status: 'active' },
+      ],
+    },
+  });
+
+  assert.deepEqual(Object.fromEntries(result.exclusionDetails.map(({ id, identityStatus }) => [
+    id,
+    identityStatus,
+  ])), {
+    'no-pair': 'not-checked',
+    collision: 'mismatch',
+    'verified-dry': 'verified',
+  });
+});
+
+test('preserves unavailable market caps and active pairs in exclusion details', () => {
+  const result = rankDiamondQuantities([
+    marketRow({
+      id: 'missing-cap',
+      symbol: 'nocap',
+      name: 'No Cap',
+      market_cap: null,
+    }),
+    marketRow({
+      id: 'missing-name',
+      symbol: 'noname',
+      name: '',
+    }),
+  ], portfolioConfig, {
+    observedAt: '2026-08-24T12:00:00.000Z',
+    tradingVenue: {
+      name: 'Revolut X',
+      region: 'EEA',
+      source: 'Revolut X public configuration API',
+      identitySource: 'Revolut X public currencies API',
+      quoteCurrency: 'EUR',
+      pairs: [{
+        symbol: 'NOCAP/EUR', base: 'NOCAP', quote: 'EUR', status: 'active',
+        minOrderSizeQuote: '0.1', maxOrderSizeQuote: '1000000',
+      }, {
+        symbol: 'NONAME/EUR', base: 'NONAME', quote: 'EUR', status: 'active',
+        minOrderSizeQuote: '0.1', maxOrderSizeQuote: '1000000',
+      }],
+      currencies: [
+        { symbol: 'NOCAP', name: 'No Cap', status: 'active' },
+        { symbol: 'NONAME', name: 'No Name', status: 'active' },
+      ],
+    },
+  });
+  const detailsById = Object.fromEntries(result.exclusionDetails.map((detail) => [
+    detail.id,
+    detail,
+  ]));
+
+  assert.equal(detailsById['missing-cap'].marketCap, null);
+  assert.equal(detailsById['missing-cap'].identityStatus, 'verified');
+  assert.deepEqual(detailsById['missing-name'].tradingPairs, ['NONAME/EUR']);
+  assert.equal(detailsById['missing-name'].identityStatus, 'not-checked');
 });
 
 test('requires an active EUR pair on the configured trading venue', () => {
@@ -441,6 +718,7 @@ test('rejects a symbol collision when CoinGecko and Revolut identities differ', 
     id: 'unrelated-btc',
     reason: 'CoinGecko identity Not Bitcoin (BTC) does not match Revolut X Bitcoin (BTC).',
   }]);
+  assert.equal(result.exclusionDetails[0].identityStatus, 'mismatch');
 });
 
 test('rejects invalid ranking inputs', () => {

@@ -15,6 +15,11 @@ const DEFAULT_QUOTE_CURRENCY_MODE = 'EUR';
 const MAX_USD_INVESTMENT_EUR = 50;
 const CONSOLIDATED_QUOTE_CURRENCY_MODES = ['EUR', 'USD', 'MIXED'];
 const MAX_GITHUB_ISSUE_BODY_CHARACTERS = 65_536;
+const REPLACEMENT_SUMMARY_RESERVE_CHARACTERS = 8_000;
+const MAX_GENERATED_ISSUE_BODY_CHARACTERS = MAX_GITHUB_ISSUE_BODY_CHARACTERS
+  - REPLACEMENT_SUMMARY_RESERVE_CHARACTERS;
+const MAX_BELOW_CUTOFF_ROWS = 20;
+const MAX_EXCLUSION_EXAMPLES = 20;
 
 function normalizeCategory(value) {
   return String(value ?? '')
@@ -42,15 +47,95 @@ function formatPrice(value) {
   }).format(Number(value));
 }
 
-function summarizeExclusions(excluded) {
+function normalizedExclusionReason(value) {
+  const reason = String(value ?? 'Unknown exclusion reason.');
+  if (/^No active .+ market in .+\.$/.test(reason)) {
+    return 'No active requested-mode market on the configured venue.';
+  }
+  if (/ returned invalid .+ quote-order limits\.$/.test(reason)) {
+    return 'The active venue market returned invalid quote-order limits.';
+  }
+  if (reason.includes(' is below the ') && reason.includes(' minimum quote order of ')) {
+    return 'The requested quote amount is below the active market minimum.';
+  }
+  if (reason.includes(' exceeds the ') && reason.includes(' maximum quote order of ')) {
+    return 'The requested quote amount exceeds the active market maximum.';
+  }
+  if (reason.includes(' currency identity for ') && reason.endsWith(' is not active and complete.')) {
+    return 'The active venue currency identity is incomplete.';
+  }
+  if (reason.startsWith('CoinGecko identity ') && reason.includes(' does not match ')) {
+    return 'CoinGecko identity does not match the active venue currency identity.';
+  }
+  return reason;
+}
+
+function representativeExclusions(details) {
+  const uniqueById = new Map(details.map((detail) => [detail.id, detail]));
+  const uniqueDetails = [...uniqueById.values()];
+  const byMarketCap = [...uniqueDetails]
+    .sort((left, right) => Number(right.marketCap ?? -1) - Number(left.marketCap ?? -1));
+  const bySymbol = [...uniqueDetails]
+    .sort((left, right) => String(left.symbol).localeCompare(String(right.symbol)));
+  const examples = new Map();
+  for (const detail of [
+    ...byMarketCap.slice(0, MAX_EXCLUSION_EXAMPLES / 2),
+    ...bySymbol.slice(0, MAX_EXCLUSION_EXAMPLES / 2),
+  ]) {
+    examples.set(detail.id, detail);
+  }
+  return [...examples.values()].slice(0, MAX_EXCLUSION_EXAMPLES);
+}
+
+function summarizeExclusions(excluded, exclusionDetails = []) {
   const counts = new Map();
   for (const item of Array.isArray(excluded) ? excluded : []) {
-    const reason = String(item?.reason ?? 'Unknown exclusion reason.');
+    const reason = normalizedExclusionReason(item?.reason);
     counts.set(reason, (counts.get(reason) ?? 0) + 1);
   }
+  const activePairDetailsByReason = new Map();
+  for (const detail of Array.isArray(exclusionDetails) ? exclusionDetails : []) {
+    if (!Array.isArray(detail?.tradingPairs) || detail.tradingPairs.length === 0) continue;
+    const reason = normalizedExclusionReason(detail.reason);
+    const details = activePairDetailsByReason.get(reason) ?? [];
+    details.push(detail);
+    activePairDetailsByReason.set(reason, details);
+  }
   return [...counts]
-    .map(([reason, count]) => ({ reason, count }))
+    .map(([reason, count]) => {
+      const details = activePairDetailsByReason.get(reason) ?? [];
+      const examples = representativeExclusions(details);
+      return {
+        reason,
+        count,
+        ...(examples.length > 0 ? {
+          activePairExamples: examples.map(({ id, symbol, name, tradingPairs }) => ({
+            id,
+            symbol,
+            name,
+            tradingPairs,
+          })),
+          activePairExampleCount: details.length,
+        } : {}),
+      };
+    })
     .sort((left, right) => right.count - left.count || left.reason.localeCompare(right.reason));
+}
+
+function exclusionSummaryLine({
+  reason,
+  count,
+  activePairExamples = [],
+  activePairExampleCount = 0,
+}) {
+  const examples = activePairExamples
+    .map(({ symbol, tradingPairs }) => `\`${markdownCell(symbol)}\` (${tradingPairs.map(markdownCell).join('/')})`)
+    .join(', ');
+  const omittedCount = Math.max(0, activePairExampleCount - activePairExamples.length);
+  const exampleText = examples
+    ? ` Active-pair examples: ${examples}${omittedCount > 0 ? `, plus ${omittedCount} more` : ''}.`
+    : '';
+  return `- ${count}: ${reason}${exampleText}`;
 }
 
 function assertFinitePositive(value, label) {
@@ -183,6 +268,111 @@ function renderRankingTable(assets, currency) {
   ].join('\n');
 }
 
+function renderSelectionCutoffAudit(ranking) {
+  const candidates = Array.isArray(ranking.eligibleButNotSelected)
+    ? ranking.eligibleButNotSelected
+    : [];
+  if (candidates.length === 0) return '';
+  const cutoffScore = ranking.assets.at(-1)?.diamondScore;
+  const displayedCandidates = candidates.slice(0, MAX_BELOW_CUTOFF_ROWS);
+  const rows = displayedCandidates.map((asset) => {
+    const scores = asset.componentScores ?? {};
+    return `| ${asset.rank} | ${markdownCell(asset.symbol)} (${markdownCell(asset.name)}) | ${markdownCell(asset.tradingPair)} | ${formatNumber(asset.diamondScore)} | ${formatNumber(scores.marketCapHeadroom)} / ${formatNumber(scores.quantity)} / ${formatNumber(scores.liquidity)} / ${formatNumber(scores.momentum)} / ${formatNumber(scores.supply)} |`;
+  });
+  const remainingCandidates = candidates.slice(displayedCandidates.length);
+  const remainingIndex = remainingCandidates.length > 0
+    ? `\n\nRemaining eligible ranks: ${remainingCandidates
+      .map(({ rank, symbol }) => `${rank}:\`${markdownCell(symbol)}\``)
+      .join(', ')}.`
+    : '';
+  return `### Eligible candidates below the selection cutoff
+
+These assets passed every eligibility screen but ranked below the selected ${ranking.assets.length}. The cutoff score was ${formatNumber(cutoffScore)}.
+
+| Overall rank | Asset | Revolut X market | Score | Headroom / quantity / liquidity / momentum / supply |
+| ---: | --- | --- | ---: | ---: |
+${rows.join('\n')}
+${remainingIndex}`;
+}
+
+function activePairExclusions(ranking) {
+  const referenceMarketCap = Number(ranking?.screen?.referenceMarketCap);
+  const minMarketCap = Number(ranking?.screen?.minMarketCap);
+  const hasFiniteValue = (value) => value !== null && value !== undefined && value !== ''
+    && Number.isFinite(Number(value));
+  const passesMarketCapFloor = (detail) => Number.isFinite(minMarketCap)
+    && hasFiniteValue(detail.marketCap)
+    && Number(detail.marketCap) >= minMarketCap;
+  return (Array.isArray(ranking?.exclusionDetails) ? ranking.exclusionDetails : [])
+    .filter((detail) => Array.isArray(detail?.tradingPairs)
+      && detail.tradingPairs.length > 0
+      && (!Number.isFinite(referenceMarketCap)
+        || !hasFiniteValue(detail.marketCap)
+        || Number(detail.marketCap) < referenceMarketCap))
+    .sort((left, right) => Number(passesMarketCapFloor(right)) - Number(passesMarketCapFloor(left))
+      || ['verified', 'mismatch', 'not-checked'].indexOf(left.identityStatus)
+        - ['verified', 'mismatch', 'not-checked'].indexOf(right.identityStatus)
+      || String(left.symbol).localeCompare(String(right.symbol))
+      || String(left.id).localeCompare(String(right.id)));
+}
+
+function activePairExclusionDispositions(ranking) {
+  const exclusions = activePairExclusions(ranking);
+  const exclusionsByDisposition = new Map();
+  for (const detail of exclusions) {
+    const identityStatus = detail.identityStatus ?? 'not-checked';
+    const reason = normalizedExclusionReason(detail.reason);
+    const key = JSON.stringify([identityStatus, reason]);
+    const disposition = exclusionsByDisposition.get(key) ?? {
+      identityStatus,
+      reason,
+      pairs: new Map(),
+    };
+    const marketCapUnavailable = detail.marketCap === null || detail.marketCap === undefined
+      || detail.marketCap === '' || !Number.isFinite(Number(detail.marketCap));
+    for (const pair of new Set(detail.tradingPairs.map(markdownCell))) {
+      disposition.pairs.set(pair, disposition.pairs.get(pair) || marketCapUnavailable);
+    }
+    exclusionsByDisposition.set(key, disposition);
+  }
+  return [...exclusionsByDisposition.values()]
+    .map((disposition) => ({
+      ...disposition,
+      pairs: [...disposition.pairs].sort((left, right) => left[0].localeCompare(right[0])),
+    }))
+    .sort((left, right) => right.pairs.length - left.pairs.length
+      || left.reason.localeCompare(right.reason)
+      || left.identityStatus.localeCompare(right.identityStatus));
+}
+
+function renderActivePairExclusionAudit(ranking) {
+  const dispositions = activePairExclusionDispositions(ranking);
+  if (dispositions.length === 0) return '';
+  const lines = dispositions.map(({ identityStatus, reason, pairs }) => {
+    const entries = pairs.map(([pair, marketCapUnavailable]) =>
+      `\`${pair}\`${marketCapUnavailable ? ' (market cap unavailable)' : ''}`);
+    return `- ${markdownCell(reason)} [identity ${identityStatus}]: ${entries.join(', ')}.`;
+  });
+  return `<details>
+<summary>Searchable active-market exclusion index</summary>
+
+Every active requested-mode Revolut X pair associated with a CoinGecko row below the reference market cap that failed a later check is indexed here. Pair tokens are deduplicated within each disposition. Identity mismatches and not-checked identities are not treated as the venue asset.
+
+${lines.join('\n')}
+
+</details>`;
+}
+
+function activePairExclusionFingerprint(ranking) {
+  const dispositions = activePairExclusionDispositions(ranking);
+  if (dispositions.length === 0) return null;
+  return JSON.stringify(dispositions.map(({ identityStatus, reason, pairs }) => [
+    identityStatus,
+    reason,
+    pairs,
+  ]));
+}
+
 export function renderDailyGemsIssue(adoptionPackage) {
   const {
     date,
@@ -197,9 +387,14 @@ export function renderDailyGemsIssue(adoptionPackage) {
   } = adoptionPackage;
   const registryJson = JSON.stringify(supportedAssetsToAdd, null, 2);
   const profileJson = JSON.stringify(profile, null, 2);
-  const manifestJson = JSON.stringify(adoptionPackage, null, 2);
+  const manifestJson = JSON.stringify({
+    schemaVersion: adoptionPackage.schemaVersion,
+    date,
+    quoteCurrencyMode: ranking.tradingVenue.quoteCurrencyMode,
+    profilePath,
+  }, null, 2);
   const exclusionLines = exclusionSummary.length > 0
-    ? exclusionSummary.map(({ reason, count }) => `- ${count}: ${reason}`).join('\n')
+    ? exclusionSummary.map(exclusionSummaryLine).join('\n')
     : '- None.';
   const quoteCurrencies = ranking.tradingVenue.quoteCurrencies;
   const quoteMarketDescription = quoteCurrencies.length === 1
@@ -234,6 +429,10 @@ Generated from live ${ranking.source} data at ${generatedAt}. Every candidate wa
 
 ${renderRankingTable(ranking.assets, currency)}
 
+${renderSelectionCutoffAudit(ranking)}
+
+${renderActivePairExclusionAudit(ranking)}
+
 The ${currency} 1 billion market-cap values are comparison scenarios assuming unchanged supply. They are not forecasts or price targets.
 
 ## 1. Update the supported-asset registry
@@ -267,6 +466,7 @@ Suggested commit:
 
 - Candidates inspected: ${ranking.candidateCount}
 - Candidates eligible: ${ranking.eligibleCount}
+- Discovery: top ${ranking.discovery?.marketCapCandidateLimit ?? ranking.candidateCount} CoinGecko market-cap rows plus ${ranking.discovery?.supplementalCandidateCount ?? 0} additional active-venue symbol matches
 - Execution venue: ${ranking.tradingVenue.name} (${ranking.tradingVenue.region}), direct ${quoteCurrencies.join('/')} pairs only
 - Pair configuration: ${ranking.tradingVenue.source}
 - Currency identities: ${ranking.tradingVenue.identitySource}
@@ -299,6 +499,7 @@ export function buildDailyGemsAdoptionPackage(
     expectedAssetCount = DEFAULT_LIMIT,
     profileId: profileIdInput,
     profileName: profileNameInput,
+    renderIssue = true,
   } = {},
 ) {
   if (!ranking || !Array.isArray(ranking.assets)) {
@@ -339,7 +540,10 @@ export function buildDailyGemsAdoptionPackage(
   });
 
   const supportedAssetsToAdd = registryEntries.filter(({ id }) => !supportedById.has(id));
-  const profileId = profileIdInput ?? `gems-${date}`;
+  const quoteCurrencyMode = String(
+    ranking.tradingVenue.quoteCurrencyMode ?? DEFAULT_QUOTE_CURRENCY_MODE,
+  ).toLowerCase();
+  const profileId = profileIdInput ?? `gems-${quoteCurrencyMode}-${date}`;
   const profile = {
     id: profileId,
     name: profileNameInput ?? `Crypto Gems - ${date}`,
@@ -367,7 +571,7 @@ export function buildDailyGemsAdoptionPackage(
 
   const totalInvestment = profile.portfolio
     .reduce((total, { investedAmount }) => total + investedAmount, 0);
-  const exclusionSummary = summarizeExclusions(ranking.excluded);
+  const exclusionSummary = summarizeExclusions(ranking.excluded, ranking.exclusionDetails);
   const adoptionPackage = {
     schemaVersion: 3,
     date,
@@ -388,6 +592,9 @@ export function buildDailyGemsAdoptionPackage(
       weights: ranking.weights,
       screen: ranking.screen,
       assets: ranking.assets,
+      discovery: ranking.discovery ?? null,
+      eligibleButNotSelected: ranking.eligibleButNotSelected ?? [],
+      exclusionDetails: ranking.exclusionDetails ?? [],
     },
     exclusionSummary,
     validation: {
@@ -398,14 +605,19 @@ export function buildDailyGemsAdoptionPackage(
       usdOrdersCappedAtEur50: true,
     },
   };
+  if (!renderIssue) return adoptionPackage;
+  const issueBody = renderDailyGemsIssue(adoptionPackage);
+  if (issueBody.length > MAX_GENERATED_ISSUE_BODY_CHARACTERS) {
+    throw new Error(`Daily gems issue body has ${issueBody.length} characters and exceeds the ${MAX_GENERATED_ISSUE_BODY_CHARACTERS}-character generation limit reserved for publication changes.`);
+  }
   return {
     ...adoptionPackage,
     issueTitle: `[Daily Gems] ${date} - Proposed ${ranking.currency} ${formatNumber(totalInvestment)} real profile`,
-    issueBody: renderDailyGemsIssue(adoptionPackage),
+    issueBody,
   };
 }
 
-function renderConsolidatedModeSection(adoptionPackage) {
+function renderConsolidatedModeSection(adoptionPackage, duplicateExclusionAuditMode = null) {
   const { currency, profilePath, profile, ranking, exclusionSummary } = adoptionPackage;
   const mode = ranking.tradingVenue.quoteCurrencyMode;
   const modeLabel = mode === 'MIXED' ? 'MIXED (EUR preferred)' : `${mode}-only`;
@@ -418,17 +630,29 @@ function renderConsolidatedModeSection(adoptionPackage) {
   const omittedCount = omittedExclusions
     .reduce((total, { count }) => total + count, 0);
   const exclusionLines = [
-    ...displayedExclusions.map(({ reason, count }) => `- ${count}: ${reason}`),
+    ...displayedExclusions.map(exclusionSummaryLine),
     ...(omittedExclusions.length > 0
       ? [`- ${omittedCount}: ${omittedExclusions.length} additional exclusion reasons omitted from this compact issue.`]
       : []),
   ].join('\n') || '- None.';
+  const activePairExclusionAudit = duplicateExclusionAuditMode
+    ? `<details>
+<summary>Searchable active-market exclusion index</summary>
+
+The asset dispositions match the ${duplicateExclusionAuditMode} option; see that option's table above.
+
+</details>`
+    : renderActivePairExclusionAudit(ranking);
 
   return `## ${modeLabel} option
 
 Target profile: \`${profilePath}\`
 
 ${renderRankingTable(ranking.assets, currency)}
+
+${renderSelectionCutoffAudit(ranking)}
+
+${activePairExclusionAudit}
 
 ### ${modeLabel} profile JSON
 
@@ -442,6 +666,7 @@ ${JSON.stringify(profile, null, 2)}
 
 - Candidates inspected: ${ranking.candidateCount}
 - Candidates eligible: ${ranking.eligibleCount}
+- Discovery: top ${ranking.discovery?.marketCapCandidateLimit ?? ranking.candidateCount} CoinGecko market-cap rows plus ${ranking.discovery?.supplementalCandidateCount ?? 0} additional active-venue symbol matches
 - Execution pairs: direct ${quoteCurrencies.join('/')} on ${ranking.tradingVenue.name} (${ranking.tradingVenue.region})
 ${exchangeRateLine}- Ranking metric: \`${ranking.rankingMetric}\`
 
@@ -472,6 +697,20 @@ export function renderConsolidatedDailyGemsIssue(consolidatedPackage) {
     quoteCurrencyModes: consolidatedPackage.quoteCurrencyModes,
     profilePaths,
   };
+  const firstModeByExclusionFingerprint = new Map();
+  const modeSections = modePackages.map((adoptionPackage) => {
+    const fingerprint = activePairExclusionFingerprint(adoptionPackage.ranking);
+    const duplicateMode = fingerprint
+      ? firstModeByExclusionFingerprint.get(fingerprint) ?? null
+      : null;
+    if (fingerprint && !duplicateMode) {
+      firstModeByExclusionFingerprint.set(
+        fingerprint,
+        adoptionPackage.ranking.tradingVenue.quoteCurrencyMode,
+      );
+    }
+    return renderConsolidatedModeSection(adoptionPackage, duplicateMode);
+  });
 
   return `<!-- daily-gems:${date} -->
 # Proposed EUR, USD, and mixed crypto-gems profiles
@@ -500,7 +739,7 @@ Generated from one shared live CoinGecko and Revolut X snapshot at ${generatedAt
 | --- | ---: | ---: | ---: | --- |
 ${overviewRows.join('\n')}
 
-${modePackages.map(renderConsolidatedModeSection).join('\n\n')}
+${modeSections.join('\n\n')}
 
 ## Supported-asset registry additions
 
@@ -563,10 +802,10 @@ export function buildConsolidatedDailyGemsAdoptionPackage(
         expectedAssetCount,
         profileId: `gems-${mode.toLowerCase()}-${date}`,
         profileName: `Crypto Gems ${mode} - ${date}`,
+        renderIssue: false,
       },
     );
-    const { issueTitle: _issueTitle, issueBody: _issueBody, ...adoptionPackage } = result;
-    return adoptionPackage;
+    return result;
   });
   const dates = new Set(modePackages.map(({ date }) => date));
   if (dates.size !== 1) {
@@ -597,8 +836,8 @@ export function buildConsolidatedDailyGemsAdoptionPackage(
     },
   };
   const issueBody = renderConsolidatedDailyGemsIssue(consolidatedPackage);
-  if (issueBody.length > MAX_GITHUB_ISSUE_BODY_CHARACTERS) {
-    throw new Error(`Consolidated issue body has ${issueBody.length} characters and exceeds the ${MAX_GITHUB_ISSUE_BODY_CHARACTERS}-character limit.`);
+  if (issueBody.length > MAX_GENERATED_ISSUE_BODY_CHARACTERS) {
+    throw new Error(`Consolidated issue body has ${issueBody.length} characters and exceeds the ${MAX_GENERATED_ISSUE_BODY_CHARACTERS}-character generation limit reserved for publication changes.`);
   }
   return {
     ...consolidatedPackage,

@@ -8,6 +8,7 @@ const API = 'https://api.coingecko.com/api/v3';
 const REVOLUT_X_API = 'https://revx.revolut.com/api';
 const REVOLUT_X_REGION = 'EEA';
 const REVOLUT_X_REQUEST_INTERVAL_MS = 1_000;
+const COINGECKO_REQUEST_INTERVAL_MS = 1_000;
 const DEFAULT_INVESTED_AMOUNT = 50;
 const DEFAULT_QUOTE_CURRENCY_MODE = 'EUR';
 const MAX_USD_INVESTMENT_EUR = 50;
@@ -15,6 +16,7 @@ const DEFAULT_LIMIT = 10;
 const DEFAULT_CANDIDATE_LIMIT = 1_000;
 const MAX_CANDIDATE_LIMIT = 1_000;
 const MAX_MARKETS_PER_REQUEST = 250;
+const MAX_SYMBOLS_PER_REQUEST = 50;
 const DEFAULT_MIN_MARKET_CAP = 10_000_000;
 const DEFAULT_REFERENCE_MARKET_CAP = 1_000_000_000;
 const DEFAULT_MIN_TOTAL_VOLUME = 100_000;
@@ -236,11 +238,28 @@ export function rankDiamondQuantities(marketRows, portfolioConfig, {
   const quotesById = new Map();
   const eligible = [];
   const excluded = [];
+  const exclusionDetails = [];
+  const exclude = (id, quote, reason, tradingPairs = [], identityStatus = 'not-checked') => {
+    const marketCap = quote?.market_cap;
+    excluded.push({ id, reason });
+    exclusionDetails.push({
+      id,
+      symbol: String(quote?.symbol ?? '').trim().toUpperCase() || null,
+      name: String(quote?.name ?? '').trim() || null,
+      marketCap: marketCap !== null && marketCap !== undefined && marketCap !== ''
+        && Number.isFinite(Number(marketCap))
+        ? Number(marketCap)
+        : null,
+      tradingPairs,
+      identityStatus,
+      reason,
+    });
+  };
 
   for (const quote of marketRows) {
     const id = String(quote?.id ?? '').trim();
     if (!id) {
-      excluded.push({ id: null, reason: 'CoinGecko returned market data without a canonical ID.' });
+      exclude(null, quote, 'CoinGecko returned market data without a canonical ID.');
       continue;
     }
     quotesById.set(id, quote);
@@ -255,20 +274,30 @@ export function rankDiamondQuantities(marketRows, portfolioConfig, {
     const priceChange7dPct = Number(quote?.price_change_percentage_7d_in_currency);
     const priceChange30dPct = Number(quote?.price_change_percentage_30d_in_currency);
     const lastUpdated = Date.parse(String(quote?.last_updated ?? ''));
+    const pairsByQuote = tradingVenue?.pairsByBase.get(canonicalSymbol);
+    const activeTradingPairs = quoteCurrencies
+      .map((quoteCurrency) => pairsByQuote?.get(quoteCurrency)?.symbol)
+      .filter(Boolean);
     if (!canonicalSymbol || !canonicalName) {
-      excluded.push({ id, reason: 'CoinGecko returned incomplete canonical metadata.' });
+      exclude(
+        id,
+        quote,
+        'CoinGecko returned incomplete canonical metadata.',
+        activeTradingPairs,
+      );
       continue;
     }
     let tradingPair = null;
     let quoteOrderAmount = null;
-    const pairsByQuote = tradingVenue?.pairsByBase.get(canonicalSymbol);
+    let identityStatus = 'not-checked';
     if (tradingVenue && !pairsByQuote) {
-      excluded.push({
+      exclude(
         id,
-        reason: `No active ${tradingVenue.name} ${quoteCurrencies
+        quote,
+        `No active ${tradingVenue.name} ${quoteCurrencies
           .map((quoteCurrency) => `${canonicalSymbol}/${quoteCurrency}`)
           .join(' or ')} market in ${tradingVenue.region}.`,
-      });
+      );
       continue;
     }
     const pairRejections = [];
@@ -300,60 +329,98 @@ export function rankDiamondQuantities(marketRows, portfolioConfig, {
       break;
     }
     if (tradingVenue && !tradingPair) {
-      excluded.push({
+      exclude(
         id,
-        reason: pairRejections[0] ?? `No active ${tradingVenue.name} ${quoteCurrencies
+        quote,
+        pairRejections[0] ?? `No active ${tradingVenue.name} ${quoteCurrencies
           .map((quoteCurrency) => `${canonicalSymbol}/${quoteCurrency}`)
           .join(' or ')} market in ${tradingVenue.region}.`,
-      });
+        activeTradingPairs,
+      );
       continue;
     }
     if (tradingPair && (!tradingPair.currencyName || tradingPair.currencyStatus !== 'active')) {
-      excluded.push({
+      exclude(
         id,
-        reason: `${tradingVenue.name} currency identity for ${canonicalSymbol} is not active and complete.`,
-      });
+        quote,
+        `${tradingVenue.name} currency identity for ${canonicalSymbol} is not active and complete.`,
+        activeTradingPairs,
+      );
       continue;
     }
     if (tradingPair && !hasVerifiedTradingIdentity(id, canonicalSymbol, canonicalName, tradingPair)) {
-      excluded.push({
+      exclude(
         id,
-        reason: `CoinGecko identity ${canonicalName} (${canonicalSymbol}) does not match ${tradingVenue.name} ${tradingPair.currencyName} (${tradingPair.base}).`,
-      });
+        quote,
+        `CoinGecko identity ${canonicalName} (${canonicalSymbol}) does not match ${tradingVenue.name} ${tradingPair.currencyName} (${tradingPair.base}).`,
+        activeTradingPairs,
+        'mismatch',
+      );
       continue;
     }
+    if (tradingPair) identityStatus = 'verified';
     if (!Number.isFinite(currentPrice) || currentPrice <= 0) {
-      excluded.push({ id, reason: 'CoinGecko returned no valid current price.' });
+      exclude(id, quote, 'CoinGecko returned no valid current price.', activeTradingPairs, identityStatus);
       continue;
     }
     if (!Number.isFinite(marketCap) || marketCap < minMarketCap) {
-      excluded.push({ id, reason: `Market capitalization is below ${minMarketCap}.` });
+      exclude(
+        id,
+        quote,
+        `Market capitalization is below ${minMarketCap}.`,
+        activeTradingPairs,
+        identityStatus,
+      );
       continue;
     }
     if (marketCap >= referenceMarketCap) {
-      excluded.push({ id, reason: `Market capitalization has no headroom below ${referenceMarketCap}.` });
+      exclude(
+        id,
+        quote,
+        `Market capitalization has no headroom below ${referenceMarketCap}.`,
+        activeTradingPairs,
+        identityStatus,
+      );
       continue;
     }
     if (!Number.isFinite(totalVolume) || totalVolume < minTotalVolume) {
-      excluded.push({ id, reason: `Trading volume is below ${minTotalVolume}.` });
+      exclude(id, quote, `Trading volume is below ${minTotalVolume}.`, activeTradingPairs, identityStatus);
       continue;
     }
     const liquidityRatio = totalVolume / marketCap;
     if (liquidityRatio < minLiquidityRatio) {
-      excluded.push({ id, reason: `Volume-to-market-cap ratio is below ${minLiquidityRatio}.` });
+      exclude(
+        id,
+        quote,
+        `Volume-to-market-cap ratio is below ${minLiquidityRatio}.`,
+        activeTradingPairs,
+        identityStatus,
+      );
       continue;
     }
     if (!Number.isFinite(priceChange7dPct) || !Number.isFinite(priceChange30dPct)) {
-      excluded.push({ id, reason: 'CoinGecko returned incomplete 7-day or 30-day momentum.' });
+      exclude(
+        id,
+        quote,
+        'CoinGecko returned incomplete 7-day or 30-day momentum.',
+        activeTradingPairs,
+        identityStatus,
+      );
       continue;
     }
     const supply = supplyMetrics(quote, marketCap);
     if (!supply) {
-      excluded.push({ id, reason: 'CoinGecko returned insufficient circulating-supply data.' });
+      exclude(
+        id,
+        quote,
+        'CoinGecko returned insufficient circulating-supply data.',
+        activeTradingPairs,
+        identityStatus,
+      );
       continue;
     }
     if (!Number.isFinite(lastUpdated)) {
-      excluded.push({ id, reason: 'CoinGecko returned no valid update timestamp.' });
+      exclude(id, quote, 'CoinGecko returned no valid update timestamp.', activeTradingPairs, identityStatus);
       continue;
     }
 
@@ -437,13 +504,23 @@ export function rankDiamondQuantities(marketRows, portfolioConfig, {
     delete asset.momentumScore;
   }
 
-  const assets = eligible
+  const rankedEligible = eligible
     .sort((left, right) => right.diamondScore - left.diamondScore
       || right.potentialValueAtReferenceMarketCap - left.potentialValueAtReferenceMarketCap
       || right.liquidityRatio - left.liquidityRatio
       || left.id.localeCompare(right.id))
-    .slice(0, limit)
     .map((asset, index) => ({ rank: index + 1, ...asset }));
+  const assets = rankedEligible.slice(0, limit);
+  const eligibleButNotSelected = rankedEligible.slice(limit).map((asset) => ({
+    rank: asset.rank,
+    id: asset.id,
+    symbol: asset.symbol,
+    name: asset.name,
+    tradingPair: asset.tradingPair,
+    marketCap: asset.marketCap,
+    diamondScore: asset.diamondScore,
+    componentScores: asset.componentScores,
+  }));
 
   return {
     currency,
@@ -480,7 +557,9 @@ export function rankDiamondQuantities(marketRows, portfolioConfig, {
       maxUsdInvestmentEur: MAX_USD_INVESTMENT_EUR,
     },
     assets,
+    eligibleButNotSelected,
     excluded,
+    exclusionDetails,
   };
 }
 
@@ -610,7 +689,9 @@ export async function fetchLatestDiamondMarkets(
   const perPage = Math.min(candidateLimit, MAX_MARKETS_PER_REQUEST);
   const pageCount = Math.ceil(candidateLimit / perPage);
   const rows = [];
+  const pause = options?.sleepImpl ?? sleep;
   for (let page = 1; page <= pageCount; page += 1) {
+    if (page > 1) await pause(COINGECKO_REQUEST_INTERVAL_MS);
     const query = new URLSearchParams({
       vs_currency: String(currency).toLowerCase(),
       order: 'market_cap_desc',
@@ -628,6 +709,58 @@ export async function fetchLatestDiamondMarkets(
   return rows;
 }
 
+function activeTradingSymbols(tradingVenue) {
+  const quoteCurrencies = new Set(tradingVenue.quoteCurrencies);
+  return [...new Set(tradingVenue.pairs
+    .filter((pair) => String(pair?.status ?? '').trim().toLowerCase() === 'active'
+      && quoteCurrencies.has(String(pair?.quote ?? '').trim().toUpperCase()))
+    .map((pair) => String(pair?.base ?? '').trim().toLowerCase())
+    .filter(Boolean))];
+}
+
+async function fetchVenueDiamondMarkets(currency, tradingVenue, options) {
+  const symbols = activeTradingSymbols(tradingVenue);
+  const rows = [];
+  const pause = options?.sleepImpl ?? sleep;
+  let hasRequestedPage = false;
+  for (let index = 0; index < symbols.length; index += MAX_SYMBOLS_PER_REQUEST) {
+    const symbolBatch = symbols.slice(index, index + MAX_SYMBOLS_PER_REQUEST);
+    for (let page = 1; ; page += 1) {
+      if (hasRequestedPage) await pause(COINGECKO_REQUEST_INTERVAL_MS);
+      const query = new URLSearchParams({
+        vs_currency: String(currency).toLowerCase(),
+        symbols: symbolBatch.join(','),
+        include_tokens: 'all',
+        order: 'market_cap_desc',
+        per_page: String(MAX_MARKETS_PER_REQUEST),
+        page: String(page),
+        sparkline: 'false',
+        price_change_percentage: '7d,30d',
+        precision: 'full',
+      });
+      const result = await fetchJson(`${API}/coins/markets?${query}`, options);
+      if (!Array.isArray(result)) throw new Error('CoinGecko returned invalid venue market data.');
+      rows.push(...result);
+      hasRequestedPage = true;
+      if (result.length < MAX_MARKETS_PER_REQUEST) break;
+    }
+  }
+  return { rows, symbolCount: symbols.length };
+}
+
+function combineMarketRows(marketRows, venueMarketRows) {
+  const combined = [...marketRows];
+  const includedIds = new Set(marketRows.map(({ id }) => id));
+  let supplementalCount = 0;
+  for (const row of venueMarketRows) {
+    if (includedIds.has(row?.id)) continue;
+    includedIds.add(row?.id);
+    combined.push(row);
+    supplementalCount += 1;
+  }
+  return { rows: combined, supplementalCount };
+}
+
 export async function getDiamondQuantities(portfolioConfig, options = {}) {
   const {
     attempts,
@@ -642,6 +775,7 @@ export async function getDiamondQuantities(portfolioConfig, options = {}) {
   const currency = String(portfolioConfig.currency ?? 'eur').toUpperCase();
   const quoteCurrencyMode = normalizeQuoteCurrencyMode(quoteCurrencyModeInput);
   const quoteCurrencies = quoteCurrenciesForMode(quoteCurrencyMode);
+  const pause = sleepImpl ?? sleep;
   const [marketRows, tradingVenue] = await Promise.all([
     fetchLatestDiamondMarkets(
       currency,
@@ -655,19 +789,38 @@ export async function getDiamondQuantities(portfolioConfig, options = {}) {
       sleepImpl,
     }),
   ]);
-  const exchangeRate = quoteCurrencies.includes('USD')
-    ? (usdPerEurInput === undefined
-        ? await fetchEurUsdRate({ attempts, fetchImpl, sleepImpl })
-        : { usdPerEur: positiveNumber(usdPerEurInput, 'USD per EUR exchange rate'), source: 'provided' })
-    : { usdPerEur: null, source: null };
+  await pause(COINGECKO_REQUEST_INTERVAL_MS);
+  const { rows: venueMarketRows, symbolCount } = await fetchVenueDiamondMarkets(
+    currency,
+    tradingVenue,
+    { attempts, fetchImpl, sleepImpl: pause },
+  );
+  let exchangeRate = { usdPerEur: null, source: null };
+  if (quoteCurrencies.includes('USD')) {
+    if (usdPerEurInput === undefined) {
+      await pause(COINGECKO_REQUEST_INTERVAL_MS);
+      exchangeRate = await fetchEurUsdRate({ attempts, fetchImpl, sleepImpl: pause });
+    } else {
+      exchangeRate = {
+        usdPerEur: positiveNumber(usdPerEurInput, 'USD per EUR exchange rate'),
+        source: 'provided',
+      };
+    }
+  }
+  const combinedMarkets = combineMarketRows(marketRows, venueMarketRows);
   return {
-    ...rankDiamondQuantities(marketRows, portfolioConfig, {
+    ...rankDiamondQuantities(combinedMarkets.rows, portfolioConfig, {
       ...rankingOptions,
       quoteCurrencyMode,
       usdPerEur: exchangeRate.usdPerEur,
       exchangeRateSource: exchangeRate.source,
       tradingVenue,
     }),
+    discovery: {
+      marketCapCandidateLimit: Number(candidateLimit),
+      activeVenueSymbolCount: symbolCount,
+      supplementalCandidateCount: combinedMarkets.supplementalCount,
+    },
     requestedCandidateLimit: Number(candidateLimit),
   };
 }
@@ -699,6 +852,7 @@ export async function getDiamondQuantitiesForQuoteModes(
   const venueMode = requestedQuoteCurrencies.size > 1
     ? 'MIXED'
     : quoteCurrencyModes[0];
+  const pause = sleepImpl ?? sleep;
   const [marketRows, tradingVenue] = await Promise.all([
     fetchLatestDiamondMarkets(
       currency,
@@ -712,17 +866,31 @@ export async function getDiamondQuantitiesForQuoteModes(
       sleepImpl,
     }),
   ]);
-  const exchangeRate = requestedQuoteCurrencies.has('USD')
-    ? (usdPerEurInput === undefined
-        ? await fetchEurUsdRate({ attempts, fetchImpl, sleepImpl })
-        : { usdPerEur: positiveNumber(usdPerEurInput, 'USD per EUR exchange rate'), source: 'provided' })
-    : { usdPerEur: null, source: null };
+  await pause(COINGECKO_REQUEST_INTERVAL_MS);
+  const { rows: venueMarketRows, symbolCount } = await fetchVenueDiamondMarkets(
+    currency,
+    tradingVenue,
+    { attempts, fetchImpl, sleepImpl: pause },
+  );
+  let exchangeRate = { usdPerEur: null, source: null };
+  if (requestedQuoteCurrencies.has('USD')) {
+    if (usdPerEurInput === undefined) {
+      await pause(COINGECKO_REQUEST_INTERVAL_MS);
+      exchangeRate = await fetchEurUsdRate({ attempts, fetchImpl, sleepImpl: pause });
+    } else {
+      exchangeRate = {
+        usdPerEur: positiveNumber(usdPerEurInput, 'USD per EUR exchange rate'),
+        source: 'provided',
+      };
+    }
+  }
+  const combinedMarkets = combineMarketRows(marketRows, venueMarketRows);
   const observedAt = rankingOptions.observedAt ?? new Date();
 
   return quoteCurrencyModes.map((quoteCurrencyMode) => {
     const quoteCurrencies = quoteCurrenciesForMode(quoteCurrencyMode);
     return {
-      ...rankDiamondQuantities(marketRows, portfolioConfig, {
+      ...rankDiamondQuantities(combinedMarkets.rows, portfolioConfig, {
         ...rankingOptions,
         observedAt,
         quoteCurrencyMode,
@@ -735,6 +903,11 @@ export async function getDiamondQuantitiesForQuoteModes(
           quoteCurrency: quoteCurrencies.length === 1 ? quoteCurrencies[0] : null,
         },
       }),
+      discovery: {
+        marketCapCandidateLimit: Number(candidateLimit),
+        activeVenueSymbolCount: symbolCount,
+        supplementalCandidateCount: combinedMarkets.supplementalCount,
+      },
       requestedCandidateLimit: Number(candidateLimit),
     };
   });

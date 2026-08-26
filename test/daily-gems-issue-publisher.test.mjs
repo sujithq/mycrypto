@@ -24,6 +24,7 @@ ${JSON.stringify({
 }
 
 const asset = (id, symbol, name) => ({ id, symbol, name });
+const compactAsset = (id, symbol) => ({ id, symbol });
 
 function jsonResponse(value, status = 200) {
   return new Response(JSON.stringify(value), {
@@ -97,14 +98,14 @@ test('appends asset replacements from the most recent previous generated issue',
   const requests = [];
   const progress = [];
   const previousSelections = {
-    EUR: [asset('shared', 'SAME', 'Shared'), asset('old-eur', 'OLD', 'Old EUR')],
-    USD: [asset('same-usd', 'USD', 'Same USD')],
-    MIXED: [asset('old-mixed', 'MIXOLD', 'Old Mixed')],
+    EUR: [compactAsset('shared', 'SAME'), compactAsset('old-eur', 'OLD')],
+    USD: [compactAsset('same-usd', 'USD')],
+    MIXED: [compactAsset('old-mixed', 'MIXOLD')],
   };
   const currentSelections = {
-    EUR: [asset('shared', 'SAME', 'Shared'), asset('new-eur', 'NEW', 'New EUR')],
-    USD: [asset('same-usd', 'USD', 'Same USD')],
-    MIXED: [asset('new-mixed', 'MIXNEW', 'New Mixed')],
+    EUR: [compactAsset('shared', 'SAME'), compactAsset('new-eur', 'NEW')],
+    USD: [compactAsset('same-usd', 'USD')],
+    MIXED: [compactAsset('new-mixed', 'MIXNEW')],
   };
   const currentInput = {
     ...input,
@@ -133,10 +134,10 @@ test('appends asset replacements from the most recent previous generated issue',
   const publishedBody = JSON.parse(requests[1].options.body).body;
   assert.match(publishedBody, /## Changes from the previous daily issue/);
   assert.match(publishedBody, /Compared with \[#41\].* from 2026-08-23\./);
-  assert.match(publishedBody, /`OLD` \(Old EUR\) was replaced by `NEW` \(New EUR\)\./);
+  assert.match(publishedBody, /`OLD` was replaced by `NEW`\./);
   assert.match(publishedBody, /### USD-only\n\n- No asset replacements\./);
-  assert.match(publishedBody, /`MIXOLD` \(Old Mixed\) was replaced by `MIXNEW` \(New Mixed\)\./);
-  assert.equal(publishedBody.trimEnd().endsWith('`MIXNEW` (New Mixed).'), true);
+  assert.match(publishedBody, /`MIXOLD` was replaced by `MIXNEW`\./);
+  assert.equal(publishedBody.trimEnd().endsWith('`MIXNEW`.'), true);
   assert.deepEqual(progress, [
     'Checking sujithq/mycrypto for the 2026-08-24 daily issue.',
     'Compared selections with previous daily issue #41.',
@@ -205,6 +206,71 @@ test('infers the quote mode from legacy profile trading currencies', () => {
   });
 });
 
+test('infers a compact legacy profile mode from its adoption manifest', () => {
+  const legacyPackage = {
+    ranking: {
+      tradingVenue: { quoteCurrencyMode: 'EUR' },
+    },
+    profile: {
+      id: 'gems-2026-08-23',
+      portfolio: [compactAsset('legacy-eur', 'OLD')],
+    },
+  };
+  const selections = extractDailyGemsSelections(
+    `\`\`\`json\n${JSON.stringify(legacyPackage)}\n\`\`\``,
+  );
+
+  assert.deepEqual(selections, {
+    EUR: [{ id: 'legacy-eur', symbol: 'OLD', name: '' }],
+  });
+});
+
+test('prefers explicit legacy mode evidence over the unqualified EUR fallback', () => {
+  const usdPackage = {
+    ranking: { tradingVenue: { quoteCurrencyMode: 'EUR' } },
+    profile: {
+      id: 'gems-2026-08-23',
+      portfolio: [{
+        ...compactAsset('legacy-usd', 'USD'),
+        tradingQuoteCurrency: 'USD',
+      }],
+    },
+  };
+  const mixedPackage = {
+    ranking: { tradingVenue: { quoteCurrencyMode: 'MIXED' } },
+    profile: {
+      id: 'gems-2026-08-22',
+      portfolio: [compactAsset('legacy-mixed', 'MIX')],
+    },
+  };
+
+  assert.deepEqual(extractDailyGemsSelections([
+    `\`\`\`json\n${JSON.stringify(usdPackage)}\n\`\`\``,
+    `\`\`\`json\n${JSON.stringify(mixedPackage)}\n\`\`\``,
+  ].join('\n')), {
+    USD: [{ id: 'legacy-usd', symbol: 'USD', name: '' }],
+    MIXED: [{ id: 'legacy-mixed', symbol: 'MIX', name: '' }],
+  });
+});
+
+test('resolves a standalone legacy profile using its later full-manifest mode', () => {
+  const legacyProfile = {
+    id: 'gems-2026-08-21',
+    portfolio: [compactAsset('legacy-usd', 'USD')],
+  };
+  const historicalBody = [
+    `\`\`\`json\n${JSON.stringify(legacyProfile)}\n\`\`\``,
+    `\`\`\`json\n${JSON.stringify({
+      ranking: { tradingVenue: { quoteCurrencyMode: 'USD' } },
+      profile: legacyProfile,
+    })}\n\`\`\``,
+  ].join('\n');
+
+  assert.deepEqual(extractDailyGemsSelections(historicalBody), {
+    USD: [{ id: 'legacy-usd', symbol: 'USD', name: '' }],
+  });
+});
+
 test('requires a valid repository and matching daily marker', async () => {
   await assert.rejects(upsertDailyGemsIssue({
     ...input,
@@ -216,8 +282,34 @@ test('requires a valid repository and matching daily marker', async () => {
   }), /missing its daily marker/);
 });
 
+test('rejects an oversized body before querying GitHub', async () => {
+  let requestCount = 0;
+  await assert.rejects(upsertDailyGemsIssue({
+    ...input,
+    issueBody: `<!-- daily-gems:2026-08-24 -->\n${'x'.repeat(65_536)}`,
+  }, {
+    fetchImpl: async () => {
+      requestCount += 1;
+      return jsonResponse([]);
+    },
+  }), /Issue body has \d+ characters and exceeds the 65536-character limit/);
+  assert.equal(requestCount, 0);
+});
+
 test('surfaces GitHub API failures', async () => {
   await assert.rejects(upsertDailyGemsIssue(input, {
     fetchImpl: async () => new Response('rate limited', { status: 403 }),
   }), /GitHub API request failed \(403\): rate limited/);
+});
+
+test('treats an unqualified legacy daily profile as EUR', () => {
+  const legacyProfile = {
+    id: 'gems-2026-08-22',
+    portfolio: [compactAsset('legacy-eur', 'OLD')],
+  };
+
+  assert.deepEqual(
+    extractDailyGemsSelections(`\`\`\`json\n${JSON.stringify(legacyProfile)}\n\`\`\``),
+    { EUR: [{ id: 'legacy-eur', symbol: 'OLD', name: '' }] },
+  );
 });

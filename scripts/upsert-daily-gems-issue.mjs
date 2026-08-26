@@ -43,16 +43,38 @@ function dailyIssueDate(issue) {
   return /<!-- daily-gems:(\d{4}-\d{2}-\d{2}) -->/.exec(String(issue?.body ?? ''))?.[1] ?? null;
 }
 
-function profileQuoteMode(profile) {
+function normalizeQuoteMode(value) {
+  const mode = String(value ?? '').trim().toUpperCase();
+  return QUOTE_MODES.includes(mode) ? mode : null;
+}
+
+function profileModeEvidence(profile, modeHint = null) {
   const profileId = String(profile?.id ?? '').toLowerCase();
   const idMatch = /^gems-(eur|usd|mixed)-/.exec(profileId);
-  if (idMatch) return idMatch[1].toUpperCase();
+  if (idMatch) return { mode: idMatch[1].toUpperCase(), priority: 3 };
   const quoteCurrencies = new Set((profile?.portfolio ?? [])
     .map(({ tradingQuoteCurrency }) => String(tradingQuoteCurrency ?? '').toUpperCase())
-    .filter(Boolean));
-  if (quoteCurrencies.size > 1) return 'MIXED';
+    .filter((currency) => currency === 'EUR' || currency === 'USD'));
+  if (quoteCurrencies.size > 1) return { mode: 'MIXED', priority: 2 };
   const [quoteCurrency] = quoteCurrencies;
-  return quoteCurrency === 'EUR' || quoteCurrency === 'USD' ? quoteCurrency : null;
+  if (quoteCurrency) return { mode: quoteCurrency, priority: 2 };
+  const hintedMode = normalizeQuoteMode(modeHint);
+  return hintedMode ? { mode: hintedMode, priority: 1 } : null;
+}
+
+function profileEvidenceKey(profile) {
+  const profileId = String(profile?.id ?? '').trim().toLowerCase();
+  if (profileId) return `id:${profileId}`;
+  if (!Array.isArray(profile?.portfolio)) return null;
+  return `portfolio:${profile.portfolio
+    .map(({ id, symbol }) => `${String(id ?? '').trim()}:${String(symbol ?? '').trim().toUpperCase()}`)
+    .join('|')}`;
+}
+
+function legacyProfileFallbackMode(profile) {
+  return /^gems-\d{4}-\d{2}-\d{2}$/.test(String(profile?.id ?? '').toLowerCase())
+    ? 'EUR'
+    : null;
 }
 
 function profileSelection(profile) {
@@ -62,13 +84,14 @@ function profileSelection(profile) {
     symbol: String(asset?.symbol ?? '').trim().toUpperCase(),
     name: String(asset?.name ?? '').trim(),
   }));
-  return assets.length > 0 && assets.every(({ id, symbol, name }) => id && symbol && name)
+  return assets.length > 0 && assets.every(({ id, symbol }) => id && symbol)
     ? assets
     : null;
 }
 
 export function extractDailyGemsSelections(issueBody) {
   const selections = {};
+  const profileCandidates = [];
   for (const match of String(issueBody ?? '').matchAll(/```json\s*([\s\S]*?)\s*```/g)) {
     let value;
     try {
@@ -76,18 +99,41 @@ export function extractDailyGemsSelections(issueBody) {
     } catch {
       continue;
     }
-    const profiles = [
-      value,
-      value?.profile,
+    const valueMode = value?.quoteCurrencyMode
+      ?? value?.ranking?.tradingVenue?.quoteCurrencyMode;
+    profileCandidates.push(
+      { profile: value, modeHint: valueMode },
+      { profile: value?.profile, modeHint: valueMode },
       ...(Array.isArray(value?.modePackages)
-        ? value.modePackages.map(({ profile }) => profile)
+        ? value.modePackages.map((modePackage) => ({
+            profile: modePackage?.profile,
+            modeHint: modePackage?.ranking?.tradingVenue?.quoteCurrencyMode,
+          }))
         : []),
-    ];
-    for (const profile of profiles) {
-      const mode = profileQuoteMode(profile);
-      const assets = profileSelection(profile);
-      if (mode && assets && !selections[mode]) selections[mode] = assets;
+    );
+  }
+
+  const evidenceByProfile = new Map();
+  for (const { profile, modeHint } of profileCandidates) {
+    const key = profileEvidenceKey(profile);
+    const evidence = profileModeEvidence(profile, modeHint);
+    if (!key || !evidence) continue;
+    const current = evidenceByProfile.get(key);
+    if (!current || evidence.priority > current.priority) {
+      evidenceByProfile.set(key, evidence);
+    } else if (evidence.priority === current.priority && evidence.mode !== current.mode) {
+      evidenceByProfile.set(key, { mode: null, priority: evidence.priority });
     }
+  }
+
+  for (const { profile } of profileCandidates) {
+    const key = profileEvidenceKey(profile);
+    const evidence = key ? evidenceByProfile.get(key) : null;
+    const mode = evidenceByProfile.has(key)
+      ? evidence?.mode
+      : legacyProfileFallbackMode(profile);
+    const assets = profileSelection(profile);
+    if (mode && assets && !selections[mode]) selections[mode] = assets;
   }
   return selections;
 }
@@ -97,7 +143,11 @@ function markdownText(value) {
 }
 
 function assetLabel(asset) {
-  return `\`${markdownText(asset.symbol)}\` (${markdownText(asset.name)})`;
+  const symbol = markdownText(asset.symbol).slice(0, 40);
+  const name = markdownText(asset.name).slice(0, 80);
+  return name
+    ? `\`${symbol}\` (${name})`
+    : `\`${symbol}\``;
 }
 
 function replacementLines(previousAssets, currentAssets) {
@@ -123,6 +173,7 @@ function replacementLines(previousAssets, currentAssets) {
 }
 
 export function appendReplacementSummary(issueBody, previousIssue) {
+  assertPublishableIssueBody(issueBody);
   const previousDate = dailyIssueDate(previousIssue);
   const previousSelections = extractDailyGemsSelections(previousIssue?.body);
   const currentSelections = extractDailyGemsSelections(issueBody);
@@ -155,6 +206,12 @@ export function appendReplacementSummary(issueBody, previousIssue) {
   return body;
 }
 
+function assertPublishableIssueBody(issueBody) {
+  if (issueBody.length > MAX_GITHUB_ISSUE_BODY_CHARACTERS) {
+    throw new Error(`Issue body has ${issueBody.length} characters and exceeds the ${MAX_GITHUB_ISSUE_BODY_CHARACTERS}-character limit.`);
+  }
+}
+
 export async function upsertDailyGemsIssue({
   repository: repositoryInput,
   token,
@@ -176,6 +233,7 @@ export async function upsertDailyGemsIssue({
   if (!issueBody.includes(marker)) {
     throw new Error(`Issue body is missing its daily marker: ${marker}`);
   }
+  assertPublishableIssueBody(issueBody);
   onProgress(`Checking ${owner}/${repository} for the ${date} daily issue.`);
   const issues = await githubRequest(
     `/repos/${owner}/${repository}/issues?state=all&sort=created&direction=desc&per_page=100`,

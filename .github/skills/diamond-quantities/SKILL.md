@@ -4,7 +4,7 @@ description: Discover CoinGecko-listed crypto "diamonds" that have active direct
 license: MIT
 metadata:
   author: sujithq
-  version: "1.2.0"
+  version: "1.4.0"
 ---
 
 # Diamond Quantities
@@ -19,7 +19,9 @@ is a multi-factor screen and does not use all-time-high prices.
 
 - Invested amount per asset: optional positive number, default `50`.
 - Result limit: optional positive integer, default `10`.
-- Candidate limit: optional positive integer up to `1000`, default `1000`.
+- Market-cap candidate limit: optional positive integer up to `1000`, default
+  `1000`. Active Revolut X base symbols are queried separately so venue-listed
+  assets outside that market-cap window are still screened.
 - Quote mode: optional `EUR`, `USD`, or `MIXED`, default `EUR`. Mixed mode uses
   an active EUR pair first and falls back to an active USD pair.
 
@@ -38,9 +40,11 @@ CoinGecko's live exchange-rate feed and cannot exceed a EUR 50 equivalent.
   npm run diamond-quantities -- 50 10 1000 mixed
    ```
 
-2. Read the JSON result. The command retrieves CoinGecko markets plus Revolut
-  X's public EEA pair and currency configuration; Revolut X public requests are
-  rate-limited to one per second.
+2. Read the JSON result. The command retrieves the requested CoinGecko
+  market-cap window, supplements it with every paginated CoinGecko row for
+  active Revolut X base symbols, and retrieves Revolut X's public EEA pair and
+  currency configuration. Requests to each external API are serialized and
+  paced at one per second.
 3. Return the ranked `assets`, their component scores, quantities, market data,
    and the EUR 1 billion reference-market-cap scenario.
 4. Mention any important exclusions or data limitations.
@@ -71,6 +75,10 @@ match Revolut X's public currency identity, and have all of the following:
   valuation data.
 - A valid CoinGecko update timestamp.
 
+Venue-symbol supplementation uses `include_tokens=all`, so symbol collisions
+remain visible to the canonical name-and-symbol identity check and fail closed.
+Supplemental pages continue until CoinGecko returns a short page.
+
 ## Ranking
 
 The EUR 50 quantity is:
@@ -100,7 +108,9 @@ count.
 
 ## Rules
 
-- Discover up to the latest 1000 assets ordered by market capitalization.
+- Discover up to the latest 1000 assets ordered by market capitalization and
+  supplement them with all CoinGecko rows matching active Revolut X base
+  symbols in the requested quote mode.
 - Treat Revolut X's public EEA pair configuration as the source of truth for
   direct EUR and USD tradability. A CoinGecko valuation alone is not sufficient.
 - Default to EUR-only screening. Use USD only when explicitly requested; in
@@ -116,7 +126,10 @@ count.
   adding one to a profile, use the `supported-asset-entry` skill to add verified
   metadata and a thesis to `data/portfolio.json`.
 - Preserve enough quantity precision to reconstruct the invested amount.
-- Report rejected live rows in `excluded`; never silently estimate missing
+- Report rejected live rows in `excluded` and `exclusionDetails`; report
+  eligible candidates below the requested result limit in
+  `eligibleButNotSelected`. Each exclusion detail reports `identityStatus` as
+  `verified`, `mismatch`, or `not-checked`. Never silently estimate missing
   metrics.
 - Treat the EUR 1 billion scenario as a comparison assuming unchanged token
   supply, not a price target or forecast.
@@ -124,9 +137,10 @@ count.
 
 ## Output
 
-The command returns CoinGecko and Revolut X source metadata, screening
-thresholds, score weights, ranked assets, and exclusions. Each asset includes
-this core information:
+The command returns CoinGecko and Revolut X source metadata, discovery counts,
+screening thresholds, score weights, ranked assets, eligible candidates below
+the selection cutoff, and exclusions. Each selected asset includes this core
+information:
 
 ```json
 {
