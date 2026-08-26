@@ -1,0 +1,77 @@
+{
+  "id": "gems-eur-2026-08-26",
+  "name": "Crypto Gems EUR - 2026-08-26",
+  "type": "real",
+  "portfolio": [
+    {
+      "id": "bonfida",
+      "symbol": "FIDA",
+      "investedAmount": 50,
+      "quantity": 3015.3708762549613,
+      "buyTimestamp": "2026-08-26T20:35:00.319Z"
+    },
+    {
+      "id": "bonk",
+      "symbol": "BONK",
+      "investedAmount": 50,
+      "quantity": 19897157.836546555,
+      "buyTimestamp": "2026-08-26T20:35:00.319Z"
+    },
+    {
+      "id": "avantis",
+      "symbol": "AVNT",
+      "investedAmount": 50,
+      "quantity": 554.1480383781297,
+      "buyTimestamp": "2026-08-26T20:35:00.319Z"
+    },
+    {
+      "id": "dogwifcoin",
+      "symbol": "WIF",
+      "investedAmount": 50,
+      "quantity": 294.5362319165909,
+      "buyTimestamp": "2026-08-26T20:35:00.319Z"
+    },
+    {
+      "id": "chiliz",
+      "symbol": "CHZ",
+      "investedAmount": 50,
+      "quantity": 4222.590402647326,
+      "buyTimestamp": "2026-08-26T20:35:00.319Z"
+    },
+    {
+      "id": "pudgy-penguins",
+      "symbol": "PENGU",
+      "investedAmount": 50,
+      "quantity": 6394.049771196542,
+      "buyTimestamp": "2026-08-26T20:35:00.319Z"
+    },
+    {
+      "id": "floki",
+      "symbol": "FLOKI",
+      "investedAmount": 50,
+      "quantity": 2224302.089335372,
+      "buyTimestamp": "2026-08-26T20:35:00.319Z"
+    },
+    {
+      "id": "blockstack",
+      "symbol": "STX",
+      "investedAmount": 50,
+      "quantity": 218.2498581923609,
+      "buyTimestamp": "2026-08-26T20:35:00.319Z"
+    },
+    {
+      "id": "jasmycoin",
+      "symbol": "JASMY",
+      "investedAmount": 50,
+      "quantity": 12281.88904616223,
+      "buyTimestamp": "2026-08-26T20:35:00.319Z"
+    },
+    {
+      "id": "optimism",
+      "symbol": "OP",
+      "investedAmount": 50,
+      "quantity": 596.3181786364961,
+      "buyTimestamp": "2026-08-26T20:35:00.319Z"
+    }
+  ]
+}
