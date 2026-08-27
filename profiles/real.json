@@ -9,6 +9,12 @@
       "investedAmount": 50,
       "quantity": 19611730,
       "buyTimestamp": "2026-08-26T21:06:00.000Z"
+    },{
+      "id": "bonfida",
+      "symbol": "FIDA",
+      "investedAmount": 50,
+      "quantity": 2964.01,
+      "buyTimestamp": "2026-08-27T07:41:00.000Z"
     }
   ]
 }
