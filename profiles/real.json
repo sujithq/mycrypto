@@ -1,0 +1,14 @@
+{
+  "id": "real",
+  "name": "Real - 2026-08-26",
+  "type": "real",
+  "portfolio": [
+    {
+      "id": "bonk",
+      "symbol": "BONK",
+      "investedAmount": 50,
+      "quantity": 19611730,
+      "buyTimestamp": "2026-08-26T21:06:00.000Z"
+    }
+  ]
+}

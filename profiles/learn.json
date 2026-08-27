@@ -93,13 +93,6 @@
       "investedAmount": 0.5,
       "quantity": 26.75,
       "buyTimestamp": "2026-08-18T06:27:00.000Z"
-    },
-    {
-      "id": "bonk",
-      "symbol": "BONK",
-      "investedAmount": 50,
-      "quantity": 19611730,
-      "buyTimestamp": "2026-08-26T21:06:00.000Z"
     }
   ]
 }
