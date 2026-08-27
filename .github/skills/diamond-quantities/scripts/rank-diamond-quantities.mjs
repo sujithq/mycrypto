@@ -9,6 +9,7 @@ const REVOLUT_X_API = 'https://revx.revolut.com/api';
 const REVOLUT_X_REGION = 'EEA';
 const REVOLUT_X_REQUEST_INTERVAL_MS = 1_000;
 const COINGECKO_REQUEST_INTERVAL_MS = 1_000;
+const COINGECKO_RATE_LIMIT_RETRY_MS = 60_000;
 const DEFAULT_INVESTED_AMOUNT = 50;
 const DEFAULT_QUOTE_CURRENCY_MODE = 'EUR';
 const MAX_USD_INVESTMENT_EUR = 50;
@@ -589,6 +590,8 @@ async function fetchJson(url, {
         const retryAfterMultiplier = retryAfterUnit === 'milliseconds' ? 1 : 1_000;
         await sleepImpl(Number.isFinite(retryAfter)
           ? retryAfter * retryAfterMultiplier
+          : source === 'CoinGecko' && response.status === 429
+            ? COINGECKO_RATE_LIMIT_RETRY_MS
           : attempt * 5_000);
       }
     } catch (error) {
