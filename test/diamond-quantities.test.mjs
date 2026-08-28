@@ -166,6 +166,34 @@ test('waits for the CoinGecko quota window before retrying a 429 response', asyn
   assert.equal(rows[0].id, 'recovered');
 });
 
+test('backs off across repeated CoinGecko rate-limit windows', async () => {
+  let requestCount = 0;
+  const pauses = [];
+  const rows = await fetchLatestDiamondMarkets('EUR', 1, {
+    attempts: 5,
+    sleepImpl: async (milliseconds) => { pauses.push(milliseconds); },
+    fetchImpl: async () => {
+      requestCount += 1;
+      if (requestCount < 5) {
+        return {
+          ok: false,
+          status: 429,
+          headers: { get: () => null },
+          text: async () => 'rate limit exceeded',
+        };
+      }
+      return {
+        ok: true,
+        json: async () => [marketRow({ id: 'recovered' })],
+      };
+    },
+  });
+
+  assert.equal(requestCount, 5);
+  assert.deepEqual(pauses, [60_000, 120_000, 240_000, 300_000]);
+  assert.equal(rows[0].id, 'recovered');
+});
+
 test('fetches complete eligibility metrics for canonical CoinGecko IDs', async () => {
   let requestedUrl;
   const rows = await fetchDiamondMarketsByIds('EUR', ['Candidate', 'candidate'], {

@@ -10,6 +10,9 @@ const REVOLUT_X_REGION = 'EEA';
 const REVOLUT_X_REQUEST_INTERVAL_MS = 1_000;
 const COINGECKO_REQUEST_INTERVAL_MS = 1_000;
 const COINGECKO_RATE_LIMIT_RETRY_MS = 60_000;
+const COINGECKO_MAX_RATE_LIMIT_RETRY_MS = 300_000;
+const COINGECKO_REQUEST_ATTEMPTS = 5;
+const DEFAULT_REQUEST_ATTEMPTS = 3;
 const DEFAULT_INVESTED_AMOUNT = 50;
 const DEFAULT_QUOTE_CURRENCY_MODE = 'EUR';
 const MAX_USD_INVESTMENT_EUR = 50;
@@ -565,15 +568,18 @@ export function rankDiamondQuantities(marketRows, portfolioConfig, {
 }
 
 async function fetchJson(url, {
-  attempts = 3,
+  attempts,
   fetchImpl = globalThis.fetch,
   sleepImpl = sleep,
   source = 'CoinGecko',
   userAgent = 'mycrypto-diamond-quantities/1.0',
   retryAfterUnit = 'seconds',
 } = {}) {
+  const maxAttempts = attempts ?? (source === 'CoinGecko'
+    ? COINGECKO_REQUEST_ATTEMPTS
+    : DEFAULT_REQUEST_ATTEMPTS);
   let lastError;
-  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
     try {
       const response = await fetchImpl(url, {
         headers: { accept: 'application/json', 'user-agent': userAgent },
@@ -586,17 +592,22 @@ async function fetchJson(url, {
       const retryAfter = retryAfterHeader === null || retryAfterHeader === undefined
         ? Number.NaN
         : Number(retryAfterHeader);
-      if (attempt < attempts) {
+      if (attempt < maxAttempts) {
         const retryAfterMultiplier = retryAfterUnit === 'milliseconds' ? 1 : 1_000;
-        await sleepImpl(Number.isFinite(retryAfter)
+        const delay = Number.isFinite(retryAfter)
           ? retryAfter * retryAfterMultiplier
           : source === 'CoinGecko' && response.status === 429
-            ? COINGECKO_RATE_LIMIT_RETRY_MS
-          : attempt * 5_000);
+            ? Math.min(
+              COINGECKO_RATE_LIMIT_RETRY_MS * (2 ** (attempt - 1)),
+              COINGECKO_MAX_RATE_LIMIT_RETRY_MS,
+            )
+            : attempt * 5_000;
+        console.warn(`${source} request failed (${response.status}); retrying in ${delay / 1_000} seconds (attempt ${attempt + 1} of ${maxAttempts}).`);
+        await sleepImpl(delay);
       }
     } catch (error) {
       lastError = error;
-      if (attempt < attempts) await sleepImpl(attempt * 5_000);
+      if (attempt < maxAttempts) await sleepImpl(attempt * 5_000);
     }
   }
   throw lastError ?? new Error(`${source} request failed.`);
