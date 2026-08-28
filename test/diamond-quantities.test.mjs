@@ -135,7 +135,7 @@ test('paginates and paces the top market candidate window', async () => {
 
   assert.equal(rows.length, 251);
   assert.deepEqual(requestedPages, [1, 2]);
-  assert.deepEqual(pauses, [1_000]);
+  assert.deepEqual(pauses, [15_000]);
 });
 
 test('waits for the CoinGecko quota window before retrying a 429 response', async () => {
@@ -452,7 +452,8 @@ test('serializes and paces CoinGecko requests with the injected sleeper', async 
   });
 
   assert.equal(maximumConcurrentCoinGeckoRequests, 1);
-  assert.ok(pauses.filter((milliseconds) => milliseconds === 1_000).length >= 3);
+  assert.equal(pauses.filter((milliseconds) => milliseconds === 15_000).length, 2);
+  assert.equal(pauses.filter((milliseconds) => milliseconds === 1_000).length, 1);
 });
 
 test('paces supplemental CoinGecko symbol batches', async () => {
@@ -491,7 +492,7 @@ test('paces supplemental CoinGecko symbol batches', async () => {
   const firstBatchIndex = events.indexOf('symbols:50');
   const secondBatchIndex = events.indexOf('symbols:1');
   assert.ok(firstBatchIndex >= 0 && secondBatchIndex > firstBatchIndex);
-  assert.ok(events.slice(firstBatchIndex + 1, secondBatchIndex).includes('sleep:1000'));
+  assert.ok(events.slice(firstBatchIndex + 1, secondBatchIndex).includes('sleep:15000'));
 });
 
 test('normalizes active Revolut X EUR pair configuration', async () => {
