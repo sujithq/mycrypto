@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-30T16:57:52.331Z",
+  "generatedAt": "2026-08-30T21:33:43.679Z",
   "reports": {
     "gems-eur-2026-08-24": {
       "profile": {
@@ -7,51 +7,51 @@
         "name": "Crypto Gems EUR - 2026-08-24",
         "type": "real"
       },
-      "generatedAt": "2026-08-30T16:57:52.331Z",
+      "generatedAt": "2026-08-30T21:33:43.679Z",
       "periodStart": "2026-08-24",
       "periodEnd": "2026-08-30",
       "status": "Range-bound",
-      "summary": "The portfolio moved -1.60% over a 366-day trailing window (7 closes).",
-      "portfolioChangePct": -1.5973,
+      "summary": "The portfolio moved -3.95% over a 366-day trailing window (7 closes).",
+      "portfolioChangePct": -3.9522,
       "bestPerformer": {
         "symbol": "STX",
-        "changePct": 5.6992
+        "changePct": 4.1608
       },
       "worstPerformer": {
         "symbol": "OP",
-        "changePct": -15.7971
+        "changePct": -17.6615
       },
       "leadingPerformers": [
         {
           "symbol": "STX",
-          "changePct": 5.6992
+          "changePct": 4.1608
         },
         {
           "symbol": "FIDA",
-          "changePct": 2.5252
+          "changePct": 0.6346
         },
         {
-          "symbol": "AVNT",
-          "changePct": 2.5016
+          "symbol": "WIF",
+          "changePct": -0.0423
         }
       ],
       "laggingPerformers": [
         {
           "symbol": "OP",
-          "changePct": -15.7971
+          "changePct": -17.6615
         },
         {
           "symbol": "BONK",
-          "changePct": -5.4545
+          "changePct": -8.3636
         },
         {
           "symbol": "FLOKI",
-          "changePct": -5.1315
+          "changePct": -8.1001
         }
       ],
       "observations": [
-        "STX led the portfolio at +5.70%.",
-        "OP was weakest at -15.80%.",
+        "STX led the portfolio at +4.16%.",
+        "OP was weakest at -17.66%.",
         "This early report uses 7 closes; the target 366-day window has 367.",
         "Momentum is descriptive, not predictive; review concentration and downside before acting."
       ]
@@ -62,51 +62,51 @@
         "name": "Crypto Gems EUR - 2026-08-25",
         "type": "real"
       },
-      "generatedAt": "2026-08-30T16:57:52.331Z",
+      "generatedAt": "2026-08-30T21:33:43.679Z",
       "periodStart": "2026-08-25",
       "periodEnd": "2026-08-30",
       "status": "Range-bound",
-      "summary": "The portfolio moved -0.66% over a 366-day trailing window (6 closes).",
-      "portfolioChangePct": -0.6557,
+      "summary": "The portfolio moved -3.28% over a 366-day trailing window (6 closes).",
+      "portfolioChangePct": -3.2757,
       "bestPerformer": {
         "symbol": "FIDA",
-        "changePct": 5.9666
+        "changePct": 4.0126
       },
       "worstPerformer": {
         "symbol": "OP",
-        "changePct": -9.3376
+        "changePct": -11.3451
       },
       "leadingPerformers": [
         {
           "symbol": "FIDA",
-          "changePct": 5.9666
+          "changePct": 4.0126
         },
         {
           "symbol": "WIF",
-          "changePct": 5.4262
+          "changePct": 3.2196
         },
         {
           "symbol": "AVNT",
-          "changePct": 1.9655
+          "changePct": -0.7621
         }
       ],
       "laggingPerformers": [
         {
           "symbol": "OP",
-          "changePct": -9.3376
+          "changePct": -11.3451
         },
         {
           "symbol": "JASMY",
-          "changePct": -5.6161
+          "changePct": -9.2487
         },
         {
           "symbol": "STX",
-          "changePct": -4.4886
+          "changePct": -5.8787
         }
       ],
       "observations": [
-        "FIDA led the portfolio at +5.97%.",
-        "OP was weakest at -9.34%.",
+        "FIDA led the portfolio at +4.01%.",
+        "OP was weakest at -11.35%.",
         "This early report uses 6 closes; the target 366-day window has 367.",
         "Momentum is descriptive, not predictive; review concentration and downside before acting."
       ]
@@ -117,51 +117,51 @@
         "name": "Crypto Gems EUR - 2026-08-26",
         "type": "real"
       },
-      "generatedAt": "2026-08-30T16:57:52.331Z",
+      "generatedAt": "2026-08-30T21:33:43.679Z",
       "periodStart": "2026-08-26",
       "periodEnd": "2026-08-30",
       "status": "Range-bound",
-      "summary": "The portfolio moved -1.33% over a 366-day trailing window (5 closes).",
-      "portfolioChangePct": -1.3266,
+      "summary": "The portfolio moved -3.94% over a 366-day trailing window (5 closes).",
+      "portfolioChangePct": -3.9424,
       "bestPerformer": {
         "symbol": "WIF",
-        "changePct": 2.3584
+        "changePct": 0.216
       },
       "worstPerformer": {
         "symbol": "OP",
-        "changePct": -7.4203
+        "changePct": -9.4702
       },
       "leadingPerformers": [
         {
           "symbol": "WIF",
-          "changePct": 2.3584
+          "changePct": 0.216
+        },
+        {
+          "symbol": "FIDA",
+          "changePct": -0.9385
         },
         {
           "symbol": "BONK",
-          "changePct": 1.5625
-        },
-        {
-          "symbol": "PENGU",
-          "changePct": 1.3903
+          "changePct": -1.5625
         }
       ],
       "laggingPerformers": [
         {
           "symbol": "OP",
-          "changePct": -7.4203
+          "changePct": -9.4702
         },
         {
           "symbol": "STX",
-          "changePct": -6.7776
+          "changePct": -8.1344
         },
         {
           "symbol": "FLOKI",
-          "changePct": -2.5697
+          "changePct": -5.6185
         }
       ],
       "observations": [
-        "WIF led the portfolio at +2.36%.",
-        "OP was weakest at -7.42%.",
+        "WIF led the portfolio at +0.22%.",
+        "OP was weakest at -9.47%.",
         "This early report uses 5 closes; the target 366-day window has 367.",
         "Momentum is descriptive, not predictive; review concentration and downside before acting."
       ]
@@ -172,51 +172,51 @@
         "name": "Learn - 2026-08-18",
         "type": "real"
       },
-      "generatedAt": "2026-08-30T16:57:52.331Z",
+      "generatedAt": "2026-08-30T21:33:43.679Z",
       "periodStart": "2026-08-18",
       "periodEnd": "2026-08-30",
       "status": "Strong momentum",
-      "summary": "The portfolio moved +32.30% over a 366-day trailing window (13 closes).",
-      "portfolioChangePct": 32.3032,
+      "summary": "The portfolio moved +29.76% over a 366-day trailing window (13 closes).",
+      "portfolioChangePct": 29.761,
       "bestPerformer": {
         "symbol": "VET",
-        "changePct": 59.9117
+        "changePct": 54.7418
       },
       "worstPerformer": {
         "symbol": "ZKJ",
-        "changePct": 4.3287
+        "changePct": 5.1578
       },
       "leadingPerformers": [
         {
           "symbol": "VET",
-          "changePct": 59.9117
+          "changePct": 54.7418
         },
         {
           "symbol": "MEW",
-          "changePct": 36.5225
+          "changePct": 32.6651
         },
         {
           "symbol": "MON",
-          "changePct": 29.3315
+          "changePct": 28.8573
         }
       ],
       "laggingPerformers": [
         {
           "symbol": "ZKJ",
-          "changePct": 4.3287
+          "changePct": 5.1578
         },
         {
           "symbol": "FLR",
-          "changePct": 9.6989
+          "changePct": 7.6595
         },
         {
           "symbol": "MON",
-          "changePct": 29.3315
+          "changePct": 28.8573
         }
       ],
       "observations": [
-        "VET led the portfolio at +59.91%.",
-        "ZKJ was weakest at +4.33%.",
+        "VET led the portfolio at +54.74%.",
+        "ZKJ was weakest at +5.16%.",
         "This early report uses 13 closes; the target 366-day window has 367.",
         "Momentum is descriptive, not predictive; review concentration and downside before acting."
       ]
@@ -227,51 +227,51 @@
         "name": "Real - 2026-08-26",
         "type": "real"
       },
-      "generatedAt": "2026-08-30T16:57:52.331Z",
+      "generatedAt": "2026-08-30T21:33:43.679Z",
       "periodStart": "2026-08-29",
       "periodEnd": "2026-08-30",
       "status": "Range-bound",
-      "summary": "The portfolio moved +1.79% over a 366-day trailing window (2 closes).",
-      "portfolioChangePct": 1.7908,
+      "summary": "The portfolio moved -1.09% over a 366-day trailing window (2 closes).",
+      "portfolioChangePct": -1.0869,
       "bestPerformer": {
         "symbol": "PEPE",
-        "changePct": 3.1646
+        "changePct": 0
       },
       "worstPerformer": {
-        "symbol": "FIDA",
-        "changePct": 0.7495
+        "symbol": "JASMY",
+        "changePct": -2.5451
       },
       "leadingPerformers": [
         {
           "symbol": "PEPE",
-          "changePct": 3.1646
-        },
-        {
-          "symbol": "PENGU",
-          "changePct": 2.568
+          "changePct": 0
         },
         {
           "symbol": "SHIB",
-          "changePct": 2.2573
+          "changePct": -0.2257
+        },
+        {
+          "symbol": "AVNT",
+          "changePct": -0.7198
         }
       ],
       "laggingPerformers": [
         {
-          "symbol": "FIDA",
-          "changePct": 0.7495
+          "symbol": "JASMY",
+          "changePct": -2.5451
         },
         {
           "symbol": "BONK",
-          "changePct": 0.7752
+          "changePct": -2.3256
         },
         {
-          "symbol": "WIF",
-          "changePct": 1.2665
+          "symbol": "FLOKI",
+          "changePct": -1.3206
         }
       ],
       "observations": [
-        "PEPE led the portfolio at +3.16%.",
-        "FIDA was weakest at +0.75%.",
+        "PEPE led the portfolio at +0.00%.",
+        "JASMY was weakest at -2.55%.",
         "This early report uses 2 closes; the target 366-day window has 367.",
         "Momentum is descriptive, not predictive; review concentration and downside before acting."
       ]
@@ -282,51 +282,51 @@
         "name": "Top 10 Crypto Lottery - 2026-08-13",
         "type": "real"
       },
-      "generatedAt": "2026-08-30T16:57:52.331Z",
+      "generatedAt": "2026-08-30T21:33:43.679Z",
       "periodStart": "2026-08-13",
       "periodEnd": "2026-08-30",
       "status": "Strong momentum",
-      "summary": "The portfolio moved +32.45% over a 366-day trailing window (18 closes).",
-      "portfolioChangePct": 32.4495,
+      "summary": "The portfolio moved +28.63% over a 366-day trailing window (18 closes).",
+      "portfolioChangePct": 28.6254,
       "bestPerformer": {
-        "symbol": "PENGU",
-        "changePct": 49.9065
+        "symbol": "WIF",
+        "changePct": 46.4646
       },
       "worstPerformer": {
         "symbol": "MOG",
-        "changePct": 13.4645
+        "changePct": 10.5669
       },
       "leadingPerformers": [
         {
-          "symbol": "PENGU",
-          "changePct": 49.9065
+          "symbol": "WIF",
+          "changePct": 46.4646
         },
         {
-          "symbol": "WIF",
-          "changePct": 49.5956
+          "symbol": "PENGU",
+          "changePct": 45.0446
         },
         {
           "symbol": "PEPE",
-          "changePct": 40.5122
+          "changePct": 36.202
         }
       ],
       "laggingPerformers": [
         {
           "symbol": "MOG",
-          "changePct": 13.4645
+          "changePct": 10.5669
         },
         {
           "symbol": "SHIB",
-          "changePct": 18.9574
+          "changePct": 16.0688
         },
         {
           "symbol": "DOGE",
-          "changePct": 24.1893
+          "changePct": 21.1855
         }
       ],
       "observations": [
-        "PENGU led the portfolio at +49.91%.",
-        "MOG was weakest at +13.46%.",
+        "WIF led the portfolio at +46.46%.",
+        "MOG was weakest at +10.57%.",
         "This early report uses 18 closes; the target 366-day window has 367.",
         "Momentum is descriptive, not predictive; review concentration and downside before acting."
       ]
