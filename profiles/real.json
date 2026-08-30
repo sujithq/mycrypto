@@ -15,6 +15,12 @@
       "investedAmount": 50,
       "quantity": 2964.01,
       "buyTimestamp": "2026-08-27T07:41:00.000Z"
+    },{
+      "id": "floki",
+      "symbol": "FLOKI",
+      "investedAmount": 50,
+      "quantity": 2198769,
+      "buyTimestamp": "2026-08-28T06:10:00.000Z"
     }
   ]
 }
