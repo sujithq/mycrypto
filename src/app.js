@@ -330,7 +330,13 @@ function renderHoldings(holdings) {
 function renderTheses() {
   const grid = $('#thesis-grid');
   grid.replaceChildren();
-  portfolio.forEach((item, index) => {
+  const selectedIds = new Set();
+  const selectedAssets = portfolio.filter(({ id }) => {
+    if (selectedIds.has(id)) return false;
+    selectedIds.add(id);
+    return true;
+  });
+  selectedAssets.forEach((item, index) => {
     const card = element('article', 'thesis-card');
     card.append(
       element('span', '', `${String(index + 1).padStart(2, '0')} / ${item.symbol}`),
@@ -340,7 +346,6 @@ function renderTheses() {
     grid.append(card);
   });
 
-  const selectedIds = new Set(portfolio.map(({ id }) => id));
   const remaining = config.supportedAssets.filter(({ id }) => !selectedIds.has(id));
   $('#supported-assets').hidden = remaining.length === 0;
   $('#supported-assets-grid').replaceChildren(...remaining.map((item, index) => {
