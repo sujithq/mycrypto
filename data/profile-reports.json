@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-05T04:55:59.177Z",
+  "generatedAt": "2026-09-05T10:55:36.565Z",
   "reports": {
     "gems-eur-2026-08-24": {
       "profile": {
@@ -7,51 +7,51 @@
         "name": "Crypto Gems EUR - 2026-08-24",
         "type": "real"
       },
-      "generatedAt": "2026-09-05T04:55:59.177Z",
+      "generatedAt": "2026-09-05T10:55:36.565Z",
       "periodStart": "2026-08-24",
       "periodEnd": "2026-09-05",
       "status": "Range-bound",
-      "summary": "The portfolio moved -1.41% over a 366-day trailing window (13 closes).",
-      "portfolioChangePct": -1.4127,
+      "summary": "The portfolio moved +0.43% over a 366-day trailing window (13 closes).",
+      "portfolioChangePct": 0.428,
       "bestPerformer": {
         "symbol": "STX",
-        "changePct": 11.8237
+        "changePct": 11.0409
       },
       "worstPerformer": {
         "symbol": "PENGU",
-        "changePct": -11.5586
+        "changePct": -9.0807
       },
       "leadingPerformers": [
         {
           "symbol": "STX",
-          "changePct": 11.8237
+          "changePct": 11.0409
+        },
+        {
+          "symbol": "WIF",
+          "changePct": 6.3167
         },
         {
           "symbol": "AVNT",
-          "changePct": 3.4225
-        },
-        {
-          "symbol": "BONK",
-          "changePct": 2.5455
+          "changePct": 5.7103
         }
       ],
       "laggingPerformers": [
         {
           "symbol": "PENGU",
-          "changePct": -11.5586
-        },
-        {
-          "symbol": "FLOKI",
-          "changePct": -7.7184
+          "changePct": -9.0807
         },
         {
           "symbol": "OP",
-          "changePct": -7.6907
+          "changePct": -6.5706
+        },
+        {
+          "symbol": "CHZ",
+          "changePct": -6.2367
         }
       ],
       "observations": [
-        "STX led the portfolio at +11.82%.",
-        "PENGU was weakest at -11.56%.",
+        "STX led the portfolio at +11.04%.",
+        "PENGU was weakest at -9.08%.",
         "This early report uses 13 closes; the target 366-day window has 367.",
         "Momentum is descriptive, not predictive; review concentration and downside before acting."
       ]
@@ -62,51 +62,51 @@
         "name": "Crypto Gems EUR - 2026-08-25",
         "type": "real"
       },
-      "generatedAt": "2026-09-05T04:55:59.177Z",
+      "generatedAt": "2026-09-05T10:55:36.565Z",
       "periodStart": "2026-08-25",
       "periodEnd": "2026-09-05",
       "status": "Range-bound",
-      "summary": "The portfolio moved -1.01% over a 366-day trailing window (12 closes).",
-      "portfolioChangePct": -1.0127,
+      "summary": "The portfolio moved +0.91% over a 366-day trailing window (12 closes).",
+      "portfolioChangePct": 0.9056,
       "bestPerformer": {
         "symbol": "BONK",
-        "changePct": 8.8803
+        "changePct": 10.4247
       },
       "worstPerformer": {
-        "symbol": "PENGU",
-        "changePct": -12.6129
+        "symbol": "JASMY",
+        "changePct": -11.7701
       },
       "leadingPerformers": [
         {
           "symbol": "BONK",
-          "changePct": 8.8803
+          "changePct": 10.4247
         },
         {
           "symbol": "WIF",
-          "changePct": 4.757
+          "changePct": 9.7861
         },
         {
           "symbol": "FIDA",
-          "changePct": 3.4355
+          "changePct": 5.2907
         }
       ],
       "laggingPerformers": [
         {
-          "symbol": "PENGU",
-          "changePct": -12.6129
-        },
-        {
           "symbol": "JASMY",
-          "changePct": -11.9692
+          "changePct": -11.7701
         },
         {
-          "symbol": "FLOKI",
-          "changePct": -3.0735
+          "symbol": "PENGU",
+          "changePct": -10.1646
+        },
+        {
+          "symbol": "CHZ",
+          "changePct": -1.8504
         }
       ],
       "observations": [
-        "BONK led the portfolio at +8.88%.",
-        "PENGU was weakest at -12.61%.",
+        "BONK led the portfolio at +10.42%.",
+        "JASMY was weakest at -11.77%.",
         "This early report uses 12 closes; the target 366-day window has 367.",
         "Momentum is descriptive, not predictive; review concentration and downside before acting."
       ]
@@ -117,51 +117,51 @@
         "name": "Crypto Gems EUR - 2026-08-26",
         "type": "real"
       },
-      "generatedAt": "2026-09-05T04:55:59.177Z",
+      "generatedAt": "2026-09-05T10:55:36.565Z",
       "periodStart": "2026-08-26",
       "periodEnd": "2026-09-05",
       "status": "Range-bound",
-      "summary": "The portfolio moved -1.71% over a 366-day trailing window (11 closes).",
-      "portfolioChangePct": -1.7143,
+      "summary": "The portfolio moved +0.18% over a 366-day trailing window (11 closes).",
+      "portfolioChangePct": 0.1769,
       "bestPerformer": {
         "symbol": "BONK",
-        "changePct": 10.1563
+        "changePct": 11.7188
       },
       "worstPerformer": {
-        "symbol": "PENGU",
-        "changePct": -9.4506
+        "symbol": "JASMY",
+        "changePct": -8.1841
       },
       "leadingPerformers": [
         {
           "symbol": "BONK",
-          "changePct": 10.1563
+          "changePct": 11.7188
         },
         {
           "symbol": "WIF",
-          "changePct": 1.7087
+          "changePct": 6.5914
         },
         {
           "symbol": "OP",
-          "changePct": 1.4926
+          "changePct": 2.7241
         }
       ],
       "laggingPerformers": [
         {
-          "symbol": "PENGU",
-          "changePct": -9.4506
-        },
-        {
           "symbol": "JASMY",
-          "changePct": -8.3913
+          "changePct": -8.1841
         },
         {
-          "symbol": "FLOKI",
-          "changePct": -5.2265
+          "symbol": "PENGU",
+          "changePct": -6.9137
+        },
+        {
+          "symbol": "CHZ",
+          "changePct": -2.1899
         }
       ],
       "observations": [
-        "BONK led the portfolio at +10.16%.",
-        "PENGU was weakest at -9.45%.",
+        "BONK led the portfolio at +11.72%.",
+        "JASMY was weakest at -8.18%.",
         "This early report uses 11 closes; the target 366-day window has 367.",
         "Momentum is descriptive, not predictive; review concentration and downside before acting."
       ]
@@ -172,51 +172,51 @@
         "name": "Learn - 2026-08-18",
         "type": "real"
       },
-      "generatedAt": "2026-09-05T04:55:59.177Z",
+      "generatedAt": "2026-09-05T10:55:36.565Z",
       "periodStart": "2026-08-18",
       "periodEnd": "2026-09-05",
       "status": "Strong momentum",
-      "summary": "The portfolio moved +27.62% over a 366-day trailing window (19 closes).",
-      "portfolioChangePct": 27.6187,
+      "summary": "The portfolio moved +28.26% over a 366-day trailing window (19 closes).",
+      "portfolioChangePct": 28.2561,
       "bestPerformer": {
         "symbol": "VET",
-        "changePct": 54.0882
+        "changePct": 54.7004
       },
       "worstPerformer": {
         "symbol": "ZKJ",
-        "changePct": 6.2098
+        "changePct": 7.3071
       },
       "leadingPerformers": [
         {
           "symbol": "VET",
-          "changePct": 54.0882
+          "changePct": 54.7004
         },
         {
           "symbol": "MEW",
-          "changePct": 30.0001
+          "changePct": 32.4797
         },
         {
           "symbol": "MON",
-          "changePct": 17.0128
+          "changePct": 16.2002
         }
       ],
       "laggingPerformers": [
         {
           "symbol": "ZKJ",
-          "changePct": 6.2098
+          "changePct": 7.3071
         },
         {
           "symbol": "FLR",
-          "changePct": 11.2054
+          "changePct": 11.7961
         },
         {
           "symbol": "MON",
-          "changePct": 17.0128
+          "changePct": 16.2002
         }
       ],
       "observations": [
-        "VET led the portfolio at +54.09%.",
-        "ZKJ was weakest at +6.21%.",
+        "VET led the portfolio at +54.70%.",
+        "ZKJ was weakest at +7.31%.",
         "This early report uses 19 closes; the target 366-day window has 367.",
         "Momentum is descriptive, not predictive; review concentration and downside before acting."
       ]
@@ -227,51 +227,51 @@
         "name": "Real - 2026-08-26",
         "type": "real"
       },
-      "generatedAt": "2026-09-05T04:55:59.177Z",
+      "generatedAt": "2026-09-05T10:55:36.565Z",
       "periodStart": "2026-09-04",
       "periodEnd": "2026-09-05",
       "status": "Range-bound",
-      "summary": "The portfolio moved +0.85% over a 366-day trailing window (2 closes).",
-      "portfolioChangePct": 0.8506,
+      "summary": "The portfolio moved +3.03% over a 366-day trailing window (2 closes).",
+      "portfolioChangePct": 3.0256,
       "bestPerformer": {
-        "symbol": "MON",
-        "changePct": 3.1747
+        "symbol": "FLOKI",
+        "changePct": 5.7209
       },
       "worstPerformer": {
         "symbol": "FLR",
-        "changePct": -1.0005
+        "changePct": -0.4747
       },
       "leadingPerformers": [
         {
-          "symbol": "MON",
-          "changePct": 3.1747
+          "symbol": "FLOKI",
+          "changePct": 5.7209
+        },
+        {
+          "symbol": "WIF",
+          "changePct": 5.4417
         },
         {
           "symbol": "AVNT",
-          "changePct": 2.806
-        },
-        {
-          "symbol": "FLOKI",
-          "changePct": 1.2093
+          "changePct": 5.0802
         }
       ],
       "laggingPerformers": [
         {
           "symbol": "FLR",
-          "changePct": -1.0005
+          "changePct": -0.4747
         },
         {
-          "symbol": "PEPE",
-          "changePct": -0.9901
+          "symbol": "BTC",
+          "changePct": -0.0088
         },
         {
-          "symbol": "MEW",
-          "changePct": -0.2705
+          "symbol": "JASMY",
+          "changePct": 0.2638
         }
       ],
       "observations": [
-        "MON led the portfolio at +3.17%.",
-        "FLR was weakest at -1.00%.",
+        "FLOKI led the portfolio at +5.72%.",
+        "FLR was weakest at -0.47%.",
         "This early report uses 2 closes; the target 366-day window has 367.",
         "Momentum is descriptive, not predictive; review concentration and downside before acting."
       ]
@@ -282,51 +282,51 @@
         "name": "Top 10 Crypto Lottery - 2026-08-13",
         "type": "real"
       },
-      "generatedAt": "2026-09-05T04:55:59.177Z",
+      "generatedAt": "2026-09-05T10:55:36.565Z",
       "periodStart": "2026-08-13",
       "periodEnd": "2026-09-05",
       "status": "Strong momentum",
-      "summary": "The portfolio moved +28.17% over a 366-day trailing window (24 closes).",
-      "portfolioChangePct": 28.1743,
+      "summary": "The portfolio moved +31.41% over a 366-day trailing window (24 closes).",
+      "portfolioChangePct": 31.4085,
       "bestPerformer": {
         "symbol": "WIF",
-        "changePct": 48.6461
+        "changePct": 55.7822
       },
       "worstPerformer": {
         "symbol": "MOG",
-        "changePct": 8.446
+        "changePct": 9.6907
       },
       "leadingPerformers": [
         {
           "symbol": "WIF",
-          "changePct": 48.6461
+          "changePct": 55.7822
         },
         {
           "symbol": "BONK",
-          "changePct": 45.5026
+          "changePct": 47.5664
         },
         {
           "symbol": "PENGU",
-          "changePct": 33.8781
+          "changePct": 37.629
         }
       ],
       "laggingPerformers": [
         {
           "symbol": "MOG",
-          "changePct": 8.446
+          "changePct": 9.6907
         },
         {
           "symbol": "SHIB",
-          "changePct": 19.22
+          "changePct": 22.1086
         },
         {
           "symbol": "DOGE",
-          "changePct": 20.745
+          "changePct": 22.5847
         }
       ],
       "observations": [
-        "WIF led the portfolio at +48.65%.",
-        "MOG was weakest at +8.45%.",
+        "WIF led the portfolio at +55.78%.",
+        "MOG was weakest at +9.69%.",
         "This early report uses 24 closes; the target 366-day window has 367.",
         "Momentum is descriptive, not predictive; review concentration and downside before acting."
       ]
