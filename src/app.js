@@ -249,6 +249,7 @@ function loadProfiles(fileProfiles) {
 }
 
 function selectProfile(id) {
+  holdingsSort = 'investedAmount';
   activeProfile = profiles.find((profile) => profile.id === id)
     ?? profiles.find((profile) => profile.id === config.defaultProfileId)
     ?? profiles[0];
@@ -296,7 +297,9 @@ function renderHoldings(holdings) {
   body.replaceChildren();
   document.querySelectorAll('[data-holdings-sort]').forEach((button) => {
     button.closest('th').setAttribute('aria-sort',
-      button.dataset.holdingsSort === holdingsSort ? 'descending' : 'none');
+      button.dataset.holdingsSort === holdingsSort
+        ? holdingsSort === 'name' ? 'ascending' : 'descending'
+        : 'none');
   });
   sortHoldings(holdings, holdingsSort).forEach((item) => {
     const row = document.createElement('tr');
