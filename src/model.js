@@ -234,6 +234,18 @@ export function filterSeriesByRange(series, range) {
   return series.filter(({ date }) => date >= startDate);
 }
 
+export function sortHoldings(holdings, field = 'investedAmount') {
+  const key = ['investedAmount', 'returnPct', 'change24hPct'].includes(field)
+    ? field
+    : 'investedAmount';
+  return [...holdings].sort((a, b) => {
+    const aValid = Number.isFinite(a[key]);
+    const bValid = Number.isFinite(b[key]);
+    if (!aValid || !bValid) return Number(bValid) - Number(aValid);
+    return b[key] - a[key];
+  });
+}
+
 export function calculateHoldings(portfolio, history, assets) {
   const baseline = getBaselinePrices(portfolio, history);
   return portfolio.map((item, index) => {

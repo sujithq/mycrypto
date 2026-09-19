@@ -18,6 +18,7 @@ import {
   parseRealPortfolioJson,
   resolveProfilePortfolio,
   serializePortfolioHolding,
+  sortHoldings,
 } from '../src/model.js';
 import {
   combineHistoricalPrices,
@@ -49,6 +50,31 @@ const history = [
   { date: '2026-08-11', prices: prices(10) },
   { date: '2026-08-18', prices: prices(11) },
 ];
+
+test('sorts holdings descending by allocation, since-buy return, or 24h change', () => {
+  const holdings = [
+    { investedAmount: 50, returnPct: -10, change24hPct: 2 },
+    { investedAmount: 200, returnPct: 0, change24hPct: -3 },
+    { investedAmount: 100, returnPct: 20, change24hPct: 0 },
+  ];
+  const original = [...holdings];
+  assert.deepEqual(sortHoldings(holdings), [holdings[1], holdings[2], holdings[0]]);
+  assert.deepEqual(sortHoldings(holdings, 'returnPct'), [holdings[2], holdings[1], holdings[0]]);
+  assert.deepEqual(sortHoldings(holdings, 'change24hPct'), [holdings[0], holdings[2], holdings[1]]);
+  assert.deepEqual(sortHoldings(holdings, 'unknown'), sortHoldings(holdings));
+  assert.deepEqual(holdings, original);
+  assert.deepEqual(sortHoldings([]), []);
+});
+
+test('sorts missing values last and preserves tied purchase lots and original detail indexes', () => {
+  for (const field of ['investedAmount', 'returnPct', 'change24hPct']) {
+    const holdings = [null, -10, undefined, 0, NaN, -10, Infinity, -Infinity]
+      .map((value, index) => ({ id: 'same-asset', buyDate: `2026-09-0${index + 1}`, [field]: value }));
+    const sorted = sortHoldings(holdings, field);
+    assert.deepEqual(sorted.map((item) => holdings.indexOf(item)), [3, 1, 5, 0, 2, 4, 6, 7]);
+    assert.notStrictEqual(sorted, holdings);
+  }
+});
 
 test('calculates one asset evolution from its purchase date', () => {
   const assetHistory = [
