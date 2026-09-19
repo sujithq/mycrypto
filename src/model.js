@@ -235,14 +235,23 @@ export function filterSeriesByRange(series, range) {
 }
 
 export function sortHoldings(holdings, field = 'investedAmount') {
-  const key = ['investedAmount', 'returnPct', 'change24hPct'].includes(field)
+  const key = ['name', 'investedAmount', 'price', 'returnPct', 'change24hPct', 'value'].includes(field)
     ? field
     : 'investedAmount';
+  const keys = key === 'investedAmount' ? [key, 'returnPct', 'change24hPct'] : [key];
   return [...holdings].sort((a, b) => {
-    const aValid = Number.isFinite(a[key]);
-    const bValid = Number.isFinite(b[key]);
-    if (!aValid || !bValid) return Number(bValid) - Number(aValid);
-    return b[key] - a[key];
+    for (const sortKey of keys) {
+      const isName = sortKey === 'name';
+      const aValid = isName ? typeof a[sortKey] === 'string' && a[sortKey].trim() !== '' : Number.isFinite(a[sortKey]);
+      const bValid = isName ? typeof b[sortKey] === 'string' && b[sortKey].trim() !== '' : Number.isFinite(b[sortKey]);
+      if (aValid !== bValid) return Number(bValid) - Number(aValid);
+      if (!aValid) continue;
+      const difference = isName
+        ? a[sortKey].localeCompare(b[sortKey], 'en', { sensitivity: 'base' })
+        : b[sortKey] - a[sortKey];
+      if (difference !== 0) return difference;
+    }
+    return 0;
   });
 }
 

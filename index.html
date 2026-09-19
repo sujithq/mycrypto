@@ -222,12 +222,12 @@
           <table>
             <thead>
               <tr>
-                <th scope="col">Asset</th>
+                <th scope="col" aria-sort="none"><button type="button" class="holdings-sort" data-holdings-sort="name" aria-label="Sort by asset name, ascending">Asset</button></th>
                 <th scope="col" aria-sort="descending"><button type="button" class="holdings-sort" data-holdings-sort="investedAmount" aria-label="Sort by allocation, descending">Allocation</button></th>
-                <th scope="col">Price</th>
+                <th scope="col" aria-sort="none"><button type="button" class="holdings-sort" data-holdings-sort="price" aria-label="Sort by price, descending">Price</button></th>
                 <th scope="col" aria-sort="none"><button type="button" class="holdings-sort" data-holdings-sort="change24hPct" aria-label="Sort by 24-hour change, descending">24h</button></th>
                 <th scope="col" aria-sort="none"><button type="button" class="holdings-sort" data-holdings-sort="returnPct" aria-label="Sort by since-buy return, descending">Since buy</button></th>
-                <th scope="col">Value</th>
+                <th scope="col" aria-sort="none"><button type="button" class="holdings-sort" data-holdings-sort="value" aria-label="Sort by value, descending">Value</button></th>
               </tr>
             </thead>
             <tbody id="holdings-body"></tbody>

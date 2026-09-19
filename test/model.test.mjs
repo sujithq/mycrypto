@@ -66,8 +66,45 @@ test('sorts holdings descending by allocation, since-buy return, or 24h change',
   assert.deepEqual(sortHoldings([]), []);
 });
 
+test('sorts allocation ties by since-buy return, then 24h change', () => {
+  const holdings = [
+    { investedAmount: 50, returnPct: 10, change24hPct: 1 },
+    { investedAmount: 50, returnPct: 20, change24hPct: -5 },
+    { investedAmount: 50, returnPct: 10, change24hPct: 3 },
+    { investedAmount: 100, returnPct: -20, change24hPct: -10 },
+    { investedAmount: 50, returnPct: null, change24hPct: 100 },
+    { investedAmount: 50, returnPct: 10, change24hPct: null },
+    { investedAmount: 50, returnPct: 10, change24hPct: 3 },
+    { investedAmount: 50, returnPct: null, change24hPct: 200 },
+  ];
+  const original = [...holdings];
+  const expected = [3, 1, 2, 6, 0, 5, 7, 4].map((index) => holdings[index]);
+  assert.deepEqual(sortHoldings(holdings), expected);
+  assert.deepEqual(sortHoldings(holdings, 'investedAmount'), expected);
+  assert.deepEqual(sortHoldings(holdings, 'unknown'), expected);
+  assert.deepEqual(holdings, original);
+});
+
+test('sorts by asset name alphabetically and by price or value descending', () => {
+  const holdings = [
+    { name: 'Zcash', price: 3, value: 10 },
+    { name: 'bitcoin', price: 100, value: 50 },
+    { name: 'Aave', price: 20, value: 200 },
+  ];
+  assert.deepEqual(sortHoldings(holdings, 'name'), [holdings[2], holdings[1], holdings[0]]);
+  assert.deepEqual(sortHoldings(holdings, 'price'), [holdings[1], holdings[2], holdings[0]]);
+  assert.deepEqual(sortHoldings(holdings, 'value'), [holdings[2], holdings[1], holdings[0]]);
+});
+
+test('sorts missing names last and preserves equivalent asset names', () => {
+  const holdings = [null, 'Bitcoin', undefined, 'aave', '', 'bitcoin', ' ', 42]
+    .map((name) => ({ name }));
+  assert.deepEqual(sortHoldings(holdings, 'name').map((item) => holdings.indexOf(item)),
+    [3, 1, 5, 0, 2, 4, 6, 7]);
+});
+
 test('sorts missing values last and preserves tied purchase lots and original detail indexes', () => {
-  for (const field of ['investedAmount', 'returnPct', 'change24hPct']) {
+  for (const field of ['investedAmount', 'returnPct', 'change24hPct', 'price', 'value']) {
     const holdings = [null, -10, undefined, 0, NaN, -10, Infinity, -Infinity]
       .map((value, index) => ({ id: 'same-asset', buyDate: `2026-09-0${index + 1}`, [field]: value }));
     const sorted = sortHoldings(holdings, field);
