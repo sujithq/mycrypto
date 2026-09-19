@@ -248,6 +248,11 @@ h2 { margin-bottom: 0; font-size: clamp(1.7rem, 3vw, 2.6rem); font-weight: 520; 
 .table-wrap { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; font-size: .8rem; }
 th { padding: 13px 16px; color: var(--dim); font: 500 .61rem ui-monospace, monospace; text-align: right; text-transform: uppercase; letter-spacing: .1em; }
+.holdings-sort { padding: 0; border: 0; color: inherit; background: transparent; text-transform: inherit; letter-spacing: inherit; }
+.holdings-sort::after { content: ' ↓'; visibility: hidden; }
+th[aria-sort="descending"] .holdings-sort { color: var(--acid); }
+th[aria-sort="descending"] .holdings-sort::after { visibility: visible; }
+.holdings-sort:hover { color: var(--ink); }
 th:first-child { padding-left: 0; text-align: left; }
 td { padding: 19px 16px; border-top: 1px solid var(--line); text-align: right; font-variant-numeric: tabular-nums; }
 td:first-child { padding-left: 0; text-align: left; }

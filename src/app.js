@@ -10,6 +10,7 @@ import {
   isValidPortfolio,
   normalizePortfolioInvestments,
   resolveProfilePortfolio,
+  sortHoldings,
 } from './model.js';
 import {
   calculateIntradayAssetSeries,
@@ -103,6 +104,7 @@ let activeProfile;
 let profiles = [];
 let chartSeries = [];
 let holdings = [];
+let holdingsSort = 'investedAmount';
 let activeAssetIndex = null;
 let lastAssetIndex = null;
 let assetSeries = [];
@@ -292,7 +294,11 @@ function renderMetrics(holdings, series) {
 function renderHoldings(holdings) {
   const body = $('#holdings-body');
   body.replaceChildren();
-  holdings.forEach((item, index) => {
+  document.querySelectorAll('[data-holdings-sort]').forEach((button) => {
+    button.closest('th').setAttribute('aria-sort',
+      button.dataset.holdingsSort === holdingsSort ? 'descending' : 'none');
+  });
+  sortHoldings(holdings, holdingsSort).forEach((item) => {
     const row = document.createElement('tr');
     const assetCell = document.createElement('td');
     const assetWrap = element('div', 'asset-cell');
@@ -302,7 +308,7 @@ function renderHoldings(holdings) {
     assetWrap.append(labels);
     const assetLink = element('button', 'asset-link');
     assetLink.type = 'button';
-    assetLink.dataset.assetIndex = String(index);
+    assetLink.dataset.assetIndex = String(holdings.indexOf(item));
     assetLink.setAttribute('aria-label', `View ${item.name} evolution${item.buyDate ? ` from ${item.buyDate}` : ''}`);
     assetLink.append(assetWrap);
     assetCell.append(assetLink);
@@ -908,6 +914,12 @@ function bindEvents() {
   $('#holdings-body').addEventListener('click', ({ target }) => {
     const trigger = target.closest('[data-asset-index]');
     if (trigger) openAssetDetail(Number(trigger.dataset.assetIndex));
+  });
+  document.querySelectorAll('[data-holdings-sort]').forEach((button) => {
+    button.addEventListener('click', () => {
+      holdingsSort = button.dataset.holdingsSort;
+      renderHoldings(holdings);
+    });
   });
   $('#asset-back').addEventListener('click', closeAssetDetail);
   $('#asset-range-control').addEventListener('click', ({ target }) => {
