@@ -199,6 +199,15 @@ test('loads and validates file-based profiles', async () => {
   assert.equal(profiles.every(({ id }) => /^[a-z0-9-]+$/.test(id)), true);
 });
 
+test('loads the MOG purchase with its decimal invested amount', async () => {
+  const config = JSON.parse(await readFile(path.join(root, 'data', 'portfolio.json'), 'utf8'));
+  const profiles = await loadProfiles(root, config);
+  const holding = profiles.find(({ id }) => id === 'real').portfolio.find(
+    ({ id, buyTimestamp }) => id === 'mog-coin' && buyTimestamp === '2026-10-02T21:25:00.000Z',
+  );
+  assert.equal(holding.investedAmount, 49.67);
+});
+
 test('provides a thesis for every supported asset', async () => {
   const config = JSON.parse(await readFile(path.join(root, 'data', 'portfolio.json'), 'utf8'));
   assert.equal(config.supportedAssets.every(({ thesis }) => typeof thesis === 'string' && thesis.trim()), true);

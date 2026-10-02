@@ -92,7 +92,7 @@
     },    {
       "id": "mog-coin",
       "symbol": "MOG",
-      "investedAmount": 49,67,
+      "investedAmount": 49.67,
       "quantity": 498230090,
       "buyTimestamp": "2026-10-02T21:25:00.000Z"
     }
