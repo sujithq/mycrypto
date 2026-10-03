@@ -1,349 +1,349 @@
 {
-  "updatedAt": "2026-10-02T21:39:26.008Z",
+  "updatedAt": "2026-10-03T00:44:12.562Z",
   "currency": "eur",
   "source": "CoinGecko",
   "assets": {
     "bitcoin": {
-      "price": 75039,
-      "change24hPct": -0.12844,
-      "marketCap": 1507559317139,
+      "price": 75149,
+      "change24hPct": -0.46692,
+      "marketCap": 1509891527479,
       "rank": 1,
       "image": "https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png?1696501400"
     },
     "ethereum": {
-      "price": 2362.75,
-      "change24hPct": -1.25146,
-      "marketCap": 288462272978,
+      "price": 2375.85,
+      "change24hPct": -1.30315,
+      "marketCap": 290074076499,
       "rank": 2,
       "image": "https://coin-images.coingecko.com/coins/images/279/large/ethereum.png?1696501628"
     },
     "solana": {
-      "price": 104.82,
-      "change24hPct": 0.22195,
-      "marketCap": 61629835747,
+      "price": 105.75,
+      "change24hPct": 0.14947,
+      "marketCap": 62202114623,
       "rank": 7,
       "image": "https://coin-images.coingecko.com/coins/images/4128/large/solana.png?1718769756"
     },
     "hyperliquid": {
-      "price": 76.66,
-      "change24hPct": -0.65048,
-      "marketCap": 17052120584,
+      "price": 79.4,
+      "change24hPct": 1.6248,
+      "marketCap": 17664792532,
       "rank": 11,
       "image": "https://coin-images.coingecko.com/coins/images/50882/large/hyperliquid.jpg?1729431300"
     },
     "dogecoin": {
-      "price": 0.081539,
-      "change24hPct": -2.32688,
-      "marketCap": 12722923177,
+      "price": 0.082863,
+      "change24hPct": -1.09063,
+      "marketCap": 12939809209,
       "rank": 12,
       "image": "https://coin-images.coingecko.com/coins/images/5/large/dogecoin.png?1696501409"
     },
     "chainlink": {
-      "price": 12.11,
-      "change24hPct": -4.49642,
-      "marketCap": 9054191222,
+      "price": 12.32,
+      "change24hPct": -2.92848,
+      "marketCap": 9218004875,
       "rank": 13,
       "image": "https://coin-images.coingecko.com/coins/images/877/large/Chainlink_Logo_500.png?1760023405"
     },
     "near": {
-      "price": 4.14,
-      "change24hPct": -2.7068,
-      "marketCap": 5414324336,
+      "price": 4.19,
+      "change24hPct": -2.79855,
+      "marketCap": 5475202311,
       "rank": 22,
       "image": "https://coin-images.coingecko.com/coins/images/10365/large/near.jpg?1696510367"
     },
     "uniswap": {
-      "price": 7.77,
-      "change24hPct": -3.13538,
-      "marketCap": 4859288087,
+      "price": 8.03,
+      "change24hPct": 0.46677,
+      "marketCap": 5025530347,
       "rank": 23,
       "image": "https://coin-images.coingecko.com/coins/images/12504/large/uniswap-logo.png?1720676669"
     },
+    "sui": {
+      "price": 1.048,
+      "change24hPct": -0.24987,
+      "marketCap": 4313153708,
+      "rank": 26,
+      "image": "https://coin-images.coingecko.com/coins/images/26375/large/sui-ocean-square.png?1727791290"
+    },
     "avalanche-2": {
-      "price": 9.44,
-      "change24hPct": -2.5647,
-      "marketCap": 4181808745,
+      "price": 9.68,
+      "change24hPct": -0.87127,
+      "marketCap": 4289058631,
       "rank": 27,
       "image": "https://coin-images.coingecko.com/coins/images/12559/large/Avalanche_Circle_RedWhite_Trans.png?1696512369"
     },
-    "sui": {
-      "price": 0.99953,
-      "change24hPct": -3.60757,
-      "marketCap": 4115359461,
-      "rank": 28,
-      "image": "https://coin-images.coingecko.com/coins/images/26375/large/sui-ocean-square.png?1727791290"
-    },
     "shiba-inu": {
-      "price": 0.00000499,
-      "change24hPct": -2.28286,
-      "marketCap": 2939479917,
-      "rank": 36,
+      "price": 0.00000508,
+      "change24hPct": -1.32817,
+      "marketCap": 2991591628,
+      "rank": 35,
       "image": "https://coin-images.coingecko.com/coins/images/11939/large/shiba.png?1696511800"
     },
     "bittensor": {
-      "price": 255.36,
-      "change24hPct": -4.6986,
-      "marketCap": 2894617205,
-      "rank": 38,
+      "price": 261.7,
+      "change24hPct": -2.97264,
+      "marketCap": 2967712879,
+      "rank": 37,
       "image": "https://coin-images.coingecko.com/coins/images/28452/large/ARUsPeNQ_400x400.jpeg?1696527447"
     },
     "aave": {
-      "price": 160.66,
-      "change24hPct": 6.48322,
-      "marketCap": 2479518386,
+      "price": 159.42,
+      "change24hPct": 2.99836,
+      "marketCap": 2459830503,
       "rank": 41,
       "image": "https://coin-images.coingecko.com/coins/images/12645/large/aave-token-round.png?1720472354"
     },
     "ondo-finance": {
-      "price": 0.434339,
-      "change24hPct": 0.07575,
-      "marketCap": 2114867770,
-      "rank": 47,
+      "price": 0.43938,
+      "change24hPct": 0.03578,
+      "marketCap": 2143414082,
+      "rank": 46,
       "image": "https://coin-images.coingecko.com/coins/images/26580/large/ONDO.png?1696525656"
     },
     "pepe": {
-      "price": 0.00000372,
-      "change24hPct": -5.0855,
-      "marketCap": 1562246646,
+      "price": 0.0000038,
+      "change24hPct": -3.5582,
+      "marketCap": 1596414321,
       "rank": 59,
       "image": "https://coin-images.coingecko.com/coins/images/29850/large/pepe-token.jpeg?1696528776"
     },
     "arbitrum": {
-      "price": 0.171608,
-      "change24hPct": -2.66565,
-      "marketCap": 1164474649,
-      "rank": 70,
+      "price": 0.175395,
+      "change24hPct": -1.70186,
+      "marketCap": 1189983248,
+      "rank": 69,
       "image": "https://coin-images.coingecko.com/coins/images/16547/large/arb.jpg?1721358242"
     },
     "render-token": {
-      "price": 1.69,
-      "change24hPct": 0.54919,
-      "marketCap": 879033443,
-      "rank": 80,
+      "price": 1.77,
+      "change24hPct": 4.09784,
+      "marketCap": 919119406,
+      "rank": 78,
       "image": "https://coin-images.coingecko.com/coins/images/11636/large/rndr.png?1696511529"
     },
     "injective-protocol": {
-      "price": 6.49,
-      "change24hPct": -0.35441,
-      "marketCap": 648733082,
-      "rank": 92,
+      "price": 6.74,
+      "change24hPct": 1.93452,
+      "marketCap": 673762967,
+      "rank": 90,
       "image": "https://coin-images.coingecko.com/coins/images/12882/large/Other_200x200.png?1738782212"
     },
     "vechain": {
-      "price": 0.00748786,
-      "change24hPct": -3.76303,
-      "marketCap": 643074434,
+      "price": 0.00759663,
+      "change24hPct": -2.80374,
+      "marketCap": 653180997,
       "rank": 94,
       "image": "https://coin-images.coingecko.com/coins/images/1167/large/VET.png?1742383283"
     },
     "blockstack": {
-      "price": 0.322807,
-      "change24hPct": -3.81658,
-      "marketCap": 603988284,
-      "rank": 96,
+      "price": 0.33086,
+      "change24hPct": -0.65799,
+      "marketCap": 619206453,
+      "rank": 97,
       "image": "https://coin-images.coingecko.com/coins/images/2069/large/Stacks_Logo_png.png?1709979332"
     },
     "flare-networks": {
-      "price": 0.00634997,
-      "change24hPct": -2.69098,
-      "marketCap": 552910491,
+      "price": 0.00640607,
+      "change24hPct": -2.56441,
+      "marketCap": 557644042,
       "rank": 103,
       "image": "https://coin-images.coingecko.com/coins/images/28624/large/FLR-icon200x200.png?1696527609"
     },
     "pudgy-penguins": {
-      "price": 0.00781475,
-      "change24hPct": -6.21853,
-      "marketCap": 491144897,
+      "price": 0.00801241,
+      "change24hPct": -4.90575,
+      "marketCap": 503737262,
       "rank": 109,
       "image": "https://coin-images.coingecko.com/coins/images/52622/large/PUDGY_PENGUINS_PENGU_PFP.png?1733809110"
     },
     "monad": {
-      "price": 0.02847863,
-      "change24hPct": -4.54208,
-      "marketCap": 336816633,
+      "price": 0.02867432,
+      "change24hPct": -4.55116,
+      "marketCap": 338883431,
       "rank": 130,
       "image": "https://coin-images.coingecko.com/coins/images/38927/large/mon.png?1766029057"
     },
     "bonk": {
-      "price": 0.00000316,
-      "change24hPct": -4.62604,
-      "marketCap": 278057567,
-      "rank": 147,
+      "price": 0.00000325,
+      "change24hPct": -3.46279,
+      "marketCap": 285685252,
+      "rank": 146,
       "image": "https://coin-images.coingecko.com/coins/images/28600/large/bonk.jpg?1696527587"
     },
     "the-graph": {
-      "price": 0.02494158,
-      "change24hPct": 0.23664,
-      "marketCap": 272805272,
+      "price": 0.02550446,
+      "change24hPct": 1.38957,
+      "marketCap": 279081596,
       "rank": 149,
       "image": "https://coin-images.coingecko.com/coins/images/13397/large/Graph_Token.png?1696513159"
     },
     "optimism": {
-      "price": 0.110894,
-      "change24hPct": -1.48519,
-      "marketCap": 254815484,
+      "price": 0.115062,
+      "change24hPct": 0.70975,
+      "marketCap": 264177325,
       "rank": 155,
       "image": "https://coin-images.coingecko.com/coins/images/25244/large/Token.png?1774456081"
     },
     "jasmycoin": {
-      "price": 0.0047092,
-      "change24hPct": -6.12311,
-      "marketCap": 232847389,
+      "price": 0.00477585,
+      "change24hPct": -6.20943,
+      "marketCap": 236147396,
       "rank": 163,
       "image": "https://coin-images.coingecko.com/coins/images/13876/large/JASMY200x200.jpg?1696513620"
     },
     "floki": {
-      "price": 0.00002381,
-      "change24hPct": -2.81839,
-      "marketCap": 229612702,
+      "price": 0.00002427,
+      "change24hPct": -1.74803,
+      "marketCap": 234009880,
       "rank": 164,
       "image": "https://coin-images.coingecko.com/coins/images/16746/large/PNG_image.png?1696516318"
     },
     "dogwifcoin": {
-      "price": 0.214087,
-      "change24hPct": -2.32166,
-      "marketCap": 213860226,
+      "price": 0.220306,
+      "change24hPct": -1.3898,
+      "marketCap": 220128880,
       "rank": 168,
       "image": "https://coin-images.coingecko.com/coins/images/33566/large/dogwifhat.jpg?1702499428"
     },
     "fartcoin": {
-      "price": 0.154077,
-      "change24hPct": -0.87007,
-      "marketCap": 154036639,
-      "rank": 205,
+      "price": 0.157642,
+      "change24hPct": -0.08729,
+      "marketCap": 157617578,
+      "rank": 203,
       "image": "https://coin-images.coingecko.com/coins/images/50891/large/fart.jpg?1729503972"
     },
     "chiliz": {
-      "price": 0.01437592,
-      "change24hPct": 0.52608,
-      "marketCap": 151586961,
-      "rank": 208,
+      "price": 0.01491168,
+      "change24hPct": 3.72817,
+      "marketCap": 157231111,
+      "rank": 204,
       "image": "https://coin-images.coingecko.com/coins/images/8834/large/CHZ_Token_updated.png?1696508986"
     },
     "mubarak": {
-      "price": 0.054697,
-      "change24hPct": 0.03883,
-      "marketCap": 54691817,
-      "rank": 416,
+      "price": 0.054453,
+      "change24hPct": -1.51309,
+      "marketCap": 54450982,
+      "rank": 422,
       "image": "https://coin-images.coingecko.com/coins/images/54857/large/DKjv3dc6_400x400.jpg?1742107486"
     },
     "based-brett": {
-      "price": 0.00509107,
-      "change24hPct": 2.7843,
-      "marketCap": 50449538,
-      "rank": 443,
+      "price": 0.00517722,
+      "change24hPct": 3.83682,
+      "marketCap": 51308439,
+      "rank": 444,
       "image": "https://coin-images.coingecko.com/coins/images/35529/large/1000050750.png?1709031995"
     },
     "popcat": {
-      "price": 0.04626581,
-      "change24hPct": -0.12272,
-      "marketCap": 45314108,
+      "price": 0.04710854,
+      "change24hPct": -0.16664,
+      "marketCap": 46177343,
       "rank": 474,
       "image": "https://coin-images.coingecko.com/coins/images/33760/large/image.jpg?1702964227"
     },
-    "wink": {
-      "price": 0.00004045,
-      "change24hPct": -12.43963,
-      "marketCap": 40201234,
-      "rank": 516,
-      "image": "https://coin-images.coingecko.com/coins/images/9129/large/WinK.png?1696509252"
-    },
     "cat-in-a-dogs-world": {
-      "price": 0.00044824,
-      "change24hPct": 0.30296,
-      "marketCap": 39857387,
-      "rank": 520,
+      "price": 0.00046815,
+      "change24hPct": 6.27705,
+      "marketCap": 41738781,
+      "rank": 510,
       "image": "https://coin-images.coingecko.com/coins/images/36440/large/MEW.png?1711442286"
     },
+    "wink": {
+      "price": 0.00004158,
+      "change24hPct": -5.05859,
+      "marketCap": 41305450,
+      "rank": 511,
+      "image": "https://coin-images.coingecko.com/coins/images/9129/large/WinK.png?1696509252"
+    },
     "avantis": {
-      "price": 0.111423,
-      "change24hPct": 2.70963,
-      "marketCap": 39534725,
-      "rank": 525,
+      "price": 0.115534,
+      "change24hPct": 3.40647,
+      "marketCap": 40991250,
+      "rank": 516,
       "image": "https://coin-images.coingecko.com/coins/images/68972/large/Verantalogo.png?1789472597"
     },
     "mog-coin": {
-      "price": 9.9894e-8,
-      "change24hPct": -2.68017,
-      "marketCap": 39014352,
-      "rank": 534,
+      "price": 1.01607e-7,
+      "change24hPct": -1.93013,
+      "marketCap": 39660733,
+      "rank": 528,
       "image": "https://coin-images.coingecko.com/coins/images/31059/large/MOG_LOGO_200x200.png?1696529893"
     },
     "neiro-3": {
-      "price": 0.00007899,
-      "change24hPct": -1.55276,
-      "marketCap": 33224845,
-      "rank": 599,
+      "price": 0.00008136,
+      "change24hPct": -0.2926,
+      "marketCap": 34235883,
+      "rank": 592,
       "image": "https://coin-images.coingecko.com/coins/images/39488/large/neiro.jpg?1731449567"
     },
     "czs-dog": {
-      "price": 0.0226931,
-      "change24hPct": -4.1417,
-      "marketCap": 21925590,
-      "rank": 790,
+      "price": 0.02325552,
+      "change24hPct": -3.94839,
+      "marketCap": 22468699,
+      "rank": 788,
       "image": "https://coin-images.coingecko.com/coins/images/54400/large/broccoli.jpg?1739504145"
     },
     "dogs-2": {
-      "price": 0.00004151,
-      "change24hPct": -2.5474,
-      "marketCap": 21452567,
+      "price": 0.00004236,
+      "change24hPct": -1.51802,
+      "marketCap": 21892089,
       "rank": 799,
       "image": "https://coin-images.coingecko.com/coins/images/39699/large/dogs_logo_200x200.png?1723687163"
     },
     "celer-network": {
-      "price": 0.00270171,
-      "change24hPct": -0.8472,
-      "marketCap": 21395804,
-      "rank": 801,
+      "price": 0.00276378,
+      "change24hPct": 1.27167,
+      "marketCap": 21879670,
+      "rank": 800,
       "image": "https://coin-images.coingecko.com/coins/images/4379/large/Celr.png?1696504978"
     },
     "bonfida": {
-      "price": 0.01845187,
-      "change24hPct": -1.48417,
-      "marketCap": 18283544,
-      "rank": 877,
+      "price": 0.01902709,
+      "change24hPct": 0.08819,
+      "marketCap": 18855320,
+      "rank": 862,
       "image": "https://coin-images.coingecko.com/coins/images/13395/large/bonfida.png?1696513157"
     },
-    "the-index": {
-      "price": 0.01473367,
-      "change24hPct": -4.17062,
-      "marketCap": 14446714,
-      "rank": 995,
-      "image": "https://coin-images.coingecko.com/coins/images/102174740/large/qffiSdBd_400x400_%281%29.jpg?1784708104"
-    },
     "coin98": {
-      "price": 0.01419106,
-      "change24hPct": -1.31941,
-      "marketCap": 14186756,
-      "rank": 1002,
+      "price": 0.01463773,
+      "change24hPct": 0.41212,
+      "marketCap": 14634965,
+      "rank": 993,
       "image": "https://coin-images.coingecko.com/coins/images/17117/large/logo.png?1696516677"
     },
-    "portal-2": {
-      "price": 0.01589759,
-      "change24hPct": 0.53121,
-      "marketCap": 14162953,
-      "rank": 1005,
-      "image": "https://coin-images.coingecko.com/coins/images/35436/large/portal.jpeg?1708590254"
-    },
     "test-3": {
-      "price": 0.01482429,
-      "change24hPct": -3.85561,
-      "marketCap": 13891923,
-      "rank": 1014,
+      "price": 0.01527561,
+      "change24hPct": -1.83259,
+      "marketCap": 14315656,
+      "rank": 1002,
       "image": "https://coin-images.coingecko.com/coins/images/54274/large/Test.png?1738997629"
     },
+    "portal-2": {
+      "price": 0.01601151,
+      "change24hPct": -0.00969,
+      "marketCap": 14266111,
+      "rank": 1006,
+      "image": "https://coin-images.coingecko.com/coins/images/35436/large/portal.jpeg?1708590254"
+    },
+    "the-index": {
+      "price": 0.01408693,
+      "change24hPct": -10.32545,
+      "marketCap": 13812633,
+      "rank": 1021,
+      "image": "https://coin-images.coingecko.com/coins/images/102174740/large/qffiSdBd_400x400_%281%29.jpg?1784708104"
+    },
     "polyhedra-network": {
-      "price": 0.0053941,
-      "change24hPct": -5.05125,
-      "marketCap": 3486413,
-      "rank": 1906,
+      "price": 0.00552503,
+      "change24hPct": -3.19311,
+      "marketCap": 3548049,
+      "rank": 1895,
       "image": "https://coin-images.coingecko.com/coins/images/36198/large/Polyhedra_Symbol_Black_on_White.png?1747150504"
     },
     "tars-protocol": {
-      "price": 0.00389758,
-      "change24hPct": 3.73599,
-      "marketCap": 17548.32,
-      "rank": 8570,
+      "price": 0.00394409,
+      "change24hPct": 4.01906,
+      "marketCap": 17702.94,
+      "rank": 8558,
       "image": "https://coin-images.coingecko.com/coins/images/37538/large/image_6.png?1736608965"
     }
   },
@@ -22206,6 +22206,60 @@
         "test-3": 0.01482429,
         "polyhedra-network": 0.0053941,
         "tars-protocol": 0.00389758
+      }
+    },
+    {
+      "date": "2026-10-03",
+      "prices": {
+        "bitcoin": 75149,
+        "ethereum": 2375.85,
+        "solana": 105.75,
+        "hyperliquid": 79.4,
+        "dogecoin": 0.082863,
+        "chainlink": 12.32,
+        "near": 4.19,
+        "uniswap": 8.03,
+        "sui": 1.048,
+        "avalanche-2": 9.68,
+        "shiba-inu": 0.00000508,
+        "bittensor": 261.7,
+        "aave": 159.42,
+        "ondo-finance": 0.43938,
+        "pepe": 0.0000038,
+        "arbitrum": 0.175395,
+        "render-token": 1.77,
+        "injective-protocol": 6.74,
+        "vechain": 0.00759663,
+        "blockstack": 0.33086,
+        "flare-networks": 0.00640607,
+        "pudgy-penguins": 0.00801241,
+        "monad": 0.02867432,
+        "bonk": 0.00000325,
+        "the-graph": 0.02550446,
+        "optimism": 0.115062,
+        "jasmycoin": 0.00477585,
+        "floki": 0.00002427,
+        "dogwifcoin": 0.220306,
+        "fartcoin": 0.157642,
+        "chiliz": 0.01491168,
+        "mubarak": 0.054453,
+        "based-brett": 0.00517722,
+        "popcat": 0.04710854,
+        "cat-in-a-dogs-world": 0.00046815,
+        "wink": 0.00004158,
+        "avantis": 0.115534,
+        "mog-coin": 1.01607e-7,
+        "neiro-3": 0.00008136,
+        "czs-dog": 0.02325552,
+        "dogs-2": 0.00004236,
+        "celer-network": 0.00276378,
+        "bonfida": 0.01902709,
+        "coin98": 0.01463773,
+        "test-3": 0.01527561,
+        "portal-2": 0.01601151,
+        "the-index": 0.01408693,
+        "polyhedra-network": 0.00552503,
+        "tars-protocol": 0.00394409
       }
     }
   ]
