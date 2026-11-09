@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T19:57:35.135Z",
+  "generatedAt": "2026-11-09T01:13:09.890Z",
   "reports": {
     "gems-eur-2026-08-24": {
       "profile": {
@@ -7,52 +7,52 @@
         "name": "Crypto Gems EUR - 2026-08-24",
         "type": "real"
       },
-      "generatedAt": "2026-11-08T19:57:35.135Z",
+      "generatedAt": "2026-11-09T01:13:09.890Z",
       "periodStart": "2026-08-24",
-      "periodEnd": "2026-11-08",
+      "periodEnd": "2026-11-09",
       "status": "Risk-off",
-      "summary": "The portfolio moved -8.31% over a 366-day trailing window (77 closes).",
-      "portfolioChangePct": -8.3096,
+      "summary": "The portfolio moved -9.82% over a 366-day trailing window (78 closes).",
+      "portfolioChangePct": -9.824,
       "bestPerformer": {
         "symbol": "STX",
-        "changePct": 47.5673
+        "changePct": 43.5049
       },
       "worstPerformer": {
         "symbol": "PENGU",
-        "changePct": -30.5913
+        "changePct": -31.5234
       },
       "leadingPerformers": [
         {
           "symbol": "STX",
-          "changePct": 47.5673
+          "changePct": 43.5049
         },
         {
           "symbol": "BTC",
-          "changePct": 0.1721
+          "changePct": -0.7811
         },
         {
           "symbol": "OP",
-          "changePct": -2.8235
+          "changePct": -4.2755
         }
       ],
       "laggingPerformers": [
         {
           "symbol": "PENGU",
-          "changePct": -30.5913
+          "changePct": -31.5234
         },
         {
           "symbol": "CHZ",
-          "changePct": -19.8154
+          "changePct": -21.1545
         },
         {
           "symbol": "FLOKI",
-          "changePct": -18.9143
+          "changePct": -20.4835
         }
       ],
       "observations": [
-        "STX led the portfolio at +47.57%.",
-        "PENGU was weakest at -30.59%.",
-        "This early report uses 77 closes; the target 366-day window has 367.",
+        "STX led the portfolio at +43.50%.",
+        "PENGU was weakest at -31.52%.",
+        "This early report uses 78 closes; the target 366-day window has 367.",
         "Momentum is descriptive, not predictive; review concentration and downside before acting."
       ]
     },
@@ -62,52 +62,52 @@
         "name": "Crypto Gems EUR - 2026-08-25",
         "type": "real"
       },
-      "generatedAt": "2026-11-08T19:57:35.135Z",
+      "generatedAt": "2026-11-09T01:13:09.890Z",
       "periodStart": "2026-08-25",
-      "periodEnd": "2026-11-08",
+      "periodEnd": "2026-11-09",
       "status": "Risk-off",
-      "summary": "The portfolio moved -9.70% over a 366-day trailing window (76 closes).",
-      "portfolioChangePct": -9.6998,
+      "summary": "The portfolio moved -11.13% over a 366-day trailing window (77 closes).",
+      "portfolioChangePct": -11.1284,
       "bestPerformer": {
         "symbol": "STX",
-        "changePct": 33.3441
+        "changePct": 29.6732
       },
       "worstPerformer": {
         "symbol": "PENGU",
-        "changePct": -31.4187
+        "changePct": -32.3397
       },
       "leadingPerformers": [
         {
           "symbol": "STX",
-          "changePct": 33.3441
+          "changePct": 29.6732
         },
         {
           "symbol": "OP",
-          "changePct": 4.6312
+          "changePct": 3.0678
         },
         {
           "symbol": "BONK",
-          "changePct": -3.4749
+          "changePct": -5.4054
         }
       ],
       "laggingPerformers": [
         {
           "symbol": "PENGU",
-          "changePct": -31.4187
+          "changePct": -32.3397
         },
         {
           "symbol": "JASMY",
-          "changePct": -24.6141
+          "changePct": -24.6824
         },
         {
           "symbol": "CHZ",
-          "changePct": -16.0643
+          "changePct": -17.466
         }
       ],
       "observations": [
-        "STX led the portfolio at +33.34%.",
-        "PENGU was weakest at -31.42%.",
-        "This early report uses 76 closes; the target 366-day window has 367.",
+        "STX led the portfolio at +29.67%.",
+        "PENGU was weakest at -32.34%.",
+        "This early report uses 77 closes; the target 366-day window has 367.",
         "Momentum is descriptive, not predictive; review concentration and downside before acting."
       ]
     },
@@ -117,52 +117,52 @@
         "name": "Crypto Gems EUR - 2026-08-26",
         "type": "real"
       },
-      "generatedAt": "2026-11-08T19:57:35.135Z",
+      "generatedAt": "2026-11-09T01:13:09.890Z",
       "periodStart": "2026-08-26",
-      "periodEnd": "2026-11-08",
+      "periodEnd": "2026-11-09",
       "status": "Risk-off",
-      "summary": "The portfolio moved -10.35% over a 366-day trailing window (75 closes).",
-      "portfolioChangePct": -10.3532,
+      "summary": "The portfolio moved -11.77% over a 366-day trailing window (76 closes).",
+      "portfolioChangePct": -11.766,
       "bestPerformer": {
         "symbol": "STX",
-        "changePct": 30.1484
+        "changePct": 26.5655
       },
       "worstPerformer": {
         "symbol": "PENGU",
-        "changePct": -28.9369
+        "changePct": -29.8913
       },
       "leadingPerformers": [
         {
           "symbol": "STX",
-          "changePct": 30.1484
+          "changePct": 26.5655
         },
         {
           "symbol": "OP",
-          "changePct": 6.844
+          "changePct": 5.2476
         },
         {
           "symbol": "BONK",
-          "changePct": -2.3437
+          "changePct": -4.2969
         }
       ],
       "laggingPerformers": [
         {
           "symbol": "PENGU",
-          "changePct": -28.9369
+          "changePct": -29.8913
         },
         {
           "symbol": "JASMY",
-          "changePct": -21.5502
+          "changePct": -21.6212
         },
         {
           "symbol": "AVNT",
-          "changePct": -18.9884
+          "changePct": -19.8623
         }
       ],
       "observations": [
-        "STX led the portfolio at +30.15%.",
-        "PENGU was weakest at -28.94%.",
-        "This early report uses 75 closes; the target 366-day window has 367.",
+        "STX led the portfolio at +26.57%.",
+        "PENGU was weakest at -29.89%.",
+        "This early report uses 76 closes; the target 366-day window has 367.",
         "Momentum is descriptive, not predictive; review concentration and downside before acting."
       ]
     },
@@ -172,52 +172,52 @@
         "name": "Learn - 2026-08-18",
         "type": "real"
       },
-      "generatedAt": "2026-11-08T19:57:35.135Z",
+      "generatedAt": "2026-11-09T01:13:09.890Z",
       "periodStart": "2026-08-18",
-      "periodEnd": "2026-11-08",
+      "periodEnd": "2026-11-09",
       "status": "Range-bound",
-      "summary": "The portfolio moved +3.43% over a 366-day trailing window (83 closes).",
-      "portfolioChangePct": 3.4255,
+      "summary": "The portfolio moved +2.32% over a 366-day trailing window (84 closes).",
+      "portfolioChangePct": 2.3199,
       "bestPerformer": {
         "symbol": "VET",
-        "changePct": 20.8944
+        "changePct": 20.7144
       },
       "worstPerformer": {
         "symbol": "MON",
-        "changePct": -22.1706
+        "changePct": -23.4701
       },
       "leadingPerformers": [
         {
           "symbol": "VET",
-          "changePct": 20.8944
+          "changePct": 20.7144
         },
         {
           "symbol": "MEW",
-          "changePct": 14.8322
+          "changePct": 13.1307
         },
         {
           "symbol": "FLR",
-          "changePct": -0.7339
+          "changePct": -2.5418
         }
       ],
       "laggingPerformers": [
         {
           "symbol": "MON",
-          "changePct": -22.1706
+          "changePct": -23.4701
         },
         {
           "symbol": "ZKJ",
-          "changePct": -2.6527
+          "changePct": -3.9009
         },
         {
           "symbol": "FLR",
-          "changePct": -0.7339
+          "changePct": -2.5418
         }
       ],
       "observations": [
-        "VET led the portfolio at +20.89%.",
-        "MON was weakest at -22.17%.",
-        "This early report uses 83 closes; the target 366-day window has 367.",
+        "VET led the portfolio at +20.71%.",
+        "MON was weakest at -23.47%.",
+        "This early report uses 84 closes; the target 366-day window has 367.",
         "Momentum is descriptive, not predictive; review concentration and downside before acting."
       ]
     },
@@ -227,52 +227,52 @@
         "name": "Real - 2026-08-26",
         "type": "real"
       },
-      "generatedAt": "2026-11-08T19:57:35.135Z",
+      "generatedAt": "2026-11-09T01:13:09.890Z",
       "periodStart": "2026-10-02",
-      "periodEnd": "2026-11-08",
+      "periodEnd": "2026-11-09",
       "status": "Risk-off",
-      "summary": "The portfolio moved -22.38% over a 366-day trailing window (38 closes).",
-      "portfolioChangePct": -22.3755,
+      "summary": "The portfolio moved -23.18% over a 366-day trailing window (39 closes).",
+      "portfolioChangePct": -23.1823,
       "bestPerformer": {
         "symbol": "PEPE",
-        "changePct": 22.3118
+        "changePct": 22.5806
       },
       "worstPerformer": {
         "symbol": "MON",
-        "changePct": -48.8683
+        "changePct": -49.722
       },
       "leadingPerformers": [
         {
           "symbol": "PEPE",
-          "changePct": 22.3118
+          "changePct": 22.5806
         },
         {
           "symbol": "BTC",
-          "changePct": -9.2459
+          "changePct": -10.1094
         },
         {
           "symbol": "MOG",
-          "changePct": -16.2793
+          "changePct": -17.7188
         }
       ],
       "laggingPerformers": [
         {
           "symbol": "MON",
-          "changePct": -48.8683
+          "changePct": -49.722
         },
         {
           "symbol": "VET",
-          "changePct": -38.0242
+          "changePct": -38.1165
         },
         {
           "symbol": "AVNT",
-          "changePct": -34.019
+          "changePct": -34.7307
         }
       ],
       "observations": [
-        "PEPE led the portfolio at +22.31%.",
-        "MON was weakest at -48.87%.",
-        "This early report uses 38 closes; the target 366-day window has 367.",
+        "PEPE led the portfolio at +22.58%.",
+        "MON was weakest at -49.72%.",
+        "This early report uses 39 closes; the target 366-day window has 367.",
         "Momentum is descriptive, not predictive; review concentration and downside before acting."
       ]
     },
@@ -282,52 +282,52 @@
         "name": "Top 10 Crypto Lottery - 2026-08-13",
         "type": "real"
       },
-      "generatedAt": "2026-11-08T19:57:35.135Z",
+      "generatedAt": "2026-11-09T01:13:09.890Z",
       "periodStart": "2026-08-13",
-      "periodEnd": "2026-11-08",
+      "periodEnd": "2026-11-09",
       "status": "Strong momentum",
-      "summary": "The portfolio moved +15.63% over a 366-day trailing window (88 closes).",
-      "portfolioChangePct": 15.6295,
+      "summary": "The portfolio moved +14.13% over a 366-day trailing window (89 closes).",
+      "portfolioChangePct": 14.1282,
       "bestPerformer": {
         "symbol": "PEPE",
-        "changePct": 96.1137
+        "changePct": 96.5447
       },
       "worstPerformer": {
         "symbol": "POPCAT",
-        "changePct": -12.1259
+        "changePct": -13.6368
       },
       "leadingPerformers": [
         {
           "symbol": "PEPE",
-          "changePct": 96.1137
+          "changePct": 96.5447
         },
         {
           "symbol": "BONK",
-          "changePct": 28.9916
+          "changePct": 26.4118
         },
         {
           "symbol": "WIF",
-          "changePct": 21.3211
+          "changePct": 19.7692
         }
       ],
       "laggingPerformers": [
         {
           "symbol": "POPCAT",
-          "changePct": -12.1259
+          "changePct": -13.6368
         },
         {
           "symbol": "MOG",
-          "changePct": -2.1654
+          "changePct": -3.8476
         },
         {
           "symbol": "BRETT",
-          "changePct": -0.411
+          "changePct": -1.8196
         }
       ],
       "observations": [
-        "PEPE led the portfolio at +96.11%.",
-        "POPCAT was weakest at -12.13%.",
-        "This early report uses 88 closes; the target 366-day window has 367.",
+        "PEPE led the portfolio at +96.54%.",
+        "POPCAT was weakest at -13.64%.",
+        "This early report uses 89 closes; the target 366-day window has 367.",
         "Momentum is descriptive, not predictive; review concentration and downside before acting."
       ]
     }
